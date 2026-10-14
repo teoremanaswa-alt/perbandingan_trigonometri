@@ -1,5 +1,11 @@
-﻿window.USE_CLIENT_STORAGE = true;
+/**
+ * bundle.js - Media Pembelajaran Trigonometri
+ * Standalone Client-Side Bundle untuk GitHub Pages
+ */
+window.USE_CLIENT_STORAGE = true;
+
 window.LOGO_DATA_URI = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAADIGSURBVHhe7V0FdBRXFy5OW6BFirtLgOKuxd0lUIIEKE4pDi1e3N1bNLhTnB8PrkGCB4ImkIQkkOzc9/3nvpdldicEspslQJvvnHeymZ2dN/PuN0+uva++ikEM/o0AEF+IN3lDQkT+x4+F04ULwunYMeG0bVuI04YNIU5ubiFOy5apwp/5GH938KA618tLOIWEhOQXQuQFkMh4/RhEIwDEAZD7+HFTlaVLTY2HDtVauLqGtBk8lCYPGkSbO3emfS1bmtyrVTedLlrUdDpHDtOpAgVMtypW1FCqlEChQgL58gnkzCWQNatA5swCmTIJZMgokCGDQMaMkMf4uxw5BfLlFfjxR4GSJQUqViIULmx6wNcsXNh0umpV0+nmzTX3jh21/QMG0JahQ2mGq2tI20GDtBaLF5uaHDpkqhbySuQHEM/4HDF4D4CniTw8RPmlS0WLnj1Du/bta1rWsaN2olJF7XLOnNpNJyeTljMnkCYNkCgREDeuKvzLWLGABAmBJEmAH34A0qUDMmUGMmcFcuYGnAoAhYsCxUsCpcsC5SoAFSoBFX8CKlZWn/kYf1eiJFCkGJC/IJArD5AlK5AxE5A+PZAyJfDdd0DChECs2KruOHFV+fZbdW85cgD58xNy5DDdKVfO5NG+Pbn/9pvJrVu30B7z5gnnc+dQBXjxnfH5/zMAEBdA6nXrtJa9eml9fvmFNtWpR1dy5jI9ypkLSJUaSJBACZUb+fukQNaswI+FgCrVgNZtgN8GAOOnAItXAJt2AQdOASevApe9gFs+wINXwPMQwB/AawAabAf/hn8bAHUt70Dg9gvgygPg1DXg4Glg8x5g6Spg0nSg3yCgTTugWg2gcBEgW3YgeXIgThz1LPHjK3IyiXPkDH1avbp2tVMn2vnLL1q/1au1n4UQmf6VvQZwJf6zZ29yzpqldW/XjubVr0+3smTR/NOmDXuTYgGJEwO5cgOVfgJcOyvhrtsOnLgCeD4DnpuAUCvxCCWagIeA9zXg+ing9AHg4DZg2xrAbSmwcBYwdQLw5wjg90FA/9+A3j2Bbl2AXzoBnTsCHTuowp/5GH/XuwfQrw8wdBAwejgwZRwwfwawajGw1Q3Yvw04tR+46g488AD8vADBVCMr8vgScMtXkYVJOnkG0LmbInHefMD33+vE4J4jS2YtuFYtutO2rWnZlCmi140bIQWF8Pra2J5fBAB8t2uvqNG7N02tW1e7lSULhSRNCsSOrbrvIkWB1i6qUfYcBTyfAn5WAg4Cnt0CLhwBdqwDFswE/hgMuLaHqFMbokQxUO5coIwZQClSgL79BiJObIivvoqeEjsWxNdfg5InA2VID8qVE1SsCETN6kA7F2DIAGDuNGDrGuDsIeDxDQCvwoirehXuqQ64AzPmAe07AiVLAd+FkYKHmYwZNVGzpna/Wzeas369qbEQ/smN7fzZAUCsoYNNY2rUoCepU6nuj9/yYsWB3r8BG3YAt58Db94KOhB4cBXYsxmYOQno9gtEtaoQuXKBfvgBlCBB+Mb/wgrFiwdKnhwiR3aIypWATq6qV2Fi37kURgfABOD+S2D7PmDAEKBsOfWy8EuTIgVQuTK9GDjQNAvAN8Z2/2xw5UrIjz/+qCZHtWsLzFoAXHtg0X37PwT2bwfGjoJo1hSUOzfou+9A72i4/0KhxIkVMRrUB0b+DvyzEfC9JwcRHlBuP1PznCZNBOLFBZycADc3U11ju382GD5cG/L1N0CfPubxMABwPyDHUqpeDZQy5X9W2JEtlCwZqGIFNW85tAsQL2RLTp1K8sXq1y9wjbHdPxs0bUaH+SaPnOGp8x1Q4UKgWLHCPWRMiVzhl4Vy5QI8z+L6QyBBfO5ZX/sCd783tv0nhxAilZOTFsTr5gCe6yyeE+6BYop9BSN+lyuLosXUMvLEidvzje3/yTFvjuaSLBng0j6s92/RLNyDxBT7CsqVlfOC34er+dXyZV6aEKfTGGXwSeHqalrON+e2CUDwU4j06cI9SEyxs7Ci5KEH/ndGEWDAABOE8GhmlMEnA2uwypXXnrBy4wHrRPZuDf8QMSVKBX8tgL+mVNJlygCe1z2XGuXwyfDPP6iSLh2JatXDuv++v4Z7gJgStYLmTWXTtm0PxIsHbNly5yFwMKFRFp8E/fqZRrPShzV7rOYRP/4Y7gFiShRLhgxA0BOs2aqGgcmTWLN4pqxRFtEKIUSa3btF+dq16QmrMM/fAuBxEuJfoMH7HAv2bcMDP+DbREClSsDhw3fXBwT45DXK5aNBCJFs925RYvx4GtmkCW0pX14LSJlKMbJkKVIq3qkTwt14THFMQZ9echio31Dgq69ImqDLljWhSRPt0OjRNHHLFlEGCExtlJvdYL3zsWOi9MSJoYOcnWlL2bLaE+6J2ILF41Dq1EDdesD4qcBl1mCyuaNatXA3HlMcVAoXlm186zkwfS7QpKnyfWC/CCmPNEDp0trLJk1ox7hxNGLfPlFOCGGfEenSJeR2dSVP1j+zwHmM57e9anVg1Dhg3wnAly0YEoHAzYugKVNA334b/sajo8SPL+um77+H+OEHiNRpQOnTgzJnhsiaDZQjh7I95M0HcnICFSgAKlxYlYIF1TH+js/JkROULZv8LaXPAEqTRhmnkiYFJUok6xKfQsMZLz5o2B/AFVa1KvspL7oOnwMmTAPq1AXSpFVk4MJKo8aN6dFff4lsRvl+EBs3as1y5FRODSNHEnYfBp6yh4TEa+D+FWDlUqBTB9WIjhz3EyUCpU2rTL5Fi4KqVQU5twR17w4aMhg0cSJowQLQ6tWgzVtAe/ZAHDkCceoUxKVLEDduQNy9C/HwIcTTpxC+LyAC/CGCgyBCQiA0E4TGujW2WZD8LAt/x+cEBEC8eAHx7BnEQ291rRueoMuXIc6chjh6FGLvPtDWrSA3N9CihaDJk0G//w7q2QPUujWoRnVQ8WKgPHkUEZMkCf+c9pa4cUH5nYC2PwNL5gE3z6uXkP0QTMrMPH48u7gpi+LEiZrtOoOJE5Vmr/evyoaNp57AuhXSZCsfLApvOrHtPl06UKFCoNq1Qd26gsaNA61cCdq3D3T2LOjOHQg/PwgRVv8XCL5zSab79yEuXAAdOKAIwwTu1RNUv54ieMaMEGw2fkdbfahIe0GCBKBCP0p/CaxYohxVQJg6TcieYMyYV+OM8v0guvYQ7dk1a9xkfpTXoMK2L+3kzSVJIrtYrVEj9YasWgk6cQLi3j2I16/DXCQ+DaZMIQwcZI/DmGMgCRIaCvHAC3TqFGjtWtCIEaDmzUBFikjLoLFNI1WyZAECH2DZWuCrWEC3br7LjPL9IDp31vqys+OiFWzVfQiROlX4igxFCpzHS+7+Bg4EbdwIcfWqeguMT/+JceECIeHXbGIl7Nqlu3N9LpBDkecN0PbtctynunVlTxGpXoJf+3sXsfUAEDce0LChj+0m5IEDaSOv7bfsBeB1BSJp0vAVscATJgCVLAnq3x+0YzuEl5fxWT47PH5MKFiQhS8QOzYhXTrC1aufHwksIXsLb28536GhQ0Hly4MSRTwM4+IxHLkIfPMNWxEDVhnl+0F07kyHmQBHLwC4fBwiYUK9Ah5zKlYETRgPunAB4o3u5PW5w+OKQLFi6s1fsICwapX6nDUb4cyZz5sEluBJK131AM2YDqpRI9ycjJ1Xr3gp59McuV5tNsr3g2jWTDv59dfAudsAju6CiGXx1g8cCEGfa2MJaJrAmzcCQUEC/v4Cjx8LHD9OGDhQw9dh3T572Jw6RfDwICxZQogblxAnDqF3bw2HDhGePCH4B6hrvH4toJnkO2is7LMA3xVNm2pNgLXLpI9h8hRA8eJ+14BhcY0yfi9q1tIuMnuuPQbwz3rrLmbJEuM9fGIIOaaPHk1o1IhQsqQWFpxBSJOGED++JoXOhd9+NeYL1K1LGDpUEfnYMUKFCvp5CRJqSJtWQ/ZsGvLl01C8OKFhQ8KoUVpYT/F5kUHs3m1NgAUz4ROq4ixKlfLzE2KvbQqhMmXIg398jzUNa/+2JsCaNcb6Pxnu3ye0a6sLLkUKQsEfCZUqE+rUJjRtSujUkTDmTw379xNCQ5XggoJUOFjHjpY9mcDRo8TrZnTrRnBuRahfn1CtGkkCpEnN9ai6GjfRcP3659MLimPHrAkwYYwMbOEIqUKF/IKDgi6mN8r4vcidhzwyZwae8PBu6d7FGrCdO4z1fxLs2KEmcCyQ5i2469YQECAipTvw8uI1skCdOpF9mwWCgwXc3QmurooEyZIR1rhF9vcfGZcuSwXRWwL8Pki6kXEQSr58AeLYsUu5jTJ+LzJm0q7kzg285GebMUknAKtBDx82Vh/NEJgzRwk+SRKCmxs/qm1COHmKDSoChQtTpAhjDYHduwlp06p7GD78MyCBp6f0HHpLgN96yTsqXgLImi1QbN16PfIEEEKkLFhQe8HskQrGcaPeXpi++VaqQz8dBCZNCpu5ZyWcPWtfN7xxoyJA5swkJ4r2wNOTULiIWk4OGGA7CR0KVqylTKkToGsnebhCRfYiChIrV9pAAA7FLlZcwCk/EMJXGTFUJwDrtK9cMVYfbZg/Xwk/Xz7CzZv2CZ8xa5YiQIof+Dr2C+7pU4GyZdU9jRv3CXsCb28IVimbCdC+rTzMXlqpUgWL+fPvRp4AQoh8HFPPEblSUTpkgE4AVgjdvGmsPlqwdy8hVixC5ixREz5j6FBFgIQJBU64R01ovGRUiiXChg1Ruy+7wUavbNl1ArR2lofZQpg8+WsxY4YNBPD1DclfsKCQMfXycQb01QmQIjnE/TDjvwNgXq/zBCsomOTnoCBCYKCQ5dUrkt/xej19ekKiRITTUVbYCHTqpAjAZdv2qBGAce2awA8/EJImVfqF4GBCYNizyBKsnkMvJJ/d5ulHBBA+PhC5c+sEaNlcHq/fgJVBb8SkSd6RJ8CTJyH5CxQQKFo87Or9+ugEYFv7w4dWlduLwECgRg1CpkyEVKlINiAXXsolS6YhKZekGpIn16TKlt+wv/6KqvAVGkqvGlWWLnXMNfntNy9H+Z75/pMnV8/Dz5UypXrO1KnVM5crR3IZ6xCw+TpfPp0AYU6kDRtxtPEbMWaMrQTIHwEBUv4A8cjbqm574eenkibEjy+kkqVpUyFLs2aE5s0JLVoQWjqr9bizM2HUSMdMtEwmyMY3E+DPPx0kBAhMm0Zo3VqVVnzfrQgtW6pn4WfiZ2vWnPDdd0r76HHFQXW/fAmRP79jCMBDAEf56kPAbxYESOkwArx8yaHPAkWLWgqVP0ddyO8DDy158ugE6Nb949dpfX2BevVUr+bh4aB6jQRo2UwelkNA0te2DQEhISJfocICBQupuHUMtZgEOnAIYAIkT64I4KixMDJ4/kwgdWp9CGjQIPpn73XradL2cNXDQT2AcQj4WU0Ca9fhNg62bRLIy8DixQXyOYUlcxjxu04AOQm8b6zeLjABkiUTKFqEDTjGbz8eeMLGXbCZAMWL2aMMihrq1NUQLy7h+jUHEcA4CeygloFVq9m3DEzm5KQ9y5NXJTbB+NE6ARy4DHzxEkjKBCgavQQ4cpQQP4FOgCxZCc+eRTMB6miIH59w44aD6uVlYHaLZWC3zvJw+QpAhgw2KoIYGTNplzlr1wsm6MzJOgEcqAh68QJImjT6CbB5s979c0mcmHDxooMEEUmYCcDaRIfAqAjq21sOahxSnj17oNi1y0YC5MtHHpwf7zGPAUvn6QT45huHqYI/FQHY/m9JAC47d37ZBJA+lpaq4OFDpBIvdx7AKX+AOHPGRmNQmXLkkSoVcJfdzzeseHth9jcThw4Z67cLn4oAkyZZC5/L9OlfNgGkMYhjFswEmDIewVBJLgsXDgjy8XG3zRxcp452Icl3wFVe8e3ZpBOAy/btxurtwqciwKBBLHRlzmXNHX92df2yCcBu5yJ2HJ0AS+fh2RsVzFO69Etf4KBtaWVataJjHBF0+jpkYkQRR7+4WLXKWL9diF4C6AIeMYIwezbhwQOS7mIrVxG6ddMs7uHjk8HhBDh0yOolxZY1uPWMV1lAwYIBJ9hB3Cjj96J3bzrA19nvzt3LWYjEevciZs821m8XIkMAttQ1a6ahbl0N9evbV2rX0dDSWcOdO6qxBw8h6fenIHDuHKF/f/X/8+cC7TtoqF07/HUiW1jJw3WePx+xcB1OgE3WvTRO7MPZm2FZWHMFuBnl+0H89ptpFicpdNvMrXIblMoiLmDUSGP9diEyy0B39/Djtb2leAnCixeEnTsJR44I3L3LGcE19P5Vw+nTypG0Vi2zPj/8720t7LEUERxOgIULdPlwtKjnGex1V4k6K1V+aTsBOnTQXDm+YNoczk/kB8qWVa+gR3dj/XbhrSLoPQQ4dUrIhjI2rr2lRnXC06eE//2PpFdRlSoaDh1WmkBnZ3b1Cv8be8uufyIWrsMJMFp32hGcWvS5J9y2qNSzLi5PbSfA6NFaW/YK5szcMoCyeFG9gmbK0BBVRIYA3t4Co0drGDpUw7BhtpU/hmnSGbRjR2vBsnGGScCGprlzlfC7dLEmGRtvxo3T8Mcf4a/7ocK/GTxEw633+Cw4nADdu+vy4bBg0zNMnwfEjgP07+89yyjfD2LdOq0pLyGatgiroWF9vQLOUkQRSMwGRIYAbCwpXUqAzdPspGJL4U0fChVid3ENvXpZC7hLV8KjR8oc+/vv1t+1cVFxA+xCzn4Rxut+qHC9+fOrWISI4HACNGmij/+lS4ET9A4YrHIH9Orl3cAo3w/C825oyTx5BPEmChK9e+gE4LjjAPYXjxokAcKMQRER4OTJ8F2rrSVuXIHxEwgdOlgLmp05Z8ywHvMbNdYwe44mHU+M17G18FwjIjiUABzWXrasToBGDeThFs5qEtivn3dho3w/CCFEguzZ6SHn8ffjVdGMiToBOGr1BqdAjxoiQ4Bz54UM7mDvXzbgRLZ8/z0HhOhC/OYbwoyZmrTJWwtK/5/9/xctIuknaD7GNnu+lvH67yt8r0mSaDhwIGLhSgIkYAI4YMn5/LmMCH5LgLBUMrz7SbZsodiw4abtBGBUrKRd5Tz/t30BbFurE4B1Avv3GW/DZkRmCOA5wOTJaiwfNz7yZfwEDfMXaHIIMAuTlT4cD1i7tpEEAqVKkfQMypBR/y57dtYXaDJQxHj995Wx4zSMGq3h1q3oIYC4dk3uX/CWAHOny5yCvBdSwYIBfq+enEhllG2k0KkTneD48qOcgMLD3TpAdPFi433YjMgQ4MRx9rUTSJyETbiRL99+q4JA//5beRCbhZomjcCSJRoqVNCPOTkRli3TkDu3fixDBhUz+NNPhG8Thb/++0qSJAKJErGvYTQRYMcOXS5MgIPb4fFQbbeTJ6//AaNcI42OHWkU6wJ4XxwEP4FIm0avaNBA433YjMgQ4ND/rN9UW0vRooS//takydd8jCOB2beQBc+OpkwSs38/F/ZSWrBQk0OC8Xq2lHXro4kAloGhnBPm/kXsOqo2m2jQwGeHUa6RxsiRWifevqSvlLUGUaqkXlH9esb7sBmRIcCZ04Q8eTRkyULIlu3Dhbtt/svu42ZBVKjIb7Mm5xLmYyz85Ss0GVVUpox+nCd/3O3zZFAXJiFrFv3aHyocsMIBJ3v2RhMBuvyiy0UuAX3lZh3cGXTv/sT29DBmHD4uanBwYc06YTW5tntbEWfTEhxhGQVERhNIpNzGI1uke3mQmjdYTvDq1CXMm6fJCZ35GAd8Vq6sCzpBAoEpUzW0aWP95vfvr711TzfWF1Fhv0MOU48ITACu72ZUCcDJrSpV0rv/6lXl4c5dAN68o3dv72pGuUYavGNmjmymZxwjKHe2sYgRlNudXOI9b+xHZAhgPwR+/92gAHImTJ9uzhFg3V3Hji0weoyKCrY83rmz9lHcxRxGgKdPINLoQ7PcHQ1qEyrujTZuvFHcKNdIgzeBatxYu8XJoq6xWfjwLojYFrtzrY1amHhkjEFRg0CPntYC7dSJ5Eydl3eWxwcN1qRByIowLbW34eSOhqMIIK2AFpZarF+Bx0EqX2Du3K9uCnE8alvPdehA81mfvHar2vRJJmF8OxEcZLwfm/DxCcA9JMHFxVqwffoola35/x49SOZCtJw31KqlyW78Y0ERgKJMAJo2TZcHJwS6dU4mjmQNYM2aPoeN8rQZ48drXdkm0Kc/V6dBVCivV1ilivF+bEJ0EIDBKV4aNLAeDti20LMnwaUtJ4SwVhpxsCebhT8m2FwsCRCFwFSG+PlnXR558wD0CjPmqglgp06PRxvlaTMuXUKR9OkplMOM5Zy2vx4kIseeKMQIRBcBGH5+gvfeeytkHvMnTNCwcKH1nICDPL0eRDx7dxQcQQARGCiF/rb7d1aGm+YtlSPIyJGPahnlaTN4N5AKFbSnfMFHnCxgyxqdAFx22O8exgT4/vvoIQCDvX+KFdeFHS8eIWFC/f/sOdhN++MLn+EQApw8pRJ2mAkwbwZeCYC9ubNme+1/+fLlDEZ52oVWrWg9X3/HAQ5AuAuR9HudAAPk2GAXopsADPYKyps3/CogbTqSnkHRBUcQgKZaKIB4pu7hjrOeavPtcuVeuhvlaDfGjRN9WMHEO2TLecBPP+kVlywJhFpv7RxZKAIgWgnAuHxZReeahc/OobqLWPTAEQQQDRvocsiXDxBBmDlPjf/tXJ79aZSj3bh3T+TNkoWI881IOY0ZoVfMCQovXjTeW6RgJgCHoUU3zp5Todqs+eN8P9GNuvU1JIhvPwHEo0cQqVPr3X+XX+TxOvVUxPXUqV7VjXK0GzwPqFmLbrKX8DWe8509bK0PmCE3C7IZahIIFCiokjnyzJtDtKKj8BJv6VJNhnMHvlKhYdFSngv4PBf4qYomcxXbTYC1FtZZFtHWtXL9z7EcefK8eiTE0cRGOUYJ3bubZvCmEbMXcu2vrCJRRc2aEHa4UjMB0qVlo4V4mziB/0ZH4bpYX882hjTRXC+XOHEEUqYU9hOgQ3u9/XnrFn9vbN6tuv/69X1tTw37IWzbZqqeMiVQy2wX6N3z7Q3wDuD2OIgwAfje2dTbpIlKoMCJHaOryGQNzcIf/5jFXGdymQXFvh5A+PqAMmXS3/5mTeRx107AN9+yD+AjF6P8ogy2C5Qvb3rGLkb32UHkiHVqUpo+3XifH4ScA3ynJoF6YghjMeNdx9713bvKu86zF8bfR+aaxvsRqF7D/kmgWGfo/lf/BT8TZz4FsmcLDrx27Wxao/wcgq5dTX9xffOX8hokwGoYoEoVw7ZhiTzMy8DChSNOEMEJm69ZxNCHhADbtmlYvpywfLmG27c/PIHz8Qlvdj1yhLB4sYYNGzSsW6dJb6Bbt4QM5mDnkGXLVebRffv4M/sMaDhxQn8+tgxesUjvwjEFGzZqWLFCJa5csVyTWc3ebREUqFZdkzoIuwjQsqVOAB70/R7KJTrLpnZt391GuTkM27ebaqRJA1RVFkdgsJ45RO4VaGPUsCUBIuLOooWEAvk1qc5lmExCOnOwqZfzBnGevg9h1GhOyMQVqHNDQgR69tSwaLGGU6c0pEuvcgAz0e7eIyROrCF1Gk1mJmOnVNYUshOJpZJoyxZORq3Bx0e/r7nz1H116aJhzx5CzpwaWrfWJGmtIVC1mtqwgklnC2QUcIoU+tvv0kYe5x1F2RQwePDjtka5OQxCiK8rV9a84icArj4I2yTSQhMl+vUz3u978SECsBmWky1xo1p62F66xOt3wuTJH248FnbNmmrNz9E/jOBg4E5Yz7F+vbrW2LH69XPmJGkPMCNHTkLVaubuW+HXX9V9/f23fuzMGaVXmDVL/fbnn9W1Hz0y3ic7oLIKWthOAEvlDxNg71Y85dl/SiBv3kB/f/+rtmUFtxUDB5qmsHWQt46TSiELZwTpmerrY7znCOHryxmsIiYAxwRs3kzIlFnIrN1mAbAgldA+3Hi83ueEzuwI0rWrfg3GkycCqVITChRU+QnNYE1h+gyEhQtNmD3bJO0V1WvoBLh9S2DrVkKBAoTSpUk6rTCOHVMEYLPyxYscdcR7Er1rGOAhgGwmAG/MQUWL6O3Ne/rRKyxdqbr/Jk2e2741jK04dy6kYK5cKvGA3EVu+WIrRtriLPohArBr1tGjGurVV6Zaz7B0Ku8mgJBBHqdPazh3jj141HeTJhJOumsoWky5bLPQzVDRQITde8xvu5BKzVy5CfkLcPdMcpxnMlSpqhNg8SLC/n1aWJwB4cQJ9ftjxxUBOAEULzFLlbYmnA4zAWwbAqTzp8V+hRg7Sl698k/KtW7GjPtVjPL6KGjZUjsqdQ+8n1CwtU86Rw3xTliRwfsI8PChwPjxGlau1DB1qkqpNmSIaujLl8MPAbwJxOrVPJkzyQmbr6/AnTvqGnycN3pg4cycZX5blfA6tNeFdPgwSathnrwk/QQVlJHIPATw9+wmzhNQdjHjeIP28hrA+fOKADxHWb9eXX/UKH0o0SFQvbqyQr7PddwSXDs1bqy3M6tQH93EKQ8gTmzeUv6lJ/BVbKOsPgqWLtVa8YaS9eqH3d3QQfqN8dYyO3cabv/diIgAPLGq30A1MOP5c1aiaNJ6d+CgJmfpPGnj9TT3ECxwduAwT8gYvDFUg/oa1q9T17h7l5AggSYzkB45YnYE1bB8hUleg93H6jfgN17D90nVJPDCBdUDsZB5QufubkLbthr+/FNNKF+/IeTOo3wPN2/WMH+++uzSlid+JB1N+P+5czWZnFKHHQQ4e9ba97+tizzetZs5/OtxP6OcPhp4T+GfftIe8LZyFzlh2IMbEN9ZWAhr1zbe/zsREQG4m+Y3bPdu5Y/HSz1erq1ZQ3JZxsc3blTHNm3SsGqVhj27eSzWr+F1n7B8Ge8SooTFM3g+n3uDw4c1bN9G2LSJ5JKSr7HsbxY2SaGvW0dyachEOXhQk2/zxo2qXl7ibd+uISRUwNub5NKPz9++Q8PWreq+1q5lMqrdSfg6W7ZoeBNiPVyxHsAWApCr69v2JZb42SN44KtU6XnzBgbevXvScZtGRwZ//hk6jM2OXbqG3WEn6xsU//uf4RHCgwnAQRTFikV+HPx3gL2UNSRIGLk5gLjqAWG59WwdfsEERo9Tk7+f2zybb5TPR0dQkEhburQWyGvP27yx1PVzVl2UqG8eHyIGE4CXgbx3Dy/zeO3Mlrl/c+Fn5MIha6wIiowDipXfPy/BDv6DF6+BDOmBLFle086dnnmN8okWDBlimh0rNtBP5hAAhEsb/UbZU3UvzxIjBhMgxQ9mpww1Xv53CoeQkZWW811gU7vcsdzcrlILp2H6bPX2N2/6fL1RLtGGx4+RuVhx7U2SxMDdp9wLnJeeqW+HAnYcMU7vLRDyBli7jlWyhMVLPlAWq8hdRxcOFnV04V1N5skiwv6+o8wjrFxJcpOr94GcnfX25FivQ3vw8o3S+2fKFIK1a28VMcolWsG9AN9X7z7qQURXi+6Kb3q1YzKK/RchDhyw2glMNFBx/5OmvVX8rDPKI9rhEyTS8VyAkxFd541EvG9Z6aqJvVZZ5+tgsKaN07vw35cvVYDnxg0kdfJmsI/f9On6RpGWv+U0cTtlDh91PCBA6QBevrQO6Tp5kqSBh6/B9bGad9o0gdWr1Sz/xQshe6fr19//JtsKERICKl9OFz438AV3PA1QJvSs2d6ITZuu5TfK45Ng9OiQ8WwfaP1zWCOwhsqyF/jjD+PzRQnbtytXLh5LeSeOAgXMcYCEn3/m5aBSCvEkixM1sBaRjT8sbF6m8U6iiRIpXcJvv3GuQKW2zZRZbQVXrLiGjZsUOfr04ZBvwk/SpZyQNBnXqVK99+1HOCv1/6rbdyRonp6eV5ZuXeTxgYPV29+27dMVRjl8MgD4vnp17Sl/OsR5BUP8QE4WpmKOIzx/zviMdoHf8OLFNWmw4Z1Ay5RVk8i1a5WmMNZXakNo9rpp25bHWDXWs8B4SxfW8vFuIawY4oAQFt7UabzFLCtnVNgYK4lY6cQ7ig8brvYC4nwCbDdgnURoKKFnL1XHtq2cfURg4SLHEYDT8Yt06XThswn2uRc8bgMJEwBOTsGv3N09bUv9+rGxYEHoL5ydrGRJobaa277RuheoWhXCWh1mFzggmYXft696QwcM5PBx1fgXzqvEDBwPyHF3jRsRJkwg9OnDPYFAt26cJURg7lzVU3H2EVYxs06fM4OsWqWOs+k50bcqedS4ccpdrWIFkgkkWNvn4qLC1StWIhw5TJIAixY7hgBS5dvGYjUlHTBUYs5GjQBO3dejh/dwY/t/cgCI3aaN6QJ/mjU37GGcLRwX7PQaMoIJwG9xv36KAL/2IZmRi8HWuMSJBXr1Vi5X+vJS9RLcnfPbPGOGOv/2bYG48UjuH8wGn+XL+biQ5lvuAcaM0QnAPQBvSL1ggboWk5BjDK5cVlvQOooAtJYDb3SDj6hcmbtUbNymuv4KFV7dFmL3t8b2/yxw/Hhomfz5lXr3DkcTP7oDSpNWJwBvNmGnC7kZvNMYv63duysCcLo3ViQxDh9WwuEIYNayte9AmD+PMGQobxDBG0XzPoHc9avz2UuICcL5AFKmUqlk2IEjXToNyVNo8HrAO4KqBFOcaYSHAE4tx3OElCk1DB+uYdcuVeccmW8wauCunyxy/lPiJMDls/ANAjgxG48EU6bcr2ts988KI0aEzGP38UaNwyaEK613HidOZxaFxBKv3wAdO3FMn2pwnnx17qw+s/9Aw4aanOFzaLd5Zs62/nbtNMycyY6nmvQxYPCbzgEanCrOtaPyGipRQkPjxpw6Vp3DM/wWLTX068eJI5RtgrV3XA8nk2RTMH9WKw37IYhAjRtZtZWYNF5+16OXevudnaPB3h9VAPiuUaPQB/zprxVhD9emtTUJ+qokBvbjfUsu1Y2HPycyxz98jvU35v/C/ppM4X4ZWdBkfVcWWaTGLwS79inhFy8e6OvtfSaFsb0/S+ze/aYmRyqxnv+mF4fmPgHlyqU/XOxYIDc3Yxt88RCeN6D16aN8zmwAHTxgpUGVfv53ruOZv+r62R1/zJi7LYzt/Flj5MiQmWwoqlw5bFVweL+VsYi3n6MLnH/uXwR22fqpMmj5cojr1yGePzeeEQ5y3M+WTW8Xft3XKe2pcyueXwCt2zxdaWzfzx6A9zcuLqar/GnoH6pjFFP1HEPyYX/8EeIpGxH+PaBly0CctMHNDbR7txoS3sjN98KB4/ulvcSy6+/fV343Z74SfsWK/veEcE9ibN8vApcuvSpQoYIWyg+yOSyNgGjX1vqB69SBeP3uLlMcOQxq2RLUvbsaI30i73D6qSCFylG748aBWrUCtW//zpUPE4Pa61nXZKldi9mC46eBBPFZ3/FaW7L8Rjlju35RWLkyqFP27CoTyFX2Hgr1B5Wz0HFzT9DR1dg+somociVQzx6gzZtBs2dDHDsG2rcvytnJogrh5weaPUvZs83HOGHzkyfq88CBICcnUIkSoH59IfytE2tL4Q8dat0GPGny9cYjX97mTYBd7gYO9OpubM8vEqNHv5nFCSc5jTqvaeF9B5Qzh3UDDBoUbgZNCxdKOwLt3QtashhUvjy0NGlAY8cazoxe8LBFyZNDTJ6kH+N7HD5MrRVOnQSVKQOqXSvcMzGsEjvws/Ms79JZ6WXNzqdsXW3j8gWO+xEBOBi3d++QI5x3mF28pc/whVNqI2pzI3D5c4yxrSAePwYdOya3RaWuXUEnjqsJlvsJFScWjRCXL0PjbtvXR3o8iQ4d3o7vYuYMiFo1oXXoABo/Xrpx0dy54cZ/WrDAKrSe92HEHuVE26mzGvdr1315SoidCYzt+EVDiEc/tHQOvckP+IsM0ACwfzcEG4os3wZuPKsmU+A9cahnT2h/LYU2ZrTSmJ08aTxNQly+pLxNHAyxcSOocCG5c6qYNRPUojnEfV7nQkZFiR8LgmrUAI2TUTPWv2XhL1kCEU+370vnTreV8vsRo5TwK1R49ejmzVOOye3zueHePZ+8deuG+vOD/jE8TMyb11uvgblhxv5p3Xpm+PnJiSCtXAlq0hiCkw1bQFy5DK1BA2i//gqEOr53oDVrQE2aQhw/DnH1Kihv3rfb6Ipfe6tsKXfuGH8mwcOZ3HTT/Jzczy+cL7+bM08Jv1Dh4Fef3MPnY+P06cBqVauGyuXupClhJFjnBkpo4VDKJBg61LoFw0D//AMtd27ZE7AgaPFimSyR3aZ5IkX9+0ME2q9qtgKv61cshwib7Ik9e0BVqihPHb6Xjq6gSRNBO3eAJkwADftDWassIM/j+7Ps9tmxc/ZM+f3fK5SmL0+e16YpU6IpsudTY+9ev+Zsk+cHnxEWqYN1q9W+xJYk6N4tfJRRUCDE3bugiRNBiRKDylcAlSoFypED4uhR63OjCtbPN2gg4/EZ/HaLbNnkMEVMvlmzoBUsCK1GDYhbt4y/VsIfNszqmeSbHyb8VWuA2LGAbNlDMHrsvcbGdvpXY9s2//alSyv2Twszz2LbJpBlgAmTgMOhfMJr1GjlCmhduoD+2QlRpDDErl1qBu7lBeHuDuHpafyJXRBdukBMnAA6ewYiwF+N+1xvrlzQ6tWFePAA4tUr488ggoNBnTpZPwsv7pcskt+vdFMhXVmymjBs2L3Wxvb5T2Djxpcdy5ZRJBg7PowEh/aD0ukmZNlwvJ728LBuYQtQj+6gCuWlfkH2Bk2agLZvM54WDnIOEYGWzgwxaZLck0+bM0eu/wUvR4sWhZg4EeLZM+PpEuTlJSeDVs+QJAmwcZ38fvFS9eZnz27C8OH3HZ/O5UvC9u0vO1SsqIaDQUPCSOBxXipSrBowfTqIrVusWzoM4vEjpXjhDS3Y3MybKPJxTqawdQvE2TPW57OQxo5VkzheMZjBbzIbcohkGjZ5rpsbRKOGIBcXCF7nr1qlXLXnvHv7XM7eTXlyW997hgzSFsKYMk1N+HLkeE1jxng5G9vjP4n9+32da9YIkRNDduKQYefPvEDVqlo1JM+iaeTId7qWseexCAoE/fILqGEjaOvWqXnCN1+H2+yaVxlS7+DaAcJiuSjJ8vChmtSNUToJsX2bml9UrgwqWRLi4EFFrkDrbl+SaubM8Mva4sWBm1fk9wMGKuE7OQW/Hj/+Xh1jO/yncfasb43GjUP8uIGq1yA8kiu8IIhuXaWwrBq1Tu0Ix3i2wMlomvXrQZUqgThriUUCIpo3V1rfaMzoMLFZ/Nbzhpx0UudOahj56y9lj+jUEVSv3jv1EwzuLai1weeB/7ZsAQQ9R4AGtGqlerlSpYL85s69WdH4/DH46quvvLye5G/nEuzJjo958wqcNffO8+fIMdSqgdOlA/39V4RCkSrkkiVAW3j3awXWHlL+/KB16yA009tsJrRrF6htW4iXLyAePgAVL6bUzqyu3rxZ6vh5+WmEfOu3bLb2deB7Y5eoMIKxP0SZMurNr1btlefOnZcKGJ87BhYA7qbu1u31GjaG8Lxpxeqw1j55VJmPjb0Bj8c32cpkDU6nYkkO4e8nl3S0dAno77/VGv7n1qo756Eif36I6dMg2P7A1548SRl3IpgkyreeVdOWGVP5frJlA3Yp0+eOPUDatMDXXwONG/vvCgg4/IPxeWMQAQYM8hvKG2AxJdjzlzPV47UPxC+dww8JadPJNbl4j/ZPXL+hrJDNmoF4n4MSJSB4PsEz9gH9pYWR/RVp8CDQoIERavTkW79iBShnTut74NKiOfD8vsynPGq0AAfOpk8PdOn8bE60Ze/4N2H+/Of1ypYNeSzHztIC56+GSWG9GyirxXb2ZiFUrKjMxQahSbx8KSd2clz38IBgnX3btlL40tjEoVi8tHuqTLpGSMGfOAGqWyd8vezCtXCePO/mQ6CW3JmUrZ/BQSNHPvx4adv+C7h9+3bGFi0C97E5OVFiYKZ59eXjBbLMl2sWRpw4ckJG59/vbkYbNkCrXl2qkj8EnhwSK3++ttg51Vxfk8bAXcXM5auBlKkAngLUquV/evNmj0LG54mBnRg82O/3fPlClbm0tpBhUhI7NysLnVEwSRIrT6L3KJAiTE8aBrp7R/opUEqLjbLM1+fxafVyed69Z0Dr1mqix06cXbs+nwF0imd8hhhEEZvWeZerW/f1GZ5UcY8weRo7ULGk/ICxo6WjaThBJU0qJ2viwoV3Dw0GyEkhv/Hs1WOxH9/b63Gy5AH9gFdP5LmLlqqJHmdSr1w58Obs2fdqG+87Bg4EMCxu374vRzg5hZr4vxIlgD3mdEScrIrX8JabXJtLokSgVs6gPXvembRCjvFHj4I6dlTePkbB82zfuSVwTQ0tJ85D5g6Ub302DZ07P5srxM4v03nzS8Tu7Y+KNG4ctJcDUlkIbVwErt0Pk+b54xDNmqpkVUZBcilfHjR/PoS3t9Tnsxu3dOSwtNdbnM+ePji8R176vg/Qs5eQ4zwvU2vWfHVy0aK7lYz3F4Nowtixz1tXrBjkxRnLWCADBws89AsjwvGDEI0bvZMIUriZMik177u+4781qgN7lFHJJwT4c5zajoXN+UWLBvsMGvTkV+CrOMZ7ikE0Q4iTyX/91X9MwYIh0tuIM6iP+hN4LJUHnFv2MESbn1WegncI20rwnPW8cUOZiYsHhhcaMG0WZ+NSPU2uXG9CXTu8nP38+UfKyR8D+3Hjxv2srq7+83LnDg1hYXE07fCRwD1zOMGtS3LjS/nmGwWfOpXMb4RLnOECeBKkcvHwrJ6vlSWLCa1bv1yzY8etzyMtSwwixv799/O5uPgtzpUrRBKB1cq9+wCXzEvHoMfAwjlK81e0KDBtEuDDCY6Am4+AocOAdOmU4LNmNaFZsxcb3NzuljTWE4PPHP/739087dr5z8iX740/L9M4z1LTpgI7D3DcLYMXkUFyS9yD7oBLWwEOyWf39Rw5Xoc6O/uu2LDhdjHjdWPwheHhw5sZevZ8OapkqTdevAGmVNMWAqbOBOYuAkqzV1IsRZDChYOfdejgM/no0Wu5jNeJwRcODrIcPtynXc1aQQczZjTJ2bx5rlClSuCpgQN9ugsRY7H7T2D79kdFnJ0DJzdpEjxz6dIHMQ4aMYhBDP6D+D+uEsgdK8689gAAAABJRU5ErkJggg==';
+
 window.SVG_DATA = {
   "stimulus_damkar.svg": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MDAgMzYwIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIj4KICA8cmVjdCB3aWR0aD0iNjAwIiBoZWlnaHQ9IjM2MCIgZmlsbD0iI2Y4ZmFmYyIvPgogIDxyZWN0IHk9IjI5MCIgd2lkdGg9IjYwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iIzk0YTNiOCIvPgogIDwhLS0gQnVpbGRpbmcgLS0+CiAgPHJlY3QgeD0iNDQwIiB5PSIzMCIgd2lkdGg9IjE0MCIgaGVpZ2h0PSIyNjAiIGZpbGw9IiNjYmQ1ZTEiIHN0cm9rZT0iIzY0NzQ4YiIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPCEtLSBXaW5kb3dzIC0tPgogIDxyZWN0IHg9IjQ2MCIgeT0iNjAiIHdpZHRoPSIzMCIgaGVpZ2h0PSI0MCIgZmlsbD0iIzM4YmRmOCIgc3Ryb2tlPSIjMDI4NGM3IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8cmVjdCB4PSI1MjAiIHk9IjYwIiB3aWR0aD0iMzAiIGhlaWdodD0iNDAiIGZpbGw9IiMzOGJkZjgiIHN0cm9rZT0iIzAyODRjNyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHJlY3QgeD0iNDYwIiB5PSIxMzAiIHdpZHRoPSIzMCIgaGVpZ2h0PSI0MCIgZmlsbD0iIzM4YmRmOCIgc3Ryb2tlPSIjMDI4NGM3IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8cmVjdCB4PSI1MjAiIHk9IjEzMCIgd2lkdGg9IjMwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjMzhiZGY4IiBzdHJva2U9IiMwMjg0YzciIHN0cm9rZS13aWR0aD0iMiIvPgogIDwhLS0gRmlyZSBUcnVjayAtLT4KICA8cmVjdCB4PSI4MCIgeT0iMjQwIiB3aWR0aD0iMTgwIiBoZWlnaHQ9IjUwIiBmaWxsPSIjZGMyNjI2IiByeD0iNiIvPgogIDxyZWN0IHg9IjIxMCIgeT0iMjIwIiB3aWR0aD0iNTAiIGhlaWdodD0iMzAiIGZpbGw9IiNkYzI2MjYiIHJ4PSI0Ii8+CiAgPGNpcmNsZSBjeD0iMTIwIiBjeT0iMjkwIiByPSIxOCIgZmlsbD0iIzFlMjkzYiIvPgogIDxjaXJjbGUgY3g9IjIyMCIgY3k9IjI5MCIgcj0iMTgiIGZpbGw9IiMxZTI5M2IiLz4KICA8IS0tIExhZGRlciAtLT4KICA8bGluZSB4MT0iMTYwIiB5MT0iMjQwIiB4Mj0iNDUwIiB5Mj0iODAiIHN0cm9rZT0iI2Y1OWUwYiIgc3Ryb2tlLXdpZHRoPSI4Ii8+CiAgPHRleHQgeD0iMjQwIiB5PSIxNDUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNiNDUzMDkiIHRyYW5zZm9ybT0icm90YXRlKC0zMCwgMjQwLCAxNDUpIj5UYW5nZ2EgMjUgbTwvdGV4dD4KICA8dGV4dCB4PSIxODAiIHk9IjIzMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI2RjMjYyNiI+U3VkdXQgNTPCsDwvdGV4dD4KICA8dGV4dCB4PSI0NjAiIHk9IjUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMDM2OWExIj5KZW5kZWxhIFRhcmdldDwvdGV4dD4KPC9zdmc+",
   "stimulus_jpo.svg": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MDAgMzYwIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIj4KICA8cmVjdCB3aWR0aD0iNjAwIiBoZWlnaHQ9IjM2MCIgZmlsbD0iI2ZmZjdlZCIvPgogIDxyZWN0IHk9IjI4MCIgd2lkdGg9IjYwMCIgaGVpZ2h0PSI4MCIgZmlsbD0iIzY0NzQ4YiIvPgogIDwhLS0gSlBPIEJyaWRnZSBUb3AgLS0+CiAgPHJlY3QgeD0iMzYwIiB5PSIxMDAiIHdpZHRoPSIyMjAiIGhlaWdodD0iMjQiIGZpbGw9IiNmOTczMTYiLz4KICA8IS0tIFBpbGxhciAtLT4KICA8cmVjdCB4PSIzNjAiIHk9IjEyNCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjE1NiIgZmlsbD0iI2VhNTgwYyIvPgogIDwhLS0gSW5jbGluZWQgU3RhaXIgLS0+CiAgPHBvbHlnb24gcG9pbnRzPSI4MCwyODAgMzYwLDEyNCAzNjAsMTM0IDgwLDI5MCIgZmlsbD0iI2ZiOTIzYyIvPgogIDxsaW5lIHgxPSI4MCIgeTE9IjI4MCIgeDI9IjM2MCIgeTI9IjEyNCIgc3Ryb2tlPSIjYzI0MTBjIiBzdHJva2Utd2lkdGg9IjMiLz4KICA8IS0tIEFuZ2xlIDMwIC0tPgogIDxwYXRoIGQ9Ik0gMTMwIDI4MCBBIDUwIDUwIDAgMCAwIDEyMCAyNTgiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2VmNDQ0NCIgc3Ryb2tlLXdpZHRoPSIyLjUiLz4KICA8dGV4dCB4PSIxNDAiIHk9IjI3MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI2VmNDQ0NCI+MzDCsDwvdGV4dD4KICA8IS0tIEhlaWdodCAtLT4KICA8bGluZSB4MT0iMzk1IiB5MT0iMTI0IiB4Mj0iMzk1IiB5Mj0iMjgwIiBzdHJva2U9IiMyNTYzZWIiIHN0cm9rZS13aWR0aD0iMiIvPgogIDx0ZXh0IHg9IjQwNSIgeT0iMjAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMjU2M2ViIj5UaW5nZ2kgQm9yZGVzID0gNiBtPC90ZXh0PgogIDx0ZXh0IHg9IjE2MCIgeT0iMTgwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjYzI0MTBjIj5QYW5qYW5nIExpbnRhc2FuIFRhbmdnYSAocyA9ID8pPC90ZXh0Pgo8L3N2Zz4=",
@@ -13,6 +19,7 @@ window.SVG_DATA = {
   "stimulus_ulin.svg": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MDAgMzYwIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIj4KICA8cmVjdCB3aWR0aD0iNjAwIiBoZWlnaHQ9IjM2MCIgZmlsbD0iI2YwZmRmNCIvPgogIDxyZWN0IHk9IjI5MCIgd2lkdGg9IjYwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iIzRhZGU4MCIvPgogIDwhLS0gR2lhbnQgVWxpbiBUcmVlIC0tPgogIDxyZWN0IHg9IjQyMCIgeT0iNDAiIHdpZHRoPSI0MCIgaGVpZ2h0PSIyNTAiIGZpbGw9IiM3MTNmMTIiIHJ4PSI0Ii8+CiAgPGNpcmNsZSBjeD0iNDQwIiBjeT0iNTAiIHI9IjYwIiBmaWxsPSIjMTU4MDNkIi8+CiAgPCEtLSBSYW5nZXIgd2l0aCBjbGlub21ldGVyIC0tPgogIDxjaXJjbGUgY3g9IjE2MCIgY3k9IjIyNSIgcj0iMTQiIGZpbGw9IiMwMjg0YzciLz4KICA8cmVjdCB4PSIxNTMiIHk9IjIzOSIgd2lkdGg9IjE0IiBoZWlnaHQ9IjUxIiBmaWxsPSIjMDM2OWExIi8+CiAgPCEtLSBTaWdodCBsaW5lIC0tPgogIDxsaW5lIHgxPSIxNjciIHkxPSIyMzAiIHgyPSI0NDAiIHkyPSI1MCIgc3Ryb2tlPSIjZWY0NDQ0IiBzdHJva2Utd2lkdGg9IjMiLz4KICA8bGluZSB4MT0iMTY3IiB5MT0iMjMwIiB4Mj0iNDQwIiB5Mj0iMjMwIiBzdHJva2U9IiM2NDc0OGIiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWRhc2hhcnJheT0iNCw0Ii8+CiAgPHBhdGggZD0iTSAyMTcgMjMwIEEgNTAgNTAgMCAwIDAgMjA1IDE5NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZWY0NDQ0IiBzdHJva2Utd2lkdGg9IjIuNSIvPgogIDx0ZXh0IHg9IjIyNSIgeT0iMjE1IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjZWY0NDQ0Ij40NcKwPC90ZXh0PgogIDwhLS0gTWVhc3VyZW1lbnRzIC0tPgogIDx0ZXh0IHg9IjI1MCIgeT0iMjUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMzM0MTU1Ij5KYXJhayBQZW5nYW1hdCA9IDIwIG08L3RleHQ+CiAgPHRleHQgeD0iODAiIHk9IjI2MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzAzNjlhMSI+TWF0YSAxLDY1bTwvdGV4dD4KICA8dGV4dCB4PSI0NzAiIHk9IjE1MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzE1ODAzZCI+VGluZ2dpIFRvdGFsID0gPzwvdGV4dD4KPC9zdmc+",
   "stimulus_upacara.svg": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MDAgMzYwIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIj4KICA8cmVjdCB3aWR0aD0iNjAwIiBoZWlnaHQ9IjM2MCIgZmlsbD0iI2Y4ZmFmYyIvPgogIDxyZWN0IHk9IjI5MCIgd2lkdGg9IjYwMCIgaGVpZ2h0PSI3MCIgZmlsbD0iI2NiZDVlMSIvPgogIDwhLS0gRmxhZyBwb2xlIC0tPgogIDxsaW5lIHgxPSIzMDAiIHkxPSI0MCIgeDI9IjMwMCIgeTI9IjI5MCIgc3Ryb2tlPSIjOTRhM2I4IiBzdHJva2Utd2lkdGg9IjYiLz4KICA8IS0tIFJlZCBXaGl0ZSBGbGFnIC0tPgogIDxyZWN0IHg9IjMwMyIgeT0iNTAiIHdpZHRoPSI1MCIgaGVpZ2h0PSIxOCIgZmlsbD0iI2RjMjYyNiIvPgogIDxyZWN0IHg9IjMwMyIgeT0iNjgiIHdpZHRoPSI1MCIgaGVpZ2h0PSIxOCIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlPSIjZTJlOGYwIi8+CiAgPCEtLSBTdHVkZW50IEEgLS0+CiAgPGNpcmNsZSBjeD0iMTYwIiBjeT0iMjQwIiByPSIxMiIgZmlsbD0iIzNiODJmNiIvPgogIDxyZWN0IHg9IjE1NCIgeT0iMjUyIiB3aWR0aD0iMTIiIGhlaWdodD0iMzgiIGZpbGw9IiMxZDRlZDgiLz4KICA8dGV4dCB4PSIxNDUiIHk9IjMwNSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzFlNDBhZiI+U2lzd2EgQTwvdGV4dD4KICA8IS0tIExpbmUgZnJvbSBBIC0tPgogIDxsaW5lIHgxPSIxNjAiIHkxPSIyNDAiIHgyPSIzMDAiIHkyPSI0MCIgc3Ryb2tlPSIjZWY0NDQ0IiBzdHJva2Utd2lkdGg9IjIuNSIvPgogIDx0ZXh0IHg9IjE5MCIgeT0iMjM1IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjZWY0NDQ0Ij42MMKwPC90ZXh0PgogIDx0ZXh0IHg9IjIxMCIgeT0iMjc1IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjNDc1NTY5Ij4xMCBtPC90ZXh0PgogIDx0ZXh0IHg9IjMxNSIgeT0iMTYwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjZGMyNjI2Ij5UaW5nZ2kgVGlhbmcgKHQgPSA/KTwvdGV4dD4KPC9zdmc+"
 };
+
 
 // assets/js/db-seed.js - Initial Seed Database untuk GitHub Pages (Client-Side Database)
 // Berisi 108 Siswa SMAS Al Azhar Mandiri Palu, Akun Guru, 10 Modul Aktivitas, Bank Soal, dan Refleksi
@@ -6667,6 +6674,7 @@ window.INITIAL_DB_SEED = {
     "reflection_responses": []
 };
 
+
 /**
  * assets/js/storage.js - Client-Side Database Engine untuk GitHub Pages
  * Menyediakan emulasi database MySQL penuh (Auth, Pembelajaran 1-10, Dashboard Guru)
@@ -6674,14 +6682,58 @@ window.INITIAL_DB_SEED = {
  */
 
 window.StorageService = (function() {
-  const DB_KEY = 'trigonometri_db_v1';
+  const DB_KEY = 'trigonometri_db_v2';
   const SESSION_KEY = 'trigonometri_session_v1';
+
+  // Helper Sanitasi Teks Matematika dari Mojibake / Karakter Aneh
+  function cleanMathText(str) {
+    if (typeof str !== 'string') return str;
+    return str
+      .replace(/Â°/g, '°')
+      .replace(/âˆš/g, '√')
+      .replace(/Â²/g, '²')
+      .replace(/Â³/g, '³')
+      .replace(/âˆ\s*/g, '∠')
+      .replace(/âˆ’/g, '−')
+      .replace(/â‰ˆ/g, '≈')
+      .replace(/Ã—/g, '×')
+      .replace(/Î¸/g, 'θ')
+      .replace(/Î±/g, 'α')
+      .replace(/Î²/g, 'β')
+      .replace(/Â±/g, '±')
+      .replace(/â€’|â€“/g, '–')
+      .replace(/â€™/g, "'")
+      .replace(/â€œ|â€/g, '"')
+      .replace(/\bsin\s*\?A\b/gi, 'sin ∠A')
+      .replace(/\bsin\s*∠\s*A\b/gi, 'sin ∠A')
+      .replace(/\(tan\s*\?\s*=/gi, '(tan θ =')
+      .replace(/\b(sin|cos|tan)\s*\?(?!\w)/gi, '$1 θ');
+  }
+  window.cleanMathText = cleanMathText;
+
+  function sanitizeObject(obj) {
+    if (!obj) return obj;
+    if (typeof obj === 'string') return cleanMathText(obj);
+    if (Array.isArray(obj)) return obj.map(sanitizeObject);
+    if (typeof obj === 'object') {
+      const res = {};
+      for (const k in obj) {
+        res[k] = sanitizeObject(obj[k]);
+      }
+      return res;
+    }
+    return obj;
+  }
 
   // 1. Inisialisasi Database
   function getDB() {
     let db = null;
     try {
-      const stored = localStorage.getItem(DB_KEY);
+      let stored = localStorage.getItem(DB_KEY);
+      if (!stored) {
+        // Fallback untuk migrasi dari v1 (agar progres akun siswa tetap utuh)
+        stored = localStorage.getItem('trigonometri_db_v1');
+      }
       if (stored) {
         db = JSON.parse(stored);
       }
@@ -6697,7 +6749,24 @@ window.StorageService = (function() {
                     Array.isArray(db.activities) &&
                     db.activities.length === 10;
 
+    // Selalu sinkronkan questions dari INITIAL_DB_SEED agar butir soal dan pembahasan selalu bersih dari karakter aneh
+    if (window.INITIAL_DB_SEED && Array.isArray(window.INITIAL_DB_SEED.questions)) {
+      const cleanQuestions = JSON.parse(JSON.stringify(window.INITIAL_DB_SEED.questions));
+      if (isValid) {
+        db.questions = sanitizeObject(cleanQuestions);
+        if (Array.isArray(window.INITIAL_DB_SEED.activities)) {
+          db.activities = sanitizeObject(JSON.parse(JSON.stringify(window.INITIAL_DB_SEED.activities)));
+        }
+        if (Array.isArray(window.INITIAL_DB_SEED.reflections)) {
+          db.reflections = sanitizeObject(JSON.parse(JSON.stringify(window.INITIAL_DB_SEED.reflections)));
+        }
+        saveDB(db);
+        return db;
+      }
+    }
+
     if (isValid) {
+      saveDB(db);
       return db;
     }
 
@@ -6726,8 +6795,9 @@ window.StorageService = (function() {
       initial.reflection_responses = db.reflection_responses;
     }
 
-    saveDB(initial);
-    return initial;
+    const cleaned = sanitizeObject(initial);
+    saveDB(cleaned);
+    return cleaned;
   }
 
   function saveDB(db) {
@@ -8030,6 +8100,7 @@ window.StorageService = (function() {
   }
 })();
 
+
 /**
  * assets/js/simulations.js
  * Modul Kanvas Interaktif Simulasi Trigonometri:
@@ -8998,6 +9069,7 @@ window.TrigSim = (function() {
   };
 })();
 
+
 /**
  * assets/js/app.js - Kontroler Utama Frontend Media Pembelajaran Trigonometri
  * Pengembang: Aswan, M.Pd., Gr.
@@ -9019,7 +9091,44 @@ const App = (function() {
     return url;
   }
 
-  // ==========================================
+  function cleanMathText(str) {
+    if (typeof str !== 'string') return str;
+    return str
+      .replace(/Â°/g, '°')
+      .replace(/âˆš/g, '√')
+      .replace(/Â²/g, '²')
+      .replace(/Â³/g, '³')
+      .replace(/âˆ\s*/g, '∠')
+      .replace(/âˆ’/g, '−')
+      .replace(/â‰ˆ/g, '≈')
+      .replace(/Ã—/g, '×')
+      .replace(/Î¸/g, 'θ')
+      .replace(/Î±/g, 'α')
+      .replace(/Î²/g, 'β')
+      .replace(/Â±/g, '±')
+      .replace(/â€’|â€“/g, '–')
+      .replace(/â€™/g, "'")
+      .replace(/â€œ|â€/g, '"')
+      .replace(/\bsin\s*\?A\b/gi, 'sin ∠A')
+      .replace(/\bsin\s*∠\s*A\b/gi, 'sin ∠A')
+      .replace(/\(tan\s*\?\s*=/gi, '(tan θ =')
+      .replace(/\b(sin|cos|tan)\s*\?(?!\w)/gi, '$1 θ');
+  }
+
+  function toggleExplanation(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const isHidden = el.classList.contains('hidden');
+    if (isHidden) {
+      el.classList.remove('hidden');
+    } else {
+      el.classList.add('hidden');
+    }
+    const btnText = document.getElementById('btn-text-' + id);
+    if (btnText) {
+      btnText.textContent = isHidden ? 'Sembunyikan Pembahasan' : 'Lihat Pembahasan';
+    }
+  }
   // 1. INISIALISASI & AUTENTIKASI
   // ==========================================
   async function init() {
@@ -9909,11 +10018,12 @@ const App = (function() {
                 </div>
                 <p class="text-xs text-slate-200 mb-3">Sinus adalah perbandingan sisi <b>Depan</b> terhadap sisi <b>Miring</b>.</p>
               </div>
-              <div class="bg-black/40 border border-white/15 p-3 rounded-xl text-center font-bold text-base flex items-center justify-center gap-1.5">
-                <span class="text-rose-300 font-black">sin θ</span> = 
-                <span class="math-frac text-white">
-                  <span class="num text-rose-200">Sisi Depan</span>
-                  <span class="den text-emerald-200">Sisi Miring</span>
+              <div class="bg-black/50 border border-white/20 p-3.5 rounded-xl text-center font-bold text-base flex items-center justify-center gap-2">
+                <span class="text-rose-300 font-black text-lg">sin θ</span>
+                <span class="text-white font-bold text-lg">=</span>
+                <span class="inline-flex flex-col items-center justify-center align-middle mx-1.5 leading-tight text-xs md:text-sm font-extrabold">
+                  <span class="border-b-2 border-white/90 pb-0.5 px-3 block w-full text-center text-rose-200">Sisi Depan</span>
+                  <span class="pt-0.5 px-3 block w-full text-center text-emerald-200">Sisi Miring</span>
                 </span>
               </div>
             </div>
@@ -9926,11 +10036,12 @@ const App = (function() {
                 </div>
                 <p class="text-xs text-slate-200 mb-3">Kosinus adalah perbandingan sisi <b>Samping</b> terhadap sisi <b>Miring</b>.</p>
               </div>
-              <div class="bg-black/40 border border-white/15 p-3 rounded-xl text-center font-bold text-base flex items-center justify-center gap-1.5">
-                <span class="text-sky-300 font-black">cos θ</span> = 
-                <span class="math-frac text-white">
-                  <span class="num text-sky-200">Sisi Samping</span>
-                  <span class="den text-emerald-200">Sisi Miring</span>
+              <div class="bg-black/50 border border-white/20 p-3.5 rounded-xl text-center font-bold text-base flex items-center justify-center gap-2">
+                <span class="text-sky-300 font-black text-lg">cos θ</span>
+                <span class="text-white font-bold text-lg">=</span>
+                <span class="inline-flex flex-col items-center justify-center align-middle mx-1.5 leading-tight text-xs md:text-sm font-extrabold">
+                  <span class="border-b-2 border-white/90 pb-0.5 px-3 block w-full text-center text-sky-200">Sisi Samping</span>
+                  <span class="pt-0.5 px-3 block w-full text-center text-emerald-200">Sisi Miring</span>
                 </span>
               </div>
             </div>
@@ -9943,11 +10054,12 @@ const App = (function() {
                 </div>
                 <p class="text-xs text-slate-200 mb-3">Tangen adalah perbandingan sisi <b>Depan</b> terhadap sisi <b>Samping</b>.</p>
               </div>
-              <div class="bg-black/40 border border-white/15 p-3 rounded-xl text-center font-bold text-base flex items-center justify-center gap-1.5">
-                <span class="text-amber-300 font-black">tan θ</span> = 
-                <span class="math-frac text-white">
-                  <span class="num text-rose-200">Sisi Depan</span>
-                  <span class="den text-sky-200">Sisi Samping</span>
+              <div class="bg-black/50 border border-white/20 p-3.5 rounded-xl text-center font-bold text-base flex items-center justify-center gap-2">
+                <span class="text-amber-300 font-black text-lg">tan θ</span>
+                <span class="text-white font-bold text-lg">=</span>
+                <span class="inline-flex flex-col items-center justify-center align-middle mx-1.5 leading-tight text-xs md:text-sm font-extrabold">
+                  <span class="border-b-2 border-white/90 pb-0.5 px-3 block w-full text-center text-rose-200">Sisi Depan</span>
+                  <span class="pt-0.5 px-3 block w-full text-center text-sky-200">Sisi Samping</span>
                 </span>
               </div>
             </div>
@@ -9966,24 +10078,45 @@ const App = (function() {
               <span class="font-bold text-indigo-700 block mb-1">1. Cosecan (csc θ) — Kebalikan Sinus:</span>
               <div class="flex items-center gap-1.5 font-bold text-sm text-slate-800 bg-white p-2.5 rounded-lg border border-slate-200 mt-2">
                 <span class="text-indigo-600 font-mono">csc θ</span> = 
-                <span class="math-frac"><span class="num">1</span><span class="den">sin θ</span></span> = 
-                <span class="math-frac"><span class="num text-emerald-700">Miring</span><span class="den text-rose-700">Depan</span></span>
+                <span class="inline-flex flex-col items-center justify-center align-middle mx-1 text-xs font-bold leading-tight">
+                  <span class="border-b-2 border-slate-700 pb-0.5 px-1.5 block w-full text-center text-slate-900">1</span>
+                  <span class="pt-0.5 px-1.5 block w-full text-center text-indigo-700">sin θ</span>
+                </span>
+                <span>=</span>
+                <span class="inline-flex flex-col items-center justify-center align-middle mx-1 text-xs font-bold leading-tight">
+                  <span class="border-b-2 border-slate-700 pb-0.5 px-1.5 block w-full text-center text-emerald-700">Miring</span>
+                  <span class="pt-0.5 px-1.5 block w-full text-center text-rose-700">Depan</span>
+                </span>
               </div>
             </div>
             <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
               <span class="font-bold text-indigo-700 block mb-1">2. Secan (sec θ) — Kebalikan Kosinus:</span>
               <div class="flex items-center gap-1.5 font-bold text-sm text-slate-800 bg-white p-2.5 rounded-lg border border-slate-200 mt-2">
                 <span class="text-indigo-600 font-mono">sec θ</span> = 
-                <span class="math-frac"><span class="num">1</span><span class="den">cos θ</span></span> = 
-                <span class="math-frac"><span class="num text-emerald-700">Miring</span><span class="den text-sky-700">Samping</span></span>
+                <span class="inline-flex flex-col items-center justify-center align-middle mx-1 text-xs font-bold leading-tight">
+                  <span class="border-b-2 border-slate-700 pb-0.5 px-1.5 block w-full text-center text-slate-900">1</span>
+                  <span class="pt-0.5 px-1.5 block w-full text-center text-indigo-700">cos θ</span>
+                </span>
+                <span>=</span>
+                <span class="inline-flex flex-col items-center justify-center align-middle mx-1 text-xs font-bold leading-tight">
+                  <span class="border-b-2 border-slate-700 pb-0.5 px-1.5 block w-full text-center text-emerald-700">Miring</span>
+                  <span class="pt-0.5 px-1.5 block w-full text-center text-sky-700">Samping</span>
+                </span>
               </div>
             </div>
             <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
               <span class="font-bold text-indigo-700 block mb-1">3. Cotangen (cot θ) — Kebalikan Tangen:</span>
               <div class="flex items-center gap-1.5 font-bold text-sm text-slate-800 bg-white p-2.5 rounded-lg border border-slate-200 mt-2">
                 <span class="text-indigo-600 font-mono">cot θ</span> = 
-                <span class="math-frac"><span class="num">1</span><span class="den">tan θ</span></span> = 
-                <span class="math-frac"><span class="num text-sky-700">Samping</span><span class="den text-rose-700">Depan</span></span>
+                <span class="inline-flex flex-col items-center justify-center align-middle mx-1 text-xs font-bold leading-tight">
+                  <span class="border-b-2 border-slate-700 pb-0.5 px-1.5 block w-full text-center text-slate-900">1</span>
+                  <span class="pt-0.5 px-1.5 block w-full text-center text-indigo-700">tan θ</span>
+                </span>
+                <span>=</span>
+                <span class="inline-flex flex-col items-center justify-center align-middle mx-1 text-xs font-bold leading-tight">
+                  <span class="border-b-2 border-slate-700 pb-0.5 px-1.5 block w-full text-center text-sky-700">Samping</span>
+                  <span class="pt-0.5 px-1.5 block w-full text-center text-rose-700">Depan</span>
+                </span>
               </div>
             </div>
           </div>
@@ -10305,7 +10438,7 @@ const App = (function() {
             <label class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 hover:bg-indigo-50/50 cursor-pointer transition-all has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50/80">
               <input type="radio" name="q_${q.id}" value="${optKey}" ${isChecked} class="mt-1 text-indigo-600 focus:ring-indigo-500">
               <div class="text-xs md:text-sm text-slate-800">
-                <span class="font-bold text-indigo-700">${optKey}.</span> ${optVal}
+                <span class="font-bold text-indigo-700">${optKey}.</span> ${cleanMathText(optVal)}
               </div>
             </label>
           `;
@@ -10315,12 +10448,17 @@ const App = (function() {
       let explanationHtml = '';
       if (isCompleted && q.explanation) {
         explanationHtml = `
-          <div class="mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900">
-            <div class="font-bold text-emerald-800 flex items-center gap-1.5 mb-1">
-              <i class="fa-solid fa-lightbulb"></i> Pembahasan Lengkap:
+          <div class="mt-3">
+            <button type="button" onclick="App.toggleExplanation('exp-act5-${q.id}')" class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg text-xs font-bold transition-all shadow-2xs border border-emerald-300">
+              <i class="fa-solid fa-lightbulb text-amber-500"></i> <span id="btn-text-exp-act5-${q.id}">Lihat Pembahasan</span>
+            </button>
+            <div id="exp-act5-${q.id}" class="hidden mt-3 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 transition-all">
+              <div class="font-bold text-emerald-800 flex items-center gap-1.5 mb-1">
+                <i class="fa-solid fa-lightbulb text-amber-500"></i> Pembahasan Lengkap:
+              </div>
+              <div class="whitespace-pre-line leading-relaxed font-sans">${cleanMathText(q.explanation)}</div>
+              <div class="mt-2 font-bold text-indigo-700">Kunci Jawaban: ${cleanMathText(q.correct_answer)}</div>
             </div>
-            <div class="whitespace-pre-line leading-relaxed font-sans">${q.explanation}</div>
-            <div class="mt-2 font-bold text-indigo-700">Kunci Jawaban: ${q.correct_answer}</div>
           </div>
         `;
       }
@@ -10331,8 +10469,8 @@ const App = (function() {
             <span class="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs">${idx + 1}</span>
             <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Butir Soal Pemahaman ${idx + 1}</span>
           </div>
-          ${q.stimulus_text ? `<p class="text-xs text-slate-600 mb-3 bg-slate-50 p-3 rounded-xl border border-slate-200 italic leading-relaxed">${q.stimulus_text}</p>` : ''}
-          <h4 class="text-sm md:text-base font-bold text-slate-800 mb-4">${q.question_text}</h4>
+          ${q.stimulus_text ? `<p class="text-xs text-slate-600 mb-3 bg-slate-50 p-3 rounded-xl border border-slate-200 italic leading-relaxed">${cleanMathText(q.stimulus_text)}</p>` : ''}
+          <h4 class="text-sm md:text-base font-bold text-slate-800 mb-4">${cleanMathText(q.question_text)}</h4>
           <div class="space-y-2 mb-2">
             ${optionsHtml}
           </div>
@@ -10527,8 +10665,8 @@ const App = (function() {
 
           <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center mb-4">
             <div class="md:col-span-7">
-              <h4 class="text-base font-extrabold text-slate-800 mb-2">${ex.question_text}</h4>
-              <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3.5 rounded-xl border border-slate-200 mb-3">${ex.stimulus_text}</p>
+              <h4 class="text-base font-extrabold text-slate-800 mb-2">${cleanMathText(ex.question_text)}</h4>
+              <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3.5 rounded-xl border border-slate-200 mb-3">${cleanMathText(ex.stimulus_text)}</p>
             </div>
             <div class="md:col-span-5">
               <div class="rounded-xl overflow-hidden border border-slate-200 bg-white p-2">
@@ -10537,12 +10675,17 @@ const App = (function() {
             </div>
           </div>
 
-          <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-950">
-            <div class="font-extrabold text-emerald-800 flex items-center gap-1.5 mb-2">
-              <i class="fa-solid fa-calculator"></i> Jawaban & Langkah Analisis Matematis:
+          <div class="mt-2">
+            <button type="button" onclick="App.toggleExplanation('exp-act7-${ex.id}')" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs">
+              <i class="fa-solid fa-lightbulb text-amber-300"></i> <span id="btn-text-exp-act7-${ex.id}">Lihat Pembahasan</span>
+            </button>
+            <div id="exp-act7-${ex.id}" class="hidden mt-3 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-950 transition-all">
+              <div class="font-extrabold text-emerald-800 flex items-center gap-1.5 mb-2">
+                <i class="fa-solid fa-calculator text-emerald-600"></i> Jawaban & Langkah Analisis Matematis:
+              </div>
+              <div class="font-bold text-emerald-700 mb-2">Hasil: ${cleanMathText(ex.correct_answer)}</div>
+              <div class="whitespace-pre-line leading-relaxed font-sans">${cleanMathText(ex.explanation)}</div>
             </div>
-            <div class="font-bold text-emerald-700 mb-2">Hasil: ${ex.correct_answer}</div>
-            <div class="whitespace-pre-line leading-relaxed font-sans">${ex.explanation}</div>
           </div>
         </div>
       `;
@@ -10592,7 +10735,7 @@ const App = (function() {
             <label class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 hover:bg-indigo-50/50 cursor-pointer transition-all has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50/80">
               <input type="radio" name="sumatif_${q.id}" value="${optKey}" ${isChecked} class="mt-1 text-indigo-600 focus:ring-indigo-500">
               <div class="text-xs md:text-sm text-slate-800">
-                <span class="font-bold text-indigo-700">${optKey}.</span> ${optVal}
+                <span class="font-bold text-indigo-700">${optKey}.</span> ${cleanMathText(optVal)}
               </div>
             </label>
           `;
@@ -10609,9 +10752,9 @@ const App = (function() {
           <div class="grid grid-cols-1 md:grid-cols-12 gap-5 mb-4">
             <div class="md:col-span-7">
               <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-700 whitespace-pre-line leading-relaxed mb-3">
-                ${q.stimulus_text}
+                ${cleanMathText(q.stimulus_text)}
               </div>
-              <h4 class="text-sm md:text-base font-bold text-slate-800 mb-3">${q.question_text}</h4>
+              <h4 class="text-sm md:text-base font-bold text-slate-800 mb-3">${cleanMathText(q.question_text)}</h4>
             </div>
             <div class="md:col-span-5">
               ${q.stimulus_image_url ? `
@@ -10811,27 +10954,12 @@ const App = (function() {
             </div>
           </div>
 
-          <!-- Rekapitulasi Nilai & Evaluasi Guru -->
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 text-center">
-            <div class="p-4 bg-indigo-50 border border-indigo-100 rounded-2xl">
-              <span class="text-slate-500 text-xs font-bold block mb-1">Aktivitas 1 (Pemantik)</span>
-              <span class="text-2xl font-black text-indigo-700 font-mono">${act1Score}</span>
-              <span class="text-[10px] text-slate-400 block mt-1">Uraian Konseptual</span>
-            </div>
-            <div class="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl">
-              <span class="text-slate-500 text-xs font-bold block mb-1">Aktivitas 2 (LKPD)</span>
-              <span class="text-2xl font-black text-emerald-700 font-mono">${act2Score}</span>
-              <span class="text-[10px] text-slate-400 block mt-1">Simulasi Konsep</span>
-            </div>
-            <div class="p-4 bg-sky-50 border border-sky-100 rounded-2xl">
-              <span class="text-slate-500 text-xs font-bold block mb-1">Aktivitas 5 (Latihan)</span>
-              <span class="text-2xl font-black text-sky-700 font-mono">${act5Score}</span>
-              <span class="text-[10px] text-slate-400 block mt-1">Konsep Dasar</span>
-            </div>
-            <div class="p-4 bg-rose-50 border border-rose-100 rounded-2xl">
-              <span class="text-slate-500 text-xs font-bold block mb-1">Aktivitas 8 (Sumatif)</span>
-              <span class="text-2xl font-black text-rose-700 font-mono">${act8Score}</span>
-              <span class="text-[10px] text-slate-400 block mt-1">Literasi Numerasi</span>
+          <!-- Rekapitulasi Nilai Asesmen Sumatif (Hanya Nilai Sumatif) -->
+          <div class="max-w-xs mx-auto mb-8 text-center p-6 bg-gradient-to-br from-rose-50 via-rose-100/50 to-pink-50 border-2 border-rose-300 rounded-3xl shadow-sm">
+            <span class="text-rose-600 text-xs font-black uppercase tracking-wider block mb-2">Nilai Asesmen Sumatif (Aktivitas 8)</span>
+            <div class="text-5xl font-black text-rose-700 font-mono mb-2">${act8Score}</div>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-white/90 border border-rose-200 text-rose-800 rounded-full text-xs font-bold shadow-2xs">
+              <i class="fa-solid fa-file-signature text-rose-600"></i> Literasi Numerasi Trigonometri
             </div>
           </div>
 
@@ -12704,7 +12832,8 @@ const App = (function() {
     initTeacherReflections,
     openEditReflectionModal,
     deleteReflection,
-    viewReflectionResponses
+    viewReflectionResponses,
+    toggleExplanation
   };
 })();
 

@@ -47,6 +47,38 @@
 
   <!-- Custom CSS -->
   <link rel="stylesheet" href="assets/css/style.css">
+
+  <!-- Embedded Fallback Styles untuk Font Standar & Tanda Per Pecahan -->
+  <style>
+    * {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    .math-frac {
+      display: inline-flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      vertical-align: middle !important;
+      padding: 0 0.35rem !important;
+      line-height: 1.15 !important;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+    }
+    .math-frac .num {
+      border-bottom: 2px solid currentColor !important;
+      padding-bottom: 2px !important;
+      width: 100% !important;
+      text-align: center !important;
+      font-size: 0.9em !important;
+      display: block !important;
+    }
+    .math-frac .den {
+      padding-top: 2px !important;
+      width: 100% !important;
+      text-align: center !important;
+      font-size: 0.9em !important;
+      display: block !important;
+    }
+  </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col justify-between">
 
