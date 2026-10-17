@@ -1,9 +1,3 @@
-/**
- * bundle.js - Media Pembelajaran Trigonometri
- * Standalone Client-Side Bundle untuk GitHub Pages
- */
-window.USE_CLIENT_STORAGE = true;
-
 window.LOGO_DATA_URI = 'data:image/png;base64,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';
 
 window.SVG_DATA = {
@@ -6749,23 +6743,40 @@ window.StorageService = (function() {
                     Array.isArray(db.activities) &&
                     db.activities.length === 10;
 
-    // Selalu sinkronkan questions dari INITIAL_DB_SEED agar butir soal dan pembahasan selalu bersih dari karakter aneh
-    if (window.INITIAL_DB_SEED && Array.isArray(window.INITIAL_DB_SEED.questions)) {
-      const cleanQuestions = JSON.parse(JSON.stringify(window.INITIAL_DB_SEED.questions));
-      if (isValid) {
-        db.questions = sanitizeObject(cleanQuestions);
-        if (Array.isArray(window.INITIAL_DB_SEED.activities)) {
-          db.activities = sanitizeObject(JSON.parse(JSON.stringify(window.INITIAL_DB_SEED.activities)));
-        }
-        if (Array.isArray(window.INITIAL_DB_SEED.reflections)) {
-          db.reflections = sanitizeObject(JSON.parse(JSON.stringify(window.INITIAL_DB_SEED.reflections)));
-        }
-        saveDB(db);
-        return db;
-      }
-    }
-
     if (isValid) {
+      // Pastikan struktur data penting selalu siap tanpa menimpa data yang telah diubah pengguna
+      if (!Array.isArray(db.questions) || db.questions.length === 0) {
+        if (window.INITIAL_DB_SEED && Array.isArray(window.INITIAL_DB_SEED.questions)) {
+          db.questions = sanitizeObject(JSON.parse(JSON.stringify(window.INITIAL_DB_SEED.questions)));
+        } else {
+          db.questions = [];
+        }
+      }
+      if (!Array.isArray(db.reflections) || db.reflections.length === 0) {
+        if (window.INITIAL_DB_SEED && Array.isArray(window.INITIAL_DB_SEED.reflections)) {
+          db.reflections = sanitizeObject(JSON.parse(JSON.stringify(window.INITIAL_DB_SEED.reflections)));
+        } else {
+          db.reflections = [];
+        }
+      }
+      if (!Array.isArray(db.student_progress)) db.student_progress = [];
+      if (!Array.isArray(db.student_answers)) db.student_answers = [];
+      if (!Array.isArray(db.reflection_responses)) db.reflection_responses = [];
+
+      // Pastikan entri soal untuk Aktivitas 4 tersedia jika belum ada
+      const act4 = db.activities.find(a => a.activity_number == 4);
+      if (act4 && !db.questions.some(q => q.activity_id == act4.id)) {
+        db.questions.push({
+          id: 401,
+          activity_id: act4.id,
+          order_num: 1,
+          question_text: "Tabel Verifikasi Perbandingan Trigonometri Sudut Istimewa (0°, 30°, 45°, 60°, 90°)",
+          options: null,
+          correct_answer: null,
+          explanation: null
+        });
+      }
+
       saveDB(db);
       return db;
     }
@@ -6784,15 +6795,13 @@ window.StorageService = (function() {
           reflection_responses: []
         };
 
-    // Pertahankan riwayat pengerjaan siswa jika sebelumnya ada
-    if (db && Array.isArray(db.student_progress) && db.student_progress.length > 0) {
-      initial.student_progress = db.student_progress;
-    }
-    if (db && Array.isArray(db.student_answers) && db.student_answers.length > 0) {
-      initial.student_answers = db.student_answers;
-    }
-    if (db && Array.isArray(db.reflection_responses) && db.reflection_responses.length > 0) {
-      initial.reflection_responses = db.reflection_responses;
+    // Pertahankan modifikasi dan riwayat jika sebelumnya ada
+    if (db) {
+      if (Array.isArray(db.questions) && db.questions.length > 0) initial.questions = db.questions;
+      if (Array.isArray(db.reflections) && db.reflections.length > 0) initial.reflections = db.reflections;
+      if (Array.isArray(db.student_progress) && db.student_progress.length > 0) initial.student_progress = db.student_progress;
+      if (Array.isArray(db.student_answers) && db.student_answers.length > 0) initial.student_answers = db.student_answers;
+      if (Array.isArray(db.reflection_responses) && db.reflection_responses.length > 0) initial.reflection_responses = db.reflection_responses;
     }
 
     const cleaned = sanitizeObject(initial);
@@ -7326,8 +7335,11 @@ window.StorageService = (function() {
         return { success: false, message: 'Harap isi kesimpulan analisis rasio sisi segitiga siku-siku Anda secara lengkap.' };
       }
       const combinedAnswer = JSON.stringify({
-        observation_table: payload.observation_table || {},
+        observation_table: payload.observation_table || [],
         conclusion: conclusion,
+        q1: payload.q1 || '',
+        q2: payload.q2 || '',
+        q3: payload.q3 || '',
         submitted_at: new Date().toISOString()
       });
       if (q2) {
@@ -7364,6 +7376,38 @@ window.StorageService = (function() {
     }
 
     if (actNum === 4) {
+      let q4 = db.questions.find(q => q.activity_id == act.id);
+      if (!q4) {
+        const maxQId = db.questions.reduce((m, q) => Math.max(m, q.id || 0), 0);
+        q4 = {
+          id: maxQId + 1,
+          activity_id: act.id,
+          order_num: 1,
+          question_text: "Tabel Verifikasi Perbandingan Trigonometri Sudut Istimewa (0°, 30°, 45°, 60°, 90°)"
+        };
+        db.questions.push(q4);
+      }
+
+      const tableData = payload.table_answers || {};
+      const answerContent = JSON.stringify({
+        table_answers: tableData,
+        submitted_at: new Date().toISOString()
+      });
+
+      let sa = db.student_answers.find(a => a.user_id == userId && a.question_id == q4.id);
+      if (sa) {
+        sa.student_answer = answerContent;
+        sa.score = 100;
+      } else {
+        db.student_answers.push({
+          user_id: userId,
+          question_id: q4.id,
+          student_answer: answerContent,
+          score: 100,
+          teacher_feedback: null
+        });
+      }
+
       markCompletedAndUnlockNext(db, userId, 4);
       saveDB(db);
       return {
@@ -7748,7 +7792,17 @@ window.StorageService = (function() {
 
   function saveQuestion(payload) {
     const db = getDB();
-    const act = db.activities.find(a => a.activity_number == payload.activity_number);
+    let act = null;
+    if (payload.activity_number) {
+      act = db.activities.find(a => a.activity_number == payload.activity_number);
+    } else if (payload.activity_id) {
+      act = db.activities.find(a => a.id == payload.activity_id);
+    } else if (payload.id) {
+      const existingQ = db.questions.find(q => q.id == payload.id);
+      if (existingQ) {
+        act = db.activities.find(a => a.id == existingQ.activity_id);
+      }
+    }
     if (!act) return { success: false, message: 'Aktivitas tidak valid.' };
 
     if (payload.id && payload.id > 0) {
@@ -7870,6 +7924,451 @@ window.StorageService = (function() {
     }
   }
 
+  // Detail Pengerjaan Siswa Lengkap untuk Menu Hasil Pengerjaan Siswa di Dashboard Guru
+  function getStudentDetailSubmission(studentId) {
+    const session = getSession();
+    if (!session || session.role !== 'guru') {
+      return { success: false, message: 'Akses ditolak. Khusus guru pengampu.' };
+    }
+    const db = getDB();
+    const st = db.users.find(u => u.id == studentId && u.role === 'siswa');
+    if (!st) return { success: false, message: 'Siswa tidak ditemukan.' };
+
+    const cls = db.classes.find(c => c.id == st.class_id);
+    const className = cls ? cls.class_name : 'XA';
+
+    // 1. Progres semua aktivitas
+    const progressList = db.activities.slice().sort((a,b) => a.activity_number - b.activity_number).map(act => {
+      const sp = db.student_progress.find(p => p.user_id == st.id && p.activity_id == act.id);
+      return {
+        activity_id: act.id,
+        activity_number: act.activity_number,
+        title: act.title,
+        status: sp ? sp.status : (act.activity_number == 1 ? 'in_progress' : 'locked'),
+        score: sp ? sp.score : null,
+        completed_at: sp ? sp.completed_at : null
+      };
+    });
+
+    // 2. Aktivitas 1: Pertanyaan Pemantik
+    const act1 = db.activities.find(a => a.activity_number == 1);
+    const q1 = act1 ? db.questions.find(q => q.activity_id == act1.id) : null;
+    const a1 = (q1 && act1) ? db.student_answers.find(sa => sa.user_id == st.id && sa.question_id == q1.id) : null;
+
+    // 3. Aktivitas 2: LKPD Simulasi Konsep & Pertanyaan Analisis
+    const act2 = db.activities.find(a => a.activity_number == 2);
+    const q2 = act2 ? db.questions.find(q => q.activity_id == act2.id) : null;
+    const a2 = (q2 && act2) ? db.student_answers.find(sa => sa.user_id == st.id && sa.question_id == q2.id) : null;
+    let act2Parsed = null;
+    if (a2 && a2.student_answer) {
+      try {
+        act2Parsed = JSON.parse(a2.student_answer);
+      } catch (e) {
+        act2Parsed = { conclusion: a2.student_answer, observation_table: [] };
+      }
+    }
+
+    // 4. Aktivitas 4: Verifikasi Sudut Istimewa
+    const act4 = db.activities.find(a => a.activity_number == 4);
+    const q4 = act4 ? db.questions.find(q => q.activity_id == act4.id) : null;
+    const a4 = (q4 && act4) ? db.student_answers.find(sa => sa.user_id == st.id && sa.question_id == q4.id) : null;
+    let act4Parsed = null;
+    if (a4 && a4.student_answer) {
+      try {
+        act4Parsed = JSON.parse(a4.student_answer);
+      } catch (e) {}
+    }
+
+    // 5. Aktivitas 5: Latihan Soal (5 Butir)
+    const act5 = db.activities.find(a => a.activity_number == 5);
+    const q5List = act5 ? db.questions.filter(q => q.activity_id == act5.id).sort((a,b) => (a.order_num||0)-(b.order_num||0)) : [];
+    let act5CorrectCount = 0;
+    const act5Details = q5List.map((q, idx) => {
+      const sa = db.student_answers.find(a => a.user_id == st.id && a.question_id == q.id);
+      const studentAns = sa ? sa.student_answer : null;
+      const isCorrect = studentAns && (studentAns.trim().toUpperCase() === (q.correct_answer || '').trim().toUpperCase());
+      if (isCorrect) act5CorrectCount++;
+      return {
+        number: idx + 1,
+        question_id: q.id,
+        stimulus_text: q.stimulus_text || '',
+        stimulus_image_url: q.stimulus_image_url || '',
+        question_text: q.question_text || '',
+        options: q.options || {},
+        student_answer: studentAns,
+        correct_answer: q.correct_answer,
+        is_correct: isCorrect,
+        score: sa ? sa.score : 0,
+        explanation: q.explanation || ''
+      };
+    });
+    const act5Score = q5List.length > 0 ? Math.round((act5CorrectCount / q5List.length) * 100) : null;
+
+    // 6. Aktivitas 8: Sumatif Literasi Numerasi (10 Butir)
+    const act8 = db.activities.find(a => a.activity_number == 8);
+    const q8List = act8 ? db.questions.filter(q => q.activity_id == act8.id).sort((a,b) => (a.order_num||0)-(b.order_num||0)) : [];
+    let act8CorrectCount = 0;
+    const act8Details = q8List.map((q, idx) => {
+      const sa = db.student_answers.find(a => a.user_id == st.id && a.question_id == q.id);
+      const studentAns = sa ? sa.student_answer : null;
+      const isCorrect = studentAns && (studentAns.trim().toUpperCase() === (q.correct_answer || '').trim().toUpperCase());
+      if (isCorrect) act8CorrectCount++;
+      return {
+        number: idx + 1,
+        question_id: q.id,
+        stimulus_text: q.stimulus_text || '',
+        stimulus_image_url: q.stimulus_image_url || '',
+        question_text: q.question_text || '',
+        options: q.options || {},
+        student_answer: studentAns,
+        correct_answer: q.correct_answer,
+        is_correct: isCorrect,
+        score: sa ? sa.score : 0,
+        explanation: q.explanation || ''
+      };
+    });
+    const act8Score = q8List.length > 0 ? Math.round((act8CorrectCount / q8List.length) * 100) : null;
+
+    // 7. Aktivitas 9: Refleksi Siswa
+    const refList = (db.reflections || []).map(rf => {
+      const rr = db.reflection_responses.find(r => r.user_id == st.id && r.reflection_id == rf.id);
+      return {
+        id: rf.id,
+        prompt_text: rf.prompt_text,
+        type: rf.type,
+        rating: rr ? rr.rating : null,
+        response_text: rr ? rr.response_text : null,
+        submitted_at: rr ? rr.submitted_at : null
+      };
+    });
+
+    return {
+      success: true,
+      student: {
+        id: st.id,
+        name: st.name,
+        access_code: st.access_code,
+        class_name: className,
+        class_id: st.class_id
+      },
+      progress: progressList,
+      act1: {
+        stimulus_text: q1 ? q1.stimulus_text : '',
+        question_text: q1 ? q1.question_text : '',
+        answer: a1 ? a1.student_answer : null,
+        score: a1 ? a1.score : null,
+        teacher_feedback: a1 ? a1.teacher_feedback : null
+      },
+      act2: {
+        observation_table: (act2Parsed && act2Parsed.observation_table) || [],
+        conclusion: (act2Parsed && act2Parsed.conclusion) || '',
+        q1: (act2Parsed && act2Parsed.q1) || '',
+        q2: (act2Parsed && act2Parsed.q2) || '',
+        q3: (act2Parsed && act2Parsed.q3) || '',
+        score: a2 ? a2.score : null,
+        teacher_feedback: a2 ? a2.teacher_feedback : null
+      },
+      act4: {
+        table_answers: (act4Parsed && act4Parsed.table_answers) || null,
+        status: progressList.find(p => p.activity_number == 4)?.status || 'locked'
+      },
+      act5: {
+        score: act5Score,
+        correct_count: act5CorrectCount,
+        total_questions: q5List.length,
+        items: act5Details
+      },
+      act8: {
+        score: act8Score,
+        correct_count: act8CorrectCount,
+        total_questions: q8List.length,
+        items: act8Details
+      },
+      act9: {
+        reflections: refList
+      }
+    };
+  }
+
+  // Isi data simulasi jawaban siswa untuk demonstrasi instan menu Hasil Pengerjaan Siswa
+  function populateSampleSubmissions() {
+    const db = getDB();
+    const demoCodes = ['A1', 'A2', 'B5', 'C1'];
+    let count = 0;
+
+    demoCodes.forEach(code => {
+      let st = db.users.find(u => (u.access_code || '').toUpperCase() === code);
+      if (!st) return;
+      count++;
+
+      // Tandai semua 10 aktivitas selesai
+      db.activities.forEach(act => {
+        let sp = db.student_progress.find(p => p.user_id == st.id && p.activity_id == act.id);
+        if (!sp) {
+          sp = { user_id: st.id, activity_id: act.id, status: 'completed', completed_at: new Date().toISOString() };
+          db.student_progress.push(sp);
+        } else {
+          sp.status = 'completed';
+          sp.completed_at = sp.completed_at || new Date().toISOString();
+        }
+      });
+
+      // Akt 1
+      const act1 = db.activities.find(a => a.activity_number == 1);
+      const q1 = act1 ? db.questions.find(q => q.activity_id == act1.id) : null;
+      if (q1) {
+        let sa1 = db.student_answers.find(a => a.user_id == st.id && a.question_id == q1.id);
+        const ansText = `Berdasarkan ilustrasi pohon di sekolah Al-Azhar, kita dapat menggunakan konsep segitiga siku-siku. Bayangkan garis dari mata pengamat ke puncak pohon sebagai sisi miring (hipotenusa), tinggi pohon sebagai sisi depan (de), dan jarak kaki pengamat ke pohon sebagai sisi samping (sa). Dengan mengukur sudut elevasi menggunakan klinometer dan jarak mendatar, tinggi pohon dapat dihitung dengan perbandingan tangen: tan(θ) = depan / samping, sehingga tinggi total = (jarak × tan θ) + tinggi mata pengamat.`;
+        if (sa1) {
+          sa1.student_answer = ansText;
+          sa1.score = 90;
+          sa1.teacher_feedback = 'Pemikiran matematis dan formulasi klinometer sangat tepat dan sistematis!';
+        } else {
+          db.student_answers.push({
+            user_id: st.id,
+            question_id: q1.id,
+            student_answer: ansText,
+            score: 90,
+            teacher_feedback: 'Pemikiran matematis dan formulasi klinometer sangat tepat dan sistematis!'
+          });
+        }
+      }
+
+      // Akt 2
+      const act2 = db.activities.find(a => a.activity_number == 2);
+      const q2 = act2 ? db.questions.find(q => q.activity_id == act2.id) : null;
+      if (q2) {
+        const obsTable = [
+          { angle: '30°', depan: '110.0', samping: '190.5', miring: '220.0', sin: '0.500', cos: '0.866', tan: '0.577', kondisi: 'Skala Normal' },
+          { angle: '30°', depan: '70.0', samping: '121.2', miring: '140.0', sin: '0.500', cos: '0.866', tan: '0.577', kondisi: 'Skala Kecil' },
+          { angle: '30°', depan: '140.0', samping: '242.5', miring: '280.0', sin: '0.500', cos: '0.866', tan: '0.577', kondisi: 'Skala Besar' },
+          { angle: '45°', depan: '155.6', samping: '155.6', miring: '220.0', sin: '0.707', cos: '0.707', tan: '1.000', kondisi: 'Sudut 45°' },
+          { angle: '60°', depan: '190.5', samping: '110.0', miring: '220.0', sin: '0.866', cos: '0.500', tan: '1.732', kondisi: 'Sudut 60°' }
+        ];
+        const q1Ans = 'Nilai perbandingan rasio sisi (sin, cos, tan) tetap konstan meskipun skala segitiga diubah-ubah dari kecil ke besar. Hal ini karena segitiga yang terbentuk selalu sebangun (similar) dengan besar sudut lancip yang sama, sehingga perbandingan sisi-sisinya selalu bernilai tetap.';
+        const q2Ans = 'Ketika sudut θ bertambah dari 0° menuju 90°, sisi depan membesar dan sisi samping mengecil mendekati nol. Akibatnya nilai Sin meningkat dari 0 ke 1, nilai Cos menurun dari 1 ke 0, dan nilai Tan membesar hingga tidak terdefinisi pada 90° karena pembagian dengan nol (samping = 0).';
+        const q3Ans = 'Sinus θ adalah perbandingan panjang sisi depan dengan sisi miring (Demi). Kosinus θ adalah perbandingan sisi samping dengan sisi miring (Sami). Tangen θ adalah perbandingan sisi depan dengan sisi samping (Desa).';
+        const act2Payload = JSON.stringify({
+          observation_table: obsTable,
+          conclusion: `1. ${q1Ans}\n\n2. ${q2Ans}\n\n3. ${q3Ans}`,
+          q1: q1Ans,
+          q2: q2Ans,
+          q3: q3Ans,
+          submitted_at: new Date().toISOString()
+        });
+        let sa2 = db.student_answers.find(a => a.user_id == st.id && a.question_id == q2.id);
+        if (sa2) {
+          sa2.student_answer = act2Payload;
+          sa2.score = 95;
+          sa2.teacher_feedback = 'Analisis kesebangunan dan penjelasan limit pembagian nol pada tan 90° sangat mengagumkan!';
+        } else {
+          db.student_answers.push({
+            user_id: st.id,
+            question_id: q2.id,
+            student_answer: act2Payload,
+            score: 95,
+            teacher_feedback: 'Analisis kesebangunan dan penjelasan limit pembagian nol pada tan 90° sangat mengagumkan!'
+          });
+        }
+      }
+
+      // Akt 4
+      const act4 = db.activities.find(a => a.activity_number == 4);
+      let q4 = act4 ? db.questions.find(q => q.activity_id == act4.id) : null;
+      if (!q4 && act4) {
+        const maxQ = db.questions.reduce((m, q) => Math.max(m, q.id || 0), 0);
+        q4 = { id: maxQ + 1, activity_id: act4.id, order_num: 1, question_text: "Tabel Verifikasi Perbandingan Trigonometri Sudut Istimewa (0°, 30°, 45°, 60°, 90°)" };
+        db.questions.push(q4);
+      }
+      if (q4) {
+        const act4Answers = {
+          sin_0: '0', sin_30: '1/2', sin_45: '1/2 V2', sin_60: '1/2 V3', sin_90: '1',
+          cos_0: '1', cos_30: '1/2 V3', cos_45: '1/2 V2', cos_60: '1/2', cos_90: '0',
+          tan_0: '0', tan_30: '1/3 V3', tan_45: '1', tan_60: 'V3', tan_90: 'tak terdefinisi'
+        };
+        let sa4 = db.student_answers.find(a => a.user_id == st.id && a.question_id == q4.id);
+        const ansJson = JSON.stringify({ table_answers: act4Answers, submitted_at: new Date().toISOString() });
+        if (sa4) {
+          sa4.student_answer = ansJson;
+          sa4.score = 100;
+        } else {
+          db.student_answers.push({ user_id: st.id, question_id: q4.id, student_answer: ansJson, score: 100, teacher_feedback: null });
+        }
+      }
+
+      // Akt 5
+      const act5 = db.activities.find(a => a.activity_number == 5);
+      const q5List = act5 ? db.questions.filter(q => q.activity_id == act5.id) : [];
+      q5List.forEach(q => {
+        let sa = db.student_answers.find(a => a.user_id == st.id && a.question_id == q.id);
+        const studentAns = q.correct_answer || 'A';
+        if (sa) {
+          sa.student_answer = studentAns;
+          sa.score = 100;
+        } else {
+          db.student_answers.push({ user_id: st.id, question_id: q.id, student_answer: studentAns, score: 100, teacher_feedback: null });
+        }
+      });
+
+      // Akt 8
+      const act8 = db.activities.find(a => a.activity_number == 8);
+      const q8List = act8 ? db.questions.filter(q => q.activity_id == act8.id) : [];
+      q8List.forEach((q, idx) => {
+        let sa = db.student_answers.find(a => a.user_id == st.id && a.question_id == q.id);
+        let studentAns = q.correct_answer || 'B';
+        let score = 100;
+        if (idx === 7) {
+          const wrongOpt = Object.keys(q.options || {}).find(k => k !== q.correct_answer) || 'A';
+          studentAns = wrongOpt;
+          score = 0;
+        }
+        if (sa) {
+          sa.student_answer = studentAns;
+          sa.score = score;
+        } else {
+          db.student_answers.push({ user_id: st.id, question_id: q.id, student_answer: studentAns, score: score, teacher_feedback: null });
+        }
+      });
+
+      // Akt 9
+      (db.reflections || []).forEach(rf => {
+        let rr = db.reflection_responses.find(r => r.user_id == st.id && r.reflection_id == rf.id);
+        let rating = rf.type === 'scale' ? 5 : null;
+        let text = '';
+        if (rf.id === 1) { text = 'Sangat paham, simulasi segitiga dan sudut istimewa sangat memudahkan konsep.'; rating = 5; }
+        else if (rf.id === 2) { text = 'Media interaktif ini sangat membantu memahami perbandingan trigonometri.'; rating = 5; }
+        else if (rf.id === 3) { text = 'Aktivitas 8 soal nomor 8 mengenai sudut depresi mercusuar cukup menantang.'; }
+        else if (rf.id === 4) { text = 'Penerapan trigonometri pada arsitektur atap rumah tahan gempa di Palu sangat membuka wawasan saya!'; }
+
+        if (rr) {
+          rr.rating = rating;
+          rr.response_text = text;
+        } else {
+          db.reflection_responses.push({
+            user_id: st.id,
+            reflection_id: rf.id,
+            rating: rating,
+            response_text: text,
+            submitted_at: new Date().toISOString()
+          });
+        }
+      });
+    });
+
+    saveDB(db);
+    return { success: true, message: `Berhasil mengisi contoh pengerjaan untuk ${count} siswa (A1, A2, B5, C1)!` };
+  }
+
+  // Impor hasil pengerjaan siswa dari format JSON
+  function importStudentSubmission(data) {
+    const db = getDB();
+    try {
+      const parsed = typeof data === 'string' ? JSON.parse(data) : data;
+      const submissions = Array.isArray(parsed) ? parsed : [parsed];
+      let importedCount = 0;
+
+      submissions.forEach(sub => {
+        if (!sub || !sub.student) return;
+        const studentInfo = sub.student;
+        let st = db.users.find(u =>
+          (u.access_code && (u.access_code || '').toUpperCase() === (studentInfo.access_code || '').toUpperCase()) ||
+          (u.id && u.id == studentInfo.id)
+        );
+
+        if (!st) {
+          const maxId = db.users.reduce((m, u) => Math.max(m, u.id || 0), 0);
+          let cls = db.classes.find(c => c.class_name === studentInfo.class_name);
+          if (!cls) {
+            const maxCls = db.classes.reduce((m, c) => Math.max(m, c.id || 0), 0);
+            cls = { id: maxCls + 1, class_name: studentInfo.class_name || 'XA' };
+            db.classes.push(cls);
+          }
+          st = {
+            id: maxId + 1,
+            role: 'siswa',
+            access_code: studentInfo.access_code || ('S' + (maxId + 1)),
+            name: studentInfo.name || 'Siswa Impor',
+            class_id: cls.id
+          };
+          db.users.push(st);
+        }
+
+        const targetUserId = st.id;
+
+        if (Array.isArray(sub.progress)) {
+          sub.progress.forEach(p => {
+            let existing = db.student_progress.find(sp => sp.user_id == targetUserId && sp.activity_id == p.activity_id);
+            if (existing) {
+              existing.status = p.status;
+              existing.score = p.score;
+              existing.completed_at = p.completed_at;
+            } else {
+              db.student_progress.push(Object.assign({}, p, { user_id: targetUserId }));
+            }
+          });
+        }
+
+        if (Array.isArray(sub.answers)) {
+          sub.answers.forEach(a => {
+            let existing = db.student_answers.find(sa => sa.user_id == targetUserId && sa.question_id == a.question_id);
+            if (existing) {
+              existing.student_answer = a.student_answer;
+              existing.score = a.score;
+              if (a.teacher_feedback) existing.teacher_feedback = a.teacher_feedback;
+            } else {
+              db.student_answers.push(Object.assign({}, a, { user_id: targetUserId }));
+            }
+          });
+        }
+
+        if (Array.isArray(sub.reflections)) {
+          sub.reflections.forEach(r => {
+            let existing = db.reflection_responses.find(rr => rr.user_id == targetUserId && rr.reflection_id == r.reflection_id);
+            if (existing) {
+              existing.rating = r.rating;
+              existing.response_text = r.response_text;
+            } else {
+              db.reflection_responses.push(Object.assign({}, r, { user_id: targetUserId }));
+            }
+          });
+        }
+
+        importedCount++;
+      });
+
+      saveDB(db);
+      return { success: true, message: `Berhasil mengimpor data pengerjaan untuk ${importedCount} siswa!` };
+    } catch (e) {
+      return { success: false, message: 'Gagal mengimpor data: ' + e.message };
+    }
+  }
+
+  // Ekspor hasil pengerjaan siswa aktif (untuk dikirim ke guru atau backup)
+  function exportStudentSubmission(studentId) {
+    const session = getSession();
+    const db = getDB();
+    const idToExport = studentId || (session ? session.id : null);
+    if (!idToExport) return null;
+
+    const st = db.users.find(u => u.id == idToExport);
+    if (!st) return null;
+    const cls = db.classes.find(c => c.id == st.class_id);
+
+    return {
+      version: "1.0",
+      exported_at: new Date().toISOString(),
+      student: {
+        id: st.id,
+        name: st.name,
+        access_code: st.access_code,
+        class_name: cls ? cls.class_name : 'XA'
+      },
+      progress: db.student_progress.filter(p => p.user_id == idToExport),
+      answers: db.student_answers.filter(a => a.user_id == idToExport),
+      reflections: db.reflection_responses.filter(r => r.user_id == idToExport)
+    };
+  }
+
   return {
     init: getDB,
     resetToDefault,
@@ -7901,8 +8400,15 @@ window.StorageService = (function() {
       saveReflection,
       deleteReflection,
       viewReflectionResponses,
+      getStudentDetailSubmission,
+      populateSampleSubmissions,
+      importStudentSubmission,
+      exportStudentSubmission,
       exportJSON: exportDatabaseJSON,
       importJSON: importDatabaseJSON
+    },
+    student: {
+      exportSubmission: exportStudentSubmission
     }
   };
 })();
@@ -8092,6 +8598,20 @@ window.StorageService = (function() {
       if (action === 'view_reflection_responses') {
         const refId = searchParams.get('reflection_id') || body.reflection_id;
         return StorageService.teacher.viewReflectionResponses(refId);
+      }
+      if (action === 'get_student_submission') {
+        const studentId = parseInt(searchParams.get('student_id') || body.student_id, 10);
+        return StorageService.teacher.getStudentDetailSubmission(studentId);
+      }
+      if (action === 'populate_sample_submissions') {
+        return StorageService.teacher.populateSampleSubmissions();
+      }
+      if (action === 'import_student_submission') {
+        return StorageService.teacher.importStudentSubmission(body.data);
+      }
+      if (action === 'export_student_submission') {
+        const studentId = parseInt(searchParams.get('student_id') || body.student_id, 10);
+        return StorageService.teacher.exportStudentSubmission(studentId);
       }
       return { success: false, message: 'Aksi guru tidak valid' };
     }
@@ -10141,6 +10661,15 @@ const App = (function() {
   // VIEW MODUL 4: SUDUT ISTIMEWA
   // ==========================================
   function renderAct4(payload) {
+    const existingAns = (payload.existing_answers && payload.existing_answers[0]) || null;
+    let savedVals = {};
+    if (existingAns && existingAns.student_answer) {
+      try {
+        const parsed = JSON.parse(existingAns.student_answer);
+        savedVals = parsed.table_answers || parsed;
+      } catch (e) {}
+    }
+
     return `
       <div class="space-y-6">
         <!-- Bagian Pembuktian Geometris -->
@@ -10371,29 +10900,29 @@ const App = (function() {
                 <!-- Baris SIN -->
                 <tr>
                   <td class="p-3 text-left pl-6 font-bold text-rose-600 font-sans">sin θ</td>
-                  <td class="p-2.5"><input type="text" id="angle-sin_0" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="0"></td>
-                  <td class="p-2.5"><input type="text" id="angle-sin_30" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1/2"></td>
-                  <td class="p-2.5"><input type="text" id="angle-sin_45" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1/2 V2"></td>
-                  <td class="p-2.5"><input type="text" id="angle-sin_60" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1/2 V3"></td>
-                  <td class="p-2.5"><input type="text" id="angle-sin_90" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1"></td>
+                  <td class="p-2.5"><input type="text" id="angle-sin_0" value="${savedVals['sin_0'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="0"></td>
+                  <td class="p-2.5"><input type="text" id="angle-sin_30" value="${savedVals['sin_30'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1/2"></td>
+                  <td class="p-2.5"><input type="text" id="angle-sin_45" value="${savedVals['sin_45'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1/2 V2"></td>
+                  <td class="p-2.5"><input type="text" id="angle-sin_60" value="${savedVals['sin_60'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1/2 V3"></td>
+                  <td class="p-2.5"><input type="text" id="angle-sin_90" value="${savedVals['sin_90'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1"></td>
                 </tr>
                 <!-- Baris COS -->
                 <tr>
                   <td class="p-3 text-left pl-6 font-bold text-sky-600 font-sans">cos θ</td>
-                  <td class="p-2.5"><input type="text" id="angle-cos_0" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1"></td>
-                  <td class="p-2.5"><input type="text" id="angle-cos_30" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1/2 V3"></td>
-                  <td class="p-2.5"><input type="text" id="angle-cos_45" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1/2 V2"></td>
-                  <td class="p-2.5"><input type="text" id="angle-cos_60" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1/2"></td>
-                  <td class="p-2.5"><input type="text" id="angle-cos_90" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="0"></td>
+                  <td class="p-2.5"><input type="text" id="angle-cos_0" value="${savedVals['cos_0'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1"></td>
+                  <td class="p-2.5"><input type="text" id="angle-cos_30" value="${savedVals['cos_30'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1/2 V3"></td>
+                  <td class="p-2.5"><input type="text" id="angle-cos_45" value="${savedVals['cos_45'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1/2 V2"></td>
+                  <td class="p-2.5"><input type="text" id="angle-cos_60" value="${savedVals['cos_60'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1/2"></td>
+                  <td class="p-2.5"><input type="text" id="angle-cos_90" value="${savedVals['cos_90'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="0"></td>
                 </tr>
                 <!-- Baris TAN -->
                 <tr>
                   <td class="p-3 text-left pl-6 font-bold text-amber-600 font-sans">tan θ</td>
-                  <td class="p-2.5"><input type="text" id="angle-tan_0" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="0"></td>
-                  <td class="p-2.5"><input type="text" id="angle-tan_30" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1/3 V3"></td>
-                  <td class="p-2.5"><input type="text" id="angle-tan_45" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1"></td>
-                  <td class="p-2.5"><input type="text" id="angle-tan_60" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="V3"></td>
-                  <td class="p-2.5"><input type="text" id="angle-tan_90" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="tak terdefinisi"></td>
+                  <td class="p-2.5"><input type="text" id="angle-tan_0" value="${savedVals['tan_0'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="0"></td>
+                  <td class="p-2.5"><input type="text" id="angle-tan_30" value="${savedVals['tan_30'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1/3 V3"></td>
+                  <td class="p-2.5"><input type="text" id="angle-tan_45" value="${savedVals['tan_45'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1"></td>
+                  <td class="p-2.5"><input type="text" id="angle-tan_60" value="${savedVals['tan_60'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="V3"></td>
+                  <td class="p-2.5"><input type="text" id="angle-tan_90" value="${savedVals['tan_90'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="tak terdefinisi"></td>
                 </tr>
               </tbody>
             </table>
@@ -11967,6 +12496,9 @@ const App = (function() {
           </td>
           <td class="p-3.5 text-center">
             <div class="flex items-center justify-center gap-1.5">
+              <button onclick="App.viewStudentDetailSubmission(${st.id})" title="Periksa Seluruh Hasil Pengerjaan Siswa" class="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg text-xs font-bold border border-indigo-200 flex items-center gap-1">
+                <i class="fa-solid fa-clipboard-check"></i> Periksa
+              </button>
               <button onclick="App.openEditStudentModal(${st.id}, '${st.name.replace(/'/g, "\\'")}', '${st.class_name}', '${st.access_code}')" title="Edit Data Siswa (Nama, Kelas, Kode)" class="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg text-xs font-bold border border-amber-200 flex items-center gap-1">
                 <i class="fa-solid fa-pen"></i> Edit
               </button>
@@ -12791,7 +13323,916 @@ const App = (function() {
       initTeacherQuestionBank(currentQBActivity || 5);
     } else if (tab === 'reflections') {
       initTeacherReflections();
+    } else if (tab === 'submissions') {
+      initTeacherSubmissions();
     }
+  }
+
+  // ==========================================
+  // 6. MENU HASIL PENGERJAAN SISWA (PORTFOLIO VIEWER)
+  // ==========================================
+  let currentSubmissionClass = 'all';
+  let currentSelectedStudentId = null;
+  let cachedSubmissionStudents = [];
+  let currentDetailSubTab = 'act1';
+
+  async function initTeacherSubmissions(classFilter, targetStudentId) {
+    if (classFilter !== undefined) currentSubmissionClass = classFilter;
+    try {
+      const res = await fetch(`api/teacher.php?action=dashboard&class=${currentSubmissionClass}`);
+      const data = await res.json();
+      if (!data.success) return;
+
+      cachedSubmissionStudents = data.students || [];
+
+      // Render filter pills kelas
+      const pillsContainer = document.getElementById('submissions-class-pills');
+      if (pillsContainer) {
+        pillsContainer.innerHTML = '';
+        const allBtn = document.createElement('button');
+        allBtn.className = `px-3 py-1 rounded-lg text-xs font-bold transition-all ${currentSubmissionClass === 'all' ? 'bg-indigo-600 text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`;
+        allBtn.textContent = 'Semua';
+        allBtn.onclick = () => initTeacherSubmissions('all');
+        pillsContainer.appendChild(allBtn);
+
+        data.classes.forEach(c => {
+          const btn = document.createElement('button');
+          btn.className = `px-3 py-1 rounded-lg text-xs font-bold transition-all ${currentSubmissionClass === c.class_name ? 'bg-indigo-600 text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`;
+          btn.textContent = c.class_name;
+          btn.onclick = () => initTeacherSubmissions(c.class_name);
+          pillsContainer.appendChild(btn);
+        });
+      }
+
+      // Populate student select dropdown
+      const select = document.getElementById('select-submission-student');
+      if (select) {
+        select.innerHTML = '<option value="">-- Pilih Siswa untuk Diperiksa --</option>';
+        cachedSubmissionStudents.forEach(st => {
+          const opt = document.createElement('option');
+          opt.value = st.id;
+          const statusText = st.current_activity >= 10 ? '✓ Selesai 10 Modul' : `Sedang di Akt ${st.current_activity}`;
+          const sumatifText = st.act8_score !== null ? ` | Sumatif: ${st.act8_score}` : '';
+          opt.textContent = `${st.access_code} - ${st.name} (${st.class_name}) [${statusText}${sumatifText}]`;
+          select.appendChild(opt);
+        });
+
+        if (targetStudentId) {
+          select.value = targetStudentId;
+          currentSelectedStudentId = targetStudentId;
+        } else if (currentSelectedStudentId && cachedSubmissionStudents.some(s => s.id == currentSelectedStudentId)) {
+          select.value = currentSelectedStudentId;
+        } else if (cachedSubmissionStudents.length > 0) {
+          select.value = cachedSubmissionStudents[0].id;
+          currentSelectedStudentId = cachedSubmissionStudents[0].id;
+        } else {
+          currentSelectedStudentId = null;
+        }
+      }
+
+      if (currentSelectedStudentId) {
+        await renderStudentSubmissionDetail(currentSelectedStudentId);
+      } else {
+        const detailContainer = document.getElementById('submissions-detail-container');
+        if (detailContainer) {
+          detailContainer.innerHTML = `
+            <div class="bg-white p-12 rounded-3xl border border-slate-200 text-center space-y-3">
+              <div class="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl mx-auto font-bold">
+                <i class="fa-solid fa-user-check"></i>
+              </div>
+              <h3 class="text-base font-bold text-slate-800">Silakan Pilih Siswa</h3>
+              <p class="text-xs text-slate-500 max-w-md mx-auto">Pilih siswa dari daftar dropdown di atas atau klik tombol "Periksa" pada tabel Dasbor Kelas untuk meninjau portofolio pengerjaan mereka.</p>
+            </div>
+          `;
+        }
+      }
+    } catch (e) {
+      console.error('initTeacherSubmissions error:', e);
+    }
+  }
+
+  function onSelectSubmissionStudent(studentId) {
+    if (!studentId) return;
+    currentSelectedStudentId = parseInt(studentId, 10);
+    renderStudentSubmissionDetail(currentSelectedStudentId);
+  }
+
+  function refreshSubmissionView() {
+    if (currentSelectedStudentId) {
+      renderStudentSubmissionDetail(currentSelectedStudentId);
+    } else {
+      initTeacherSubmissions(currentSubmissionClass);
+    }
+  }
+
+  function viewStudentDetailSubmission(studentId) {
+    switchTeacherNav('submissions');
+    initTeacherSubmissions('all', studentId);
+  }
+
+  function switchSubmissionDetailTab(tabName) {
+    currentDetailSubTab = tabName;
+    document.querySelectorAll('.subdetail-panel').forEach(p => p.classList.add('hidden'));
+    document.querySelectorAll('.subdetail-tab-btn').forEach(b => {
+      b.classList.remove('bg-indigo-600', 'text-white', 'shadow');
+      b.classList.add('bg-slate-100', 'text-slate-700', 'hover:bg-slate-200');
+    });
+
+    const activePanel = document.getElementById(`subdetail-panel-${tabName}`);
+    if (activePanel) activePanel.classList.remove('hidden');
+
+    const activeBtn = document.getElementById(`subdetail-tab-${tabName}`);
+    if (activeBtn) {
+      activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow');
+      activeBtn.classList.remove('bg-slate-100', 'text-slate-700', 'hover:bg-slate-200');
+    }
+    renderMathJaxOrKaTeX();
+  }
+
+  async function renderStudentSubmissionDetail(studentId) {
+    const container = document.getElementById('submissions-detail-container');
+    if (!container) return;
+
+    container.innerHTML = `
+      <div class="bg-white p-12 rounded-3xl border border-slate-200 text-center space-y-3">
+        <i class="fa-solid fa-spinner fa-spin text-3xl text-indigo-600"></i>
+        <p class="text-xs text-slate-500 font-bold">Memuat portofolio pengerjaan siswa...</p>
+      </div>
+    `;
+
+    try {
+      const res = await fetch(`api/teacher.php?action=get_student_submission&student_id=${studentId}`);
+      const data = await res.json();
+      if (!data.success) {
+        container.innerHTML = `
+          <div class="p-6 bg-rose-50 border border-rose-200 rounded-2xl text-rose-700 text-xs">
+            Gagal memuat data pengerjaan: ${data.message}
+          </div>
+        `;
+        return;
+      }
+
+      const st = data.student;
+      const progress = data.progress || [];
+      const act1 = data.act1 || {};
+      const act2 = data.act2 || {};
+      const act4 = data.act4 || {};
+      const act5 = data.act5 || {};
+      const act8 = data.act8 || {};
+      const act9 = data.act9 || {};
+
+      const completedCount = progress.filter(p => p.status === 'completed').length;
+      const progressPct = Math.round((completedCount / Math.max(1, progress.length)) * 100);
+
+      // Render Observation Table rows for Akt 2
+      let lkpdRowsHtml = '';
+      if (Array.isArray(act2.observation_table) && act2.observation_table.length > 0) {
+        lkpdRowsHtml = act2.observation_table.map((row, idx) => `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-2.5 text-center font-bold text-slate-400">${idx + 1}</td>
+            <td class="p-2.5 text-center font-bold text-indigo-700">${row.angle || '-'}</td>
+            <td class="p-2.5 text-center text-rose-600 font-mono">${row.depan || '-'}</td>
+            <td class="p-2.5 text-center text-sky-600 font-mono">${row.samping || '-'}</td>
+            <td class="p-2.5 text-center text-emerald-600 font-mono">${row.miring || '-'}</td>
+            <td class="p-2.5 text-center bg-rose-50 text-rose-700 font-bold font-mono">${row.sin || '-'}</td>
+            <td class="p-2.5 text-center bg-sky-50 text-sky-700 font-bold font-mono">${row.cos || '-'}</td>
+            <td class="p-2.5 text-center bg-amber-50 text-amber-700 font-bold font-mono">${row.tan || '-'}</td>
+            <td class="p-2.5 text-slate-500 font-sans">${row.kondisi || '-'}</td>
+          </tr>
+        `).join('');
+      } else {
+        lkpdRowsHtml = `
+          <tr>
+            <td colspan="9" class="p-6 text-center text-slate-400 italic">
+              Siswa belum mencatat baris data simulasi ke tabel LKPD.
+            </td>
+          </tr>
+        `;
+      }
+
+      // Render Special Angles Table for Akt 4
+      const a4Vals = (act4.table_answers) || {};
+      const angles = ['0', '30', '45', '60', '90'];
+      const ratios = [
+        { key: 'sin', label: 'sin θ', color: 'rose' },
+        { key: 'cos', label: 'cos θ', color: 'sky' },
+        { key: 'tan', label: 'tan θ', color: 'amber' }
+      ];
+
+      const act4RowsHtml = ratios.map(r => `
+        <tr>
+          <td class="p-3 text-left pl-6 font-bold text-${r.color}-600 font-sans">${r.label}</td>
+          ${angles.map(deg => {
+            const val = a4Vals[`${r.key}_${deg}`] || '-';
+            const isFilled = val && val !== '-';
+            return `
+              <td class="p-2.5 font-mono text-xs font-bold ${isFilled ? 'text-indigo-700 bg-indigo-50/50' : 'text-slate-400'}">
+                ${val}
+              </td>
+            `;
+          }).join('')}
+        </tr>
+      `).join('');
+
+      // Render Act 5 Questions (Latihan Soal)
+      let act5ItemsHtml = '';
+      if (Array.isArray(act5.items) && act5.items.length > 0) {
+        act5ItemsHtml = act5.items.map((it, idx) => {
+          const badgeClass = it.is_correct ? 'bg-emerald-100 text-emerald-800' : (it.student_answer ? 'bg-rose-100 text-rose-800' : 'bg-slate-100 text-slate-500');
+          const badgeIcon = it.is_correct ? 'fa-check' : (it.student_answer ? 'fa-xmark' : 'fa-minus');
+          const badgeText = it.is_correct ? 'Benar (+100)' : (it.student_answer ? 'Salah (0)' : 'Tidak Dijawab');
+
+          return `
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-1 bg-white text-slate-700 rounded-lg text-xs font-bold border border-slate-200">
+                  Butir Soal #${it.number}
+                </span>
+                <span class="px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 ${badgeClass}">
+                  <i class="fa-solid ${badgeIcon}"></i> ${badgeText}
+                </span>
+              </div>
+              ${it.stimulus_text ? `<p class="text-xs text-slate-500 italic bg-white p-2.5 rounded-xl border border-slate-200 leading-relaxed">${cleanMathText(it.stimulus_text)}</p>` : ''}
+              <p class="text-xs font-bold text-slate-800">${cleanMathText(it.question_text)}</p>
+
+              <!-- Opsi Jawaban -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                ${Object.entries(it.options || {}).map(([optKey, optVal]) => {
+                  const isChosen = it.student_answer === optKey;
+                  const isKey = it.correct_answer === optKey;
+                  let optStyle = 'border-slate-200 bg-white text-slate-700';
+                  if (isKey) optStyle = 'border-emerald-300 bg-emerald-50 text-emerald-900 font-bold';
+                  if (isChosen && !isKey) optStyle = 'border-rose-300 bg-rose-50 text-rose-900 font-bold';
+
+                  return `
+                    <div class="p-2.5 rounded-xl border ${optStyle} flex items-center justify-between">
+                      <div><b class="mr-1">${optKey}.</b> ${cleanMathText(optVal)}</div>
+                      <div class="flex items-center gap-1">
+                        ${isChosen ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-600 text-white font-bold">Pilihan Siswa</span>' : ''}
+                        ${isKey ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-600 text-white font-bold">Kunci</span>' : ''}
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+
+              ${it.explanation ? `
+                <div class="p-3 bg-indigo-50/70 border border-indigo-100 rounded-xl text-xs text-indigo-950">
+                  <b class="text-indigo-800 block mb-1"><i class="fa-solid fa-lightbulb text-amber-500"></i> Pembahasan Soal:</b>
+                  <div class="whitespace-pre-line leading-relaxed font-sans">${cleanMathText(it.explanation)}</div>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }).join('');
+      } else {
+        act5ItemsHtml = '<p class="text-xs text-slate-400 italic text-center py-6">Belum ada butir soal pada aktivitas ini.</p>';
+      }
+
+      // Render Act 8 Questions (Sumatif 10 Butir)
+      let act8ItemsHtml = '';
+      if (Array.isArray(act8.items) && act8.items.length > 0) {
+        act8ItemsHtml = act8.items.map((it, idx) => {
+          const badgeClass = it.is_correct ? 'bg-emerald-100 text-emerald-800' : (it.student_answer ? 'bg-rose-100 text-rose-800' : 'bg-slate-100 text-slate-500');
+          const badgeIcon = it.is_correct ? 'fa-check' : (it.student_answer ? 'fa-xmark' : 'fa-minus');
+          const badgeText = it.is_correct ? 'Benar (+10)' : (it.student_answer ? 'Salah (0)' : 'Tidak Dijawab');
+
+          return `
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="px-2.5 py-1 bg-white text-slate-700 rounded-lg text-xs font-bold border border-slate-200">
+                  Soal Sumatif #${it.number}
+                </span>
+                <span class="px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 ${badgeClass}">
+                  <i class="fa-solid ${badgeIcon}"></i> ${badgeText}
+                </span>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-start">
+                <div class="md:col-span-8 space-y-2">
+                  ${it.stimulus_text ? `<p class="text-xs text-slate-600 bg-white p-3 rounded-xl border border-slate-200 leading-relaxed">${cleanMathText(it.stimulus_text)}</p>` : ''}
+                  <p class="text-xs font-bold text-slate-800">${cleanMathText(it.question_text)}</p>
+                </div>
+                ${it.stimulus_image_url ? `
+                  <div class="md:col-span-4 bg-white p-2 rounded-xl border border-slate-200">
+                    <img src="${getStimulusImageUrl(it.stimulus_image_url)}" onerror="var f=(this.src||'').split('/').pop().split('?')[0]; if(window.SVG_DATA && window.SVG_DATA[f]) this.src=window.SVG_DATA[f];" class="w-full h-auto rounded-lg">
+                  </div>
+                ` : ''}
+              </div>
+
+              <!-- Opsi Jawaban -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                ${Object.entries(it.options || {}).map(([optKey, optVal]) => {
+                  const isChosen = it.student_answer === optKey;
+                  const isKey = it.correct_answer === optKey;
+                  let optStyle = 'border-slate-200 bg-white text-slate-700';
+                  if (isKey) optStyle = 'border-emerald-300 bg-emerald-50 text-emerald-900 font-bold';
+                  if (isChosen && !isKey) optStyle = 'border-rose-300 bg-rose-50 text-rose-900 font-bold';
+
+                  return `
+                    <div class="p-2.5 rounded-xl border ${optStyle} flex items-center justify-between">
+                      <div><b class="mr-1">${optKey}.</b> ${cleanMathText(optVal)}</div>
+                      <div class="flex items-center gap-1">
+                        ${isChosen ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-600 text-white font-bold">Pilihan Siswa</span>' : ''}
+                        ${isKey ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-600 text-white font-bold">Kunci</span>' : ''}
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+
+              ${it.explanation ? `
+                <div class="p-3 bg-emerald-50/70 border border-emerald-100 rounded-xl text-xs text-emerald-950">
+                  <b class="text-emerald-800 block mb-1"><i class="fa-solid fa-calculator text-emerald-600"></i> Langkah Penyelesaian Matematis:</b>
+                  <div class="whitespace-pre-line leading-relaxed font-sans">${cleanMathText(it.explanation)}</div>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }).join('');
+      } else {
+        act8ItemsHtml = '<p class="text-xs text-slate-400 italic text-center py-6">Belum ada soal sumatif.</p>';
+      }
+
+      // Render Act 9 Refleksi Siswa
+      let act9ItemsHtml = '';
+      if (Array.isArray(act9.reflections) && act9.reflections.length > 0) {
+        act9ItemsHtml = act9.reflections.map(rf => `
+          <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-indigo-900">Pertanyaan Refleksi #${rf.id}</span>
+              ${rf.rating ? `<span class="px-2.5 py-1 bg-amber-100 text-amber-800 rounded-lg text-xs font-bold font-mono"><i class="fa-solid fa-star text-amber-500"></i> ${rf.rating} / 5</span>` : ''}
+            </div>
+            <p class="text-xs text-slate-600 font-medium">${rf.prompt_text}</p>
+            <div class="p-3 bg-white rounded-xl border border-slate-200 text-xs text-slate-800 leading-relaxed font-mono whitespace-pre-line">
+              ${rf.response_text ? rf.response_text : '<span class="text-slate-400 italic font-sans">Siswa belum mengisi respon refleksi ini.</span>'}
+            </div>
+          </div>
+        `).join('');
+      } else {
+        act9ItemsHtml = '<p class="text-xs text-slate-400 italic text-center py-6">Belum ada instrumen refleksi.</p>';
+      }
+
+      // Render Timeline Progres 10 Modul
+      const timelineHtml = progress.map(p => {
+        let badgeColor = 'bg-slate-100 text-slate-500';
+        let badgeIcon = 'fa-lock';
+        let statusLabel = 'Terkunci';
+        if (p.status === 'completed') {
+          badgeColor = 'bg-emerald-100 text-emerald-800';
+          badgeIcon = 'fa-check';
+          statusLabel = 'Tuntas';
+        } else if (p.status === 'in_progress') {
+          badgeColor = 'bg-indigo-100 text-indigo-800';
+          badgeIcon = 'fa-spinner fa-spin';
+          statusLabel = 'Sedang Dikerjakan';
+        }
+
+        return `
+          <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+            <div class="flex items-center gap-3">
+              <span class="w-7 h-7 rounded-lg ${badgeColor} flex items-center justify-center font-bold text-xs shrink-0">
+                <i class="fa-solid ${badgeIcon}"></i>
+              </span>
+              <div>
+                <b class="text-slate-800 block">Aktivitas ${p.activity_number}: ${p.title}</b>
+                <span class="text-[11px] text-slate-400">${p.completed_at ? 'Selesai: ' + new Date(p.completed_at).toLocaleString('id-ID') : 'Belum selesai'}</span>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${badgeColor}">
+              ${statusLabel}
+            </span>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = `
+        <!-- Identitas & Ringkasan Portofolio Siswa -->
+        <div class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-purple-900 rounded-3xl p-6 text-white shadow-lg space-y-6">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl font-black text-amber-300 border border-white/20">
+                ${(st.access_code || 'S').slice(0, 3)}
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="text-xl font-black">${st.name}</h3>
+                  <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-white/20 border border-white/30 font-mono">
+                    ${st.class_name} • ${st.access_code}
+                  </span>
+                </div>
+                <p class="text-xs text-indigo-200 mt-1">Siswa SMAS Al Azhar Mandiri Palu • ID Akun: #${st.id}</p>
+              </div>
+            </div>
+
+            <!-- Tombol Aksi Siswa -->
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="App.exportSpecificStudentSubmission(${st.id})" class="px-3.5 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold border border-white/20 transition-all flex items-center gap-1.5 backdrop-blur-md">
+                <i class="fa-solid fa-file-arrow-down"></i> Unduh Lembar Kerja (.json)
+              </button>
+              <button onclick="App.copyStudentSubmissionJSON(${st.id})" class="px-3.5 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold border border-white/20 transition-all flex items-center gap-1.5 backdrop-blur-md">
+                <i class="fa-solid fa-copy"></i> Salin JSON
+              </button>
+            </div>
+          </div>
+
+          <!-- 4 KPI Mini Nilai & Progres -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 pt-4 border-t border-white/10">
+            <div class="p-3 bg-white/10 rounded-xl backdrop-blur-sm">
+              <span class="text-[11px] text-indigo-200 block font-semibold">Progres 10 Modul</span>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="text-lg font-black font-mono text-white">${progressPct}%</span>
+                <span class="text-[10px] text-indigo-200">(${completedCount}/10 Tuntas)</span>
+              </div>
+            </div>
+            <div class="p-3 bg-white/10 rounded-xl backdrop-blur-sm">
+              <span class="text-[11px] text-indigo-200 block font-semibold">Nilai Pemantik (Akt 1)</span>
+              <span class="text-lg font-black font-mono ${act1.score !== null ? 'text-amber-300' : 'text-indigo-300'}">
+                ${act1.score !== null ? act1.score : 'Belum Dinilai'}
+              </span>
+            </div>
+            <div class="p-3 bg-white/10 rounded-xl backdrop-blur-sm">
+              <span class="text-[11px] text-indigo-200 block font-semibold">Nilai LKPD (Akt 2)</span>
+              <span class="text-lg font-black font-mono ${act2.score !== null ? 'text-emerald-300' : 'text-indigo-300'}">
+                ${act2.score !== null ? act2.score : 'Belum Dinilai'}
+              </span>
+            </div>
+            <div class="p-3 bg-white/10 rounded-xl backdrop-blur-sm">
+              <span class="text-[11px] text-indigo-200 block font-semibold">Nilai Sumatif (Akt 8)</span>
+              <span class="text-lg font-black font-mono ${act8.score !== null ? 'text-rose-300' : 'text-indigo-300'}">
+                ${act8.score !== null ? act8.score + ' / 100' : 'Belum Selesai'}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab Navigasi Aktivitas Detail Siswa -->
+        <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap items-center gap-2">
+          <button id="subdetail-tab-act1" onclick="App.switchSubmissionDetailTab('act1')" class="subdetail-tab-btn px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-indigo-600 text-white shadow">
+            Akt 1: Pemantik
+          </button>
+          <button id="subdetail-tab-act2" onclick="App.switchSubmissionDetailTab('act2')" class="subdetail-tab-btn px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">
+            Akt 2: LKPD Siswa
+          </button>
+          <button id="subdetail-tab-act4" onclick="App.switchSubmissionDetailTab('act4')" class="subdetail-tab-btn px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">
+            Akt 4: Sudut Istimewa
+          </button>
+          <button id="subdetail-tab-act5" onclick="App.switchSubmissionDetailTab('act5')" class="subdetail-tab-btn px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">
+            Akt 5: Latihan (Skor: ${act5.score ?? '-'})
+          </button>
+          <button id="subdetail-tab-act8" onclick="App.switchSubmissionDetailTab('act8')" class="subdetail-tab-btn px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">
+            Akt 8: Sumatif (Skor: ${act8.score ?? '-'})
+          </button>
+          <button id="subdetail-tab-act9" onclick="App.switchSubmissionDetailTab('act9')" class="subdetail-tab-btn px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">
+            Akt 9: Refleksi
+          </button>
+          <button id="subdetail-tab-progress" onclick="App.switchSubmissionDetailTab('progress')" class="subdetail-tab-btn px-3.5 py-2 rounded-xl text-xs font-bold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200">
+            Rekap 10 Modul
+          </button>
+        </div>
+
+        <!-- PANEL AKTIVITAS 1: PERTANYAAN PEMANTIK -->
+        <div id="subdetail-panel-act1" class="subdetail-panel bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+          <div class="border-b border-slate-100 pb-3">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-bold mb-1">
+              <i class="fa-solid fa-lightbulb"></i> Aktivitas 1: Pertanyaan Pemantik
+            </div>
+            <h3 class="text-base font-bold text-slate-800">Uraian Gagasan Matematis Mengukur Pohon Tanpa Memanjat</h3>
+          </div>
+
+          <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Pertanyaan Pemantik:</span>
+            <p class="text-xs font-semibold text-slate-700 leading-relaxed">${act1.question_text || 'Bagaimana cara mengukur tinggi pohon tanpa memanjatnya? Berdasarkan ilustrasi di samping, kemukakan ide, dugaan, dan strategi matematis kalian!'}</p>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-indigo-900 uppercase tracking-wider">Uraian Jawaban yang Dikirim Siswa:</span>
+              <span class="text-[11px] text-slate-400 font-mono">${act1.answer ? act1.answer.length + ' karakter' : 'Kosong'}</span>
+            </div>
+            <div class="p-5 bg-indigo-50/50 rounded-2xl border border-indigo-200 text-slate-800 text-xs leading-relaxed font-sans whitespace-pre-line shadow-2xs">
+              ${act1.answer ? act1.answer : '<span class="text-slate-400 italic font-sans">Siswa belum mengirimkan uraian jawaban untuk Aktivitas 1.</span>'}
+            </div>
+          </div>
+
+          <!-- Form Penilaian Guru untuk Akt 1 -->
+          <div class="p-5 bg-gradient-to-br from-indigo-50/70 to-purple-50/70 rounded-2xl border border-indigo-200 space-y-4">
+            <div class="flex items-center gap-2 font-bold text-xs text-indigo-950">
+              <i class="fa-solid fa-pen-nib text-indigo-600"></i>
+              <span>Penilaian & Umpan Balik Guru (Aktivitas 1):</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+              <div class="md:col-span-3">
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Nilai Uraian (0 - 100):</label>
+                <input type="number" id="sub-grade-act1" value="${act1.score ?? ''}" min="0" max="100" class="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-indigo-500" placeholder="Contoh: 85">
+              </div>
+              <div class="md:col-span-7">
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Catatan & Umpan Balik Pembinaan Guru:</label>
+                <input type="text" id="sub-feedback-act1" value="${act1.teacher_feedback || ''}" class="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-800 focus:ring-2 focus:ring-indigo-500" placeholder="Tuliskan apresiasi atau bimbingan konstruktif...">
+              </div>
+              <div class="md:col-span-2">
+                <button onclick="App.saveSubmissionManualGrade(${st.id}, 1)" class="w-full py-2.5 px-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow transition-all flex items-center justify-center gap-1.5">
+                  <i class="fa-solid fa-floppy-disk"></i> Simpan
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANEL AKTIVITAS 2: LKPD SIMULASI KONSEP -->
+        <div id="subdetail-panel-act2" class="subdetail-panel bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6 hidden">
+          <div class="border-b border-slate-100 pb-3">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold mb-1">
+              <i class="fa-solid fa-table-list"></i> Aktivitas 2: LKPD Simulasi Konsep
+            </div>
+            <h3 class="text-base font-bold text-slate-800">Tabel Lembar Kerja Pengamatan & Jawaban Analisis Penemuan Konsep</h3>
+          </div>
+
+          <!-- Tabel Pengamatan LKPD -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">1. Tabel Pengamatan Simulasi Segitiga:</span>
+              <span class="text-[11px] text-slate-500 font-mono">${Array.isArray(act2.observation_table) ? act2.observation_table.length : 0} Baris Data Tercatat</span>
+            </div>
+            <div class="overflow-x-auto rounded-xl border border-slate-200">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-100 text-slate-700 font-bold uppercase tracking-wider text-[11px]">
+                  <tr>
+                    <th class="p-2.5 text-center">No</th>
+                    <th class="p-2.5 text-center">Sudut (θ)</th>
+                    <th class="p-2.5 text-center text-rose-700">Depan (a)</th>
+                    <th class="p-2.5 text-center text-sky-700">Samping (b)</th>
+                    <th class="p-2.5 text-center text-emerald-700">Miring (c)</th>
+                    <th class="p-2.5 text-center bg-rose-50 text-rose-700">Sin θ</th>
+                    <th class="p-2.5 text-center bg-sky-50 text-sky-700">Cos θ</th>
+                    <th class="p-2.5 text-center bg-amber-50 text-amber-700">Tan θ</th>
+                    <th class="p-2.5">Kondisi Pengamatan</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-slate-700">
+                  ${lkpdRowsHtml}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 3 Pertanyaan Analisis & Formulasi LKPD -->
+          <div class="space-y-4">
+            <span class="text-xs font-bold text-slate-700 uppercase tracking-wider block">2. Jawaban Analisis & Penemuan Konsep:</span>
+
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+              <b class="text-xs text-indigo-900 block">Pertanyaan 1: Penyelidikan Skala & Kesebangunan Segitiga</b>
+              <p class="text-[11px] text-slate-500">Ketika sudut θ tetap sama namun ukuran segitiga diubah (skala diperbesar/diperkecil), apakah nilai perbandingan sisi berubah?</p>
+              <div class="p-3 bg-white rounded-xl border border-slate-200 text-xs text-slate-800 leading-relaxed font-sans whitespace-pre-line">
+                ${act2.q1 ? act2.q1 : (act2.conclusion ? act2.conclusion : '<span class="text-slate-400 italic">Belum dijawab.</span>')}
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+              <b class="text-xs text-indigo-900 block">Pertanyaan 2: Pola Perubahan Sudut 0°-90° & Kasus Sudut 90°</b>
+              <p class="text-[11px] text-slate-500">Bagaimana kecenderungan panjang sisi depan, sisi samping, serta nilai sin, cos, tan saat sudut bertambah? Mengapa tan 90° tidak terdefinisi?</p>
+              <div class="p-3 bg-white rounded-xl border border-slate-200 text-xs text-slate-800 leading-relaxed font-sans whitespace-pre-line">
+                ${act2.q2 ? act2.q2 : '<span class="text-slate-400 italic">Belum dijawab.</span>'}
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+              <b class="text-xs text-indigo-900 block">Pertanyaan 3: Formulasi Mandiri Definisi Perbandingan Trigonometri</b>
+              <p class="text-[11px] text-slate-500">Simpulan formulasi definisi Sinus, Kosinus, dan Tangen menggunakan kalimat dan pemahaman sendiri:</p>
+              <div class="p-3 bg-white rounded-xl border border-slate-200 text-xs text-slate-800 leading-relaxed font-sans whitespace-pre-line">
+                ${act2.q3 ? act2.q3 : '<span class="text-slate-400 italic">Belum dijawab.</span>'}
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Penilaian Guru untuk Akt 2 -->
+          <div class="p-5 bg-gradient-to-br from-emerald-50/70 to-teal-50/70 rounded-2xl border border-emerald-200 space-y-4">
+            <div class="flex items-center gap-2 font-bold text-xs text-emerald-950">
+              <i class="fa-solid fa-pen-nib text-emerald-600"></i>
+              <span>Penilaian & Umpan Balik Guru (Aktivitas 2 - LKPD):</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+              <div class="md:col-span-3">
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Nilai LKPD (0 - 100):</label>
+                <input type="number" id="sub-grade-act2" value="${act2.score ?? ''}" min="0" max="100" class="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500" placeholder="Contoh: 90">
+              </div>
+              <div class="md:col-span-7">
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Catatan Ulasan Ilmiah & Kesimpulan Siswa:</label>
+                <input type="text" id="sub-feedback-act2" value="${act2.teacher_feedback || ''}" class="w-full p-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-800 focus:ring-2 focus:ring-emerald-500" placeholder="Tuliskan komentar analisis kesebangunan...">
+              </div>
+              <div class="md:col-span-2">
+                <button onclick="App.saveSubmissionManualGrade(${st.id}, 2)" class="w-full py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow transition-all flex items-center justify-center gap-1.5">
+                  <i class="fa-solid fa-floppy-disk"></i> Simpan
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANEL AKTIVITAS 4: TABEL SUDUT ISTIMEWA -->
+        <div id="subdetail-panel-act4" class="subdetail-panel bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5 hidden">
+          <div class="border-b border-slate-100 pb-3">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-bold mb-1">
+              <i class="fa-solid fa-table-cells"></i> Aktivitas 4: Verifikasi Nilai Sudut Istimewa
+            </div>
+            <h3 class="text-base font-bold text-slate-800">Tabel Nilai Eksak Sudut 0°, 30°, 45°, 60°, dan 90°</h3>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-200">
+            <table class="w-full text-center text-xs">
+              <thead class="bg-indigo-600 text-white font-extrabold">
+                <tr>
+                  <th class="p-3 text-left pl-6">Rasio Trigonometri</th>
+                  <th class="p-3">0°</th>
+                  <th class="p-3">30°</th>
+                  <th class="p-3">45°</th>
+                  <th class="p-3">60°</th>
+                  <th class="p-3">90°</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 bg-slate-50/50">
+                ${act4RowsHtml}
+              </tbody>
+            </table>
+          </div>
+          <div class="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 flex items-center gap-2">
+            <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+            <span>Verifikasi Mandiri: Sistem memvalidasi seluruh 15 sel tabel sudut istimewa secara otomatis dengan toleransi representasi eksak akar kuadrat.</span>
+          </div>
+        </div>
+
+        <!-- PANEL AKTIVITAS 5: LATIHAN SOAL -->
+        <div id="subdetail-panel-act5" class="subdetail-panel bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5 hidden">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <div class="inline-flex items-center gap-2 px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-bold mb-1">
+                <i class="fa-solid fa-circle-question"></i> Aktivitas 5: Latihan Soal Pemahaman
+              </div>
+              <h3 class="text-base font-bold text-slate-800">Hasil Pengerjaan 5 Butir Soal Formatif</h3>
+            </div>
+            <div class="text-right">
+              <span class="text-xs text-slate-400 font-semibold block">Skor Latihan</span>
+              <span class="text-xl font-black font-mono text-indigo-600">${act5.score !== null ? act5.score : '-'} / 100</span>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            ${act5ItemsHtml}
+          </div>
+        </div>
+
+        <!-- PANEL AKTIVITAS 8: SUMATIF LITERASI NUMERASI -->
+        <div id="subdetail-panel-act8" class="subdetail-panel bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5 hidden">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <div class="inline-flex items-center gap-2 px-3 py-1 bg-rose-100 text-rose-800 rounded-full text-xs font-bold mb-1">
+                <i class="fa-solid fa-award"></i> Aktivitas 8: Asesmen Sumatif Literasi Numerasi
+              </div>
+              <h3 class="text-base font-bold text-slate-800">Hasil Pengerjaan 10 Butir Asesmen Sumatif</h3>
+            </div>
+            <div class="text-right">
+              <span class="text-xs text-slate-400 font-semibold block">Nilai Akhir Sumatif</span>
+              <span class="text-xl font-black font-mono text-rose-600">${act8.score !== null ? act8.score : '-'} / 100</span>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            ${act8ItemsHtml}
+          </div>
+        </div>
+
+        <!-- PANEL AKTIVITAS 9: REFLEKSI SISWA -->
+        <div id="subdetail-panel-act9" class="subdetail-panel bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5 hidden">
+          <div class="border-b border-slate-100 pb-3">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-bold mb-1">
+              <i class="fa-solid fa-comments"></i> Aktivitas 9: Refleksi Siswa
+            </div>
+            <h3 class="text-base font-bold text-slate-800">Respon Kuesioner Evaluasi Diri Siswa</h3>
+          </div>
+
+          <div class="space-y-4">
+            ${act9ItemsHtml}
+          </div>
+        </div>
+
+        <!-- PANEL REKAP 10 MODUL -->
+        <div id="subdetail-panel-progress" class="subdetail-panel bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5 hidden">
+          <div class="border-b border-slate-100 pb-3">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-bold mb-1">
+              <i class="fa-solid fa-list-check"></i> Rekapitulasi Pembelajaran
+            </div>
+            <h3 class="text-base font-bold text-slate-800">Status 10 Modul Interaktif</h3>
+          </div>
+
+          <div class="space-y-2">
+            ${timelineHtml}
+          </div>
+        </div>
+      `;
+
+      // Buka tab yang aktif saat ini
+      switchSubmissionDetailTab(currentDetailSubTab);
+      renderMathJaxOrKaTeX();
+    } catch (err) {
+      console.error(err);
+      container.innerHTML = `
+        <div class="p-6 bg-rose-50 border border-rose-200 rounded-2xl text-rose-700 text-xs">
+          Terjadi kesalahan saat memuat rincian siswa: ${err.message}
+        </div>
+      `;
+    }
+  }
+
+  // Simpan nilai & umpan balik guru langsung dari submission viewer
+  async function saveSubmissionManualGrade(studentId, actNum) {
+    const gradeInput = document.getElementById(`sub-grade-act${actNum}`);
+    const feedbackInput = document.getElementById(`sub-feedback-act${actNum}`);
+
+    const score = gradeInput ? gradeInput.value.trim() : '0';
+    const feedback = feedbackInput ? feedbackInput.value.trim() : '';
+
+    if (score === '' || isNaN(score) || score < 0 || score > 100) {
+      Swal.fire('Perhatian', 'Harap masukkan nilai numerik antara 0 sampai 100.', 'warning');
+      return;
+    }
+
+    try {
+      const resp = await fetch('api/teacher.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'grade_manual',
+          student_id: studentId,
+          activity_number: actNum,
+          score: score,
+          teacher_feedback: feedback
+        })
+      });
+      const d = await resp.json();
+      if (d.success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Tersimpan!',
+          text: `Nilai dan umpan balik Aktivitas ${actNum} berhasil disimpan ke database.`,
+          timer: 1800,
+          showConfirmButton: false
+        });
+        // Segarkan data
+        renderStudentSubmissionDetail(studentId);
+      } else {
+        Swal.fire('Gagal', d.message, 'error');
+      }
+    } catch (e) {
+      Swal.fire('Error', 'Gagal menyimpan nilai.', 'error');
+    }
+  }
+
+  // Ekspor pengerjaan siswa tunggal (file .json)
+  function exportSpecificStudentSubmission(studentId) {
+    const data = StorageService.teacher.exportStudentSubmission(studentId);
+    if (!data) {
+      Swal.fire('Perhatian', 'Data pengerjaan siswa tidak ditemukan.', 'warning');
+      return;
+    }
+    const studentCode = data.student.access_code || 'siswa';
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+    const dlAnchor = document.createElement('a');
+    dlAnchor.setAttribute("href", dataStr);
+    dlAnchor.setAttribute("download", `lembar_kerja_${studentCode}_${new Date().toISOString().slice(0,10)}.json`);
+    document.body.appendChild(dlAnchor);
+    dlAnchor.click();
+    dlAnchor.remove();
+  }
+
+  // Salin JSON siswa ke clipboard
+  function copyStudentSubmissionJSON(studentId) {
+    const data = StorageService.teacher.exportStudentSubmission(studentId);
+    if (!data) return;
+    const str = JSON.stringify(data, null, 2);
+    navigator.clipboard.writeText(str).then(() => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Tersalin!',
+        text: 'Data pengerjaan siswa berhasil disalin ke clipboard.',
+        timer: 1500,
+        showConfirmButton: false
+      });
+    }).catch(() => {
+      Swal.fire('Error', 'Gagal menyalin teks ke clipboard.', 'error');
+    });
+  }
+
+  // Isi contoh data simulasi pengerjaan siswa (demo)
+  async function populateSampleSubmissions() {
+    const confirm = await Swal.fire({
+      title: 'Isi Contoh Pengerjaan Demo?',
+      text: 'Fitur ini akan mengisi simulasi jawaban pemantik, LKPD, sudut istimewa, latihan, sumatif, dan refleksi untuk 4 siswa (A1, A2, B5, C1) agar Anda dapat langsung meninjau tampilan portofolio.',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#10b981',
+      confirmButtonText: 'Ya, Isi Data Demo',
+      cancelButtonText: 'Batal'
+    });
+    if (!confirm.isConfirmed) return;
+
+    try {
+      const resp = await fetch('api/teacher.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'populate_sample_submissions' })
+      });
+      const data = await resp.json();
+      if (data.success) {
+        Swal.fire('Berhasil!', data.message, 'success');
+        initTeacherSubmissions(currentSubmissionClass);
+        loadTeacherRoster('all');
+      } else {
+        Swal.fire('Gagal', data.message, 'error');
+      }
+    } catch (e) {
+      Swal.fire('Error', 'Gagal memproses data demo.', 'error');
+    }
+  }
+
+  // Modal impor jawaban siswa
+  async function openImportSubmissionModal() {
+    const { value: formValues } = await Swal.fire({
+      title: 'Impor Jawaban Siswa',
+      html: `
+        <div class="space-y-3 text-left">
+          <p class="text-xs text-slate-500">Pilih file lembar kerja siswa (.json) atau tempelkan teks JSON jawaban siswa di bawah ini:</p>
+          <input type="file" id="swal-file-import" accept=".json" class="w-full text-xs p-2 border border-slate-300 rounded-xl mb-2">
+          <textarea id="swal-text-import" rows="6" class="w-full p-3 border border-slate-300 rounded-xl text-xs font-mono" placeholder="Atau paste teks JSON jawaban siswa di sini..."></textarea>
+        </div>
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'Impor Data',
+      cancelButtonText: 'Batal',
+      confirmButtonColor: '#6366f1',
+      didOpen: () => {
+        const fileInput = document.getElementById('swal-file-import');
+        const textArea = document.getElementById('swal-text-import');
+        fileInput.addEventListener('change', (e) => {
+          const file = e.target.files && e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = ev => { textArea.value = ev.target.result; };
+            reader.readAsText(file);
+          }
+        });
+      },
+      preConfirm: () => {
+        const text = document.getElementById('swal-text-import').value.trim();
+        if (!text) {
+          Swal.showValidationMessage('Harap pilih file atau tempelkan teks JSON terlebih dahulu.');
+          return false;
+        }
+        return text;
+      }
+    });
+
+    if (formValues) {
+      try {
+        const resp = await fetch('api/teacher.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'import_student_submission', data: formValues })
+        });
+        const d = await resp.json();
+        if (d.success) {
+          Swal.fire('Berhasil!', d.message, 'success');
+          initTeacherSubmissions(currentSubmissionClass);
+          loadTeacherRoster('all');
+        } else {
+          Swal.fire('Gagal', d.message, 'error');
+        }
+      } catch (err) {
+        Swal.fire('Error', 'Gagal memproses file JSON.', 'error');
+      }
+    }
+  }
+
+  // Siswa: Unduh hasil tugas sendiri
+  function exportCurrentStudentSubmission() {
+    const data = StorageService.student.exportSubmission();
+    if (!data) {
+      Swal.fire('Perhatian', 'Sesi siswa tidak aktif atau belum ada data tersimpan.', 'warning');
+      return;
+    }
+    const studentCode = (data.student && data.student.access_code) || 'siswa';
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+    const dlAnchor = document.createElement('a');
+    dlAnchor.setAttribute("href", dataStr);
+    dlAnchor.setAttribute("download", `tugas_trigonometri_${studentCode}_${new Date().toISOString().slice(0,10)}.json`);
+    document.body.appendChild(dlAnchor);
+    dlAnchor.click();
+    dlAnchor.remove();
+    Swal.fire({
+      icon: 'success',
+      title: 'Berhasil Diunduh!',
+      text: 'File tugas trigonometri Anda telah diunduh (.json). File ini dapat Anda simpan atau kirimkan ke Bapak Guru Aswan.',
+      confirmButtonColor: '#6366f1'
+    });
   }
 
   return {
@@ -12833,7 +14274,18 @@ const App = (function() {
     openEditReflectionModal,
     deleteReflection,
     viewReflectionResponses,
-    toggleExplanation
+    toggleExplanation,
+    initTeacherSubmissions,
+    onSelectSubmissionStudent,
+    refreshSubmissionView,
+    viewStudentDetailSubmission,
+    switchSubmissionDetailTab,
+    saveSubmissionManualGrade,
+    exportSpecificStudentSubmission,
+    copyStudentSubmissionJSON,
+    populateSampleSubmissions,
+    openImportSubmissionModal,
+    exportCurrentStudentSubmission
   };
 })();
 
@@ -12844,3 +14296,5 @@ window.App = App;
 document.addEventListener('DOMContentLoaded', () => {
   App.init();
 });
+
+
