@@ -87,10 +87,21 @@ window.StorageService = (function() {
         } else {
           db.reflections = [];
         }
+      } else {
+        db.reflections.forEach(r => {
+          if (r.prompt_text && r.prompt_text.includes('Bapak Guru Aswan')) {
+            r.prompt_text = r.prompt_text.replace(/Bapak Guru Aswan/g, 'guru');
+          }
+        });
       }
       if (!Array.isArray(db.student_progress)) db.student_progress = [];
       if (!Array.isArray(db.student_answers)) db.student_answers = [];
       if (!Array.isArray(db.reflection_responses)) db.reflection_responses = [];
+      if (!db.settings || typeof db.settings !== 'object') {
+        db.settings = { exam_token: 'TRIGONO2026' };
+      } else if (!db.settings.exam_token) {
+        db.settings.exam_token = 'TRIGONO2026';
+      }
 
       // Pastikan entri soal untuk Aktivitas 4 tersedia jika belum ada
       const act4 = db.activities.find(a => a.activity_number == 4);
@@ -121,7 +132,8 @@ window.StorageService = (function() {
           users: [],
           student_progress: [],
           student_answers: [],
-          reflection_responses: []
+          reflection_responses: [],
+          settings: { exam_token: 'TRIGONO2026' }
         };
 
     // Pertahankan modifikasi dan riwayat jika sebelumnya ada
@@ -131,6 +143,7 @@ window.StorageService = (function() {
       if (Array.isArray(db.student_progress) && db.student_progress.length > 0) initial.student_progress = db.student_progress;
       if (Array.isArray(db.student_answers) && db.student_answers.length > 0) initial.student_answers = db.student_answers;
       if (Array.isArray(db.reflection_responses) && db.reflection_responses.length > 0) initial.reflection_responses = db.reflection_responses;
+      if (db.settings && typeof db.settings === 'object') initial.settings = db.settings;
     }
 
     const cleaned = sanitizeObject(initial);
@@ -495,8 +508,14 @@ window.StorageService = (function() {
     let reflections = [];
     let reflectionResponses = [];
     if (actNum === 9) {
-      reflections = db.reflections.filter(r => r.is_active == 1);
-      reflectionResponses = db.reflection_responses.filter(rr => rr.user_id == userId);
+      if (!Array.isArray(db.reflections) || db.reflections.length === 0) {
+        if (window.INITIAL_DB_SEED && Array.isArray(window.INITIAL_DB_SEED.reflections)) {
+          db.reflections = sanitizeObject(JSON.parse(JSON.stringify(window.INITIAL_DB_SEED.reflections)));
+          saveDB(db);
+        }
+      }
+      reflections = (db.reflections || []).filter(r => r.is_active == 1 || r.is_active === true || r.is_active === undefined);
+      reflectionResponses = (db.reflection_responses || []).filter(rr => rr.user_id == userId);
     }
 
     // Aktivitas 10: Hasil Belajar (Rapor Lengkap)
@@ -627,6 +646,17 @@ window.StorageService = (function() {
     if (!act) return { success: false, message: 'Aktivitas tidak valid.' };
 
     const questions = db.questions.filter(q => q.activity_id == act.id);
+
+    // Kunci Permanen: Siswa tidak dapat mengubah jawaban setelah menginputnya
+    const existingProg = db.student_progress.find(p => p.user_id == userId && p.activity_id == act.id);
+    if (existingProg && existingProg.status === 'completed' && [1, 2, 4, 5, 8, 9].includes(actNum)) {
+      return {
+        success: false,
+        message: 'Aktivitas ini telah Anda selesaikan sebelumnya dan jawaban telah dikunci permanen.',
+        locked: true,
+        next_activity: actNum < 10 ? actNum + 1 : 10
+      };
+    }
 
     if (actNum === 1) {
       const q1 = questions[0];
@@ -1092,6 +1122,10 @@ window.StorageService = (function() {
     if (clearAnswers) {
       db.student_answers = db.student_answers.filter(sa => sa.user_id != studentId);
       db.reflection_responses = db.reflection_responses.filter(rr => rr.user_id != studentId);
+      try {
+        localStorage.removeItem('exam_timer_start_' + studentId);
+        sessionStorage.removeItem('exam_token_unlocked_' + studentId);
+      } catch (e) {}
     }
 
     saveDB(db);
@@ -1715,6 +1749,19 @@ window.StorageService = (function() {
       get: getActivity,
       submit: submitActivity
     },
+    settings: {
+      getExamToken: function() {
+        const db = getDB();
+        return (db.settings && db.settings.exam_token) ? db.settings.exam_token.trim().toUpperCase() : 'TRIGONO2026';
+      },
+      setExamToken: function(tok) {
+        const db = getDB();
+        if (!db.settings) db.settings = {};
+        db.settings.exam_token = (tok || 'TRIGONO2026').trim().toUpperCase();
+        saveDB(db);
+        return db.settings.exam_token;
+      }
+    },
     teacher: {
       getDashboard: getTeacherDashboard,
       gradeManual,
@@ -1734,6 +1781,17 @@ window.StorageService = (function() {
       importStudentSubmission,
       exportStudentSubmission,
       exportJSON: exportDatabaseJSON,
+      getExamToken: function() {
+        const db = getDB();
+        return (db.settings && db.settings.exam_token) ? db.settings.exam_token.trim().toUpperCase() : 'TRIGONO2026';
+      },
+      setExamToken: function(tok) {
+        const db = getDB();
+        if (!db.settings) db.settings = {};
+        db.settings.exam_token = (tok || 'TRIGONO2026').trim().toUpperCase();
+        saveDB(db);
+        return db.settings.exam_token;
+      },
       importJSON: importDatabaseJSON
     },
     student: {
@@ -1941,6 +1999,13 @@ window.StorageService = (function() {
       if (action === 'export_student_submission') {
         const studentId = parseInt(searchParams.get('student_id') || body.student_id, 10);
         return StorageService.teacher.exportStudentSubmission(studentId);
+      }
+      if (action === 'get_token') {
+        return { success: true, token: StorageService.settings.getExamToken() };
+      }
+      if (action === 'set_token') {
+        const updated = StorageService.settings.setExamToken(body.token);
+        return { success: true, token: updated };
       }
       return { success: false, message: 'Aksi guru tidak valid' };
     }

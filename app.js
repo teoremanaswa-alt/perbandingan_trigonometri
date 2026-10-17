@@ -8,6 +8,7 @@ const App = (function() {
   let currentActivityNum = 1;
   let currentProgressList = [];
   let currentSimObjects = {};
+  let currentActivityPayload = null;
 
   function getStimulusImageUrl(url) {
     if (!url) return '';
@@ -422,6 +423,10 @@ const App = (function() {
 
   // Muat Konten Aktivitas
   async function loadActivity(actNum) {
+    if (actNum !== 8 && window._examTimerInterval) {
+      clearInterval(window._examTimerInterval);
+      window._examTimerInterval = null;
+    }
     currentActivityNum = actNum;
     const contentArea = document.getElementById('activity-content-area');
     contentArea.innerHTML = `
@@ -458,6 +463,7 @@ const App = (function() {
 
   // Router Tampilan Aktivitas 1 - 10
   function renderActivityModule(actNum, payload) {
+    currentActivityPayload = payload;
     const contentArea = document.getElementById('activity-content-area');
     const act = payload.activity;
 
@@ -558,16 +564,26 @@ const App = (function() {
 
             <div class="mb-4">
               <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Tuliskan Ide Solusi Matematis Anda:</label>
-              <textarea id="act1-answer" rows="9" class="w-full p-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm leading-relaxed" placeholder="Tuliskan gagasan, ide, atau dugaan matematis Anda di sini...">${ansValue}</textarea>
+              <textarea id="act1-answer" rows="9" ${isCompleted ? 'disabled readonly' : ''} class="w-full p-4 border rounded-xl text-sm leading-relaxed ${isCompleted ? 'bg-slate-100 text-slate-700 cursor-not-allowed border-slate-200' : 'border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500'}" placeholder="Tuliskan gagasan, ide, atau dugaan matematis Anda di sini...">${ansValue}</textarea>
             </div>
           </div>
 
           <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
-            <span class="text-xs text-slate-500">Kirim jawaban untuk membuka Aktivitas 2</span>
-            <button onclick="App.submitAct1()" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
-              <span>${isCompleted ? 'Perbarui Jawaban' : 'Kirim Jawaban & Lanjut'}</span>
-              <i class="fa-solid fa-arrow-right"></i>
-            </button>
+            ${isCompleted ? `
+              <div class="flex items-center gap-2 text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-2 rounded-xl border border-emerald-200">
+                <i class="fa-solid fa-lock text-emerald-600"></i> Jawaban telah dikirim & terkunci
+              </div>
+              <button onclick="App.loadActivity(2)" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
+                <span>Lanjut ke Aktivitas 2</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            ` : `
+              <span class="text-xs text-slate-500">Kirim jawaban untuk membuka Aktivitas 2</span>
+              <button onclick="App.submitAct1()" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
+                <span>Kirim Jawaban & Lanjut</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            `}
           </div>
         </div>
       </div>
@@ -600,6 +616,7 @@ const App = (function() {
     if (!q1Val && !q2Val && !q3Val && conclusionVal) {
       q1Val = conclusionVal;
     }
+    const isCompleted = payload.activity && payload.activity.user_status === 'completed';
 
     return `
       <div class="space-y-6">
@@ -801,7 +818,7 @@ const App = (function() {
                 <span class="px-2 py-0.5 bg-indigo-100 text-indigo-800 rounded-md font-mono mr-1">Pertanyaan 1</span>
                 Ketika sudut lancip θ tetap sama (misalnya θ = 30°), namun ukuran segitiga diubah (skala diperbesar/diperkecil), apakah nilai perbandingan sisi (Sin, Cos, Tan) berubah atau tetap sama? Jelaskan mengapa hal ini terjadi dengan mengaitkannya pada konsep <b>kesebangunan segitiga</b>!
               </label>
-              <textarea id="act2-q1" rows="3" class="w-full p-3 bg-slate-50/60 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white text-xs leading-relaxed" placeholder="Tuliskan analisis jawaban Anda di sini...">${q1Val}</textarea>
+              <textarea id="act2-q1" rows="3" ${isCompleted ? 'disabled readonly' : ''} class="w-full p-3 border rounded-xl text-xs leading-relaxed ${isCompleted ? 'bg-slate-100 text-slate-700 cursor-not-allowed border-slate-200' : 'bg-slate-50/60 border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:bg-white'}" placeholder="Tuliskan analisis jawaban Anda di sini...">${q1Val}</textarea>
             </div>
 
             <!-- Pertanyaan 2 -->
@@ -810,7 +827,7 @@ const App = (function() {
                 <span class="px-2 py-0.5 bg-indigo-100 text-indigo-800 rounded-md font-mono mr-1">Pertanyaan 2</span>
                 Ketika sudut lancip θ diperbesar dari 0° menuju 90°, bagaimana kecenderungan panjang sisi depan, panjang sisi samping, serta nilai Sin, Cos, dan Tan? Mengapa nilai Tangen pada sudut 90° menjadi <b>tidak terdefinisi</b>?
               </label>
-              <textarea id="act2-q2" rows="3" class="w-full p-3 bg-slate-50/60 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white text-xs leading-relaxed" placeholder="Tuliskan analisis jawaban Anda di sini...">${q2Val}</textarea>
+              <textarea id="act2-q2" rows="3" ${isCompleted ? 'disabled readonly' : ''} class="w-full p-3 border rounded-xl text-xs leading-relaxed ${isCompleted ? 'bg-slate-100 text-slate-700 cursor-not-allowed border-slate-200' : 'bg-slate-50/60 border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:bg-white'}" placeholder="Tuliskan analisis jawaban Anda di sini...">${q2Val}</textarea>
             </div>
 
             <!-- Pertanyaan 3 -->
@@ -819,16 +836,26 @@ const App = (function() {
                 <span class="px-2 py-0.5 bg-indigo-100 text-indigo-800 rounded-md font-mono mr-1">Pertanyaan 3</span>
                 Berdasarkan seluruh hasil penyelidikan di atas, simpulkan formulasi definisi perbandingan trigonometri: <b>Sinus</b>, <b>Kosinus</b>, dan <b>Tangen</b> pada segitiga siku-siku menggunakan kalimat dan pemahaman Anda sendiri!
               </label>
-              <textarea id="act2-q3" rows="3" class="w-full p-3 bg-slate-50/60 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white text-xs leading-relaxed" placeholder="Tuliskan kesimpulan jawaban Anda di sini...">${q3Val}</textarea>
+              <textarea id="act2-q3" rows="3" ${isCompleted ? 'disabled readonly' : ''} class="w-full p-3 border rounded-xl text-xs leading-relaxed ${isCompleted ? 'bg-slate-100 text-slate-700 cursor-not-allowed border-slate-200' : 'bg-slate-50/60 border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:bg-white'}" placeholder="Tuliskan kesimpulan jawaban Anda di sini...">${q3Val}</textarea>
             </div>
           </div>
 
           <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
-            <span class="text-xs text-slate-500">Pastikan tabel memiliki data pengamatan dan ketiga pertanyaan terisi lengkap.</span>
-            <button onclick="App.submitAct2()" class="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
-              <span>Submit LKPD & Buka Aktivitas 3</span>
-              <i class="fa-solid fa-arrow-right"></i>
-            </button>
+            ${isCompleted ? `
+              <div class="flex items-center gap-2 text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-2 rounded-xl border border-emerald-200">
+                <i class="fa-solid fa-lock text-emerald-600"></i> LKPD telah dikirim & terkunci
+              </div>
+              <button onclick="App.loadActivity(3)" class="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
+                <span>Lanjut ke Aktivitas 3</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            ` : `
+              <span class="text-xs text-slate-500">Pastikan tabel memiliki data pengamatan dan ketiga pertanyaan terisi lengkap.</span>
+              <button onclick="App.submitAct2()" class="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
+                <span>Submit LKPD & Buka Aktivitas 3</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            `}
           </div>
         </div>
       </div>
@@ -1069,6 +1096,7 @@ const App = (function() {
   // VIEW MODUL 4: SUDUT ISTIMEWA
   // ==========================================
   function renderAct4(payload) {
+    const isCompleted = !!(payload && payload.activity && payload.activity.user_status === 'completed');
     const existingAns = (payload.existing_answers && payload.existing_answers[0]) || null;
     let savedVals = {};
     if (existingAns && existingAns.student_answer) {
@@ -1279,17 +1307,19 @@ const App = (function() {
               <p class="text-xs text-slate-500">Ketikkan nilai eksak atau gunakan tombol simbol bantuan di bawah untuk mengisi seluruh sel tabel.</p>
             </div>
             <!-- Bantuan Tombol Simbol -->
-            <div class="flex flex-wrap items-center gap-1.5 bg-slate-50 p-2 rounded-xl border border-slate-200">
-              <span class="text-[11px] font-bold text-slate-500 mr-1">Simbol Cepat:</span>
-              <button onclick="App.insertSymbol('0')" class="px-2 py-1 bg-white border border-slate-300 rounded text-xs font-mono font-bold hover:bg-slate-100">0</button>
-              <button onclick="App.insertSymbol('1/2')" class="px-2 py-1 bg-white border border-slate-300 rounded text-xs font-mono font-bold hover:bg-slate-100">1/2</button>
-              <button onclick="App.insertSymbol('1/2 V2')" class="px-2 py-1 bg-white border border-slate-300 rounded text-xs font-mono font-bold hover:bg-slate-100">1/2 √2</button>
-              <button onclick="App.insertSymbol('1/2 V3')" class="px-2 py-1 bg-white border border-slate-300 rounded text-xs font-mono font-bold hover:bg-slate-100">1/2 √3</button>
-              <button onclick="App.insertSymbol('1')" class="px-2 py-1 bg-white border border-slate-300 rounded text-xs font-mono font-bold hover:bg-slate-100">1</button>
-              <button onclick="App.insertSymbol('1/3 V3')" class="px-2 py-1 bg-white border border-slate-300 rounded text-xs font-mono font-bold hover:bg-slate-100">1/3 √3</button>
-              <button onclick="App.insertSymbol('V3')" class="px-2 py-1 bg-white border border-slate-300 rounded text-xs font-mono font-bold hover:bg-slate-100">√3</button>
-              <button onclick="App.insertSymbol('tak terdefinisi')" class="px-2 py-1 bg-white border border-slate-300 rounded text-xs font-mono font-bold hover:bg-slate-100">∞</button>
-            </div>
+            ${!isCompleted ? `
+              <div class="flex flex-wrap items-center gap-1.5 bg-slate-50 p-2 rounded-xl border border-slate-200">
+                <span class="text-[11px] font-bold text-slate-500 mr-1">Simbol Cepat:</span>
+                <button onclick="App.insertSymbol('0')" class="px-2 py-1 bg-white border border-slate-300 rounded text-xs font-mono font-bold hover:bg-slate-100">0</button>
+                <button onclick="App.insertSymbol('1/2')" class="px-2 py-1 bg-white border border-slate-300 rounded text-xs font-mono font-bold hover:bg-slate-100">1/2</button>
+                <button onclick="App.insertSymbol('1/2 V2')" class="px-2 py-1 bg-white border border-slate-300 rounded text-xs font-mono font-bold hover:bg-slate-100">1/2 √2</button>
+                <button onclick="App.insertSymbol('1/2 V3')" class="px-2 py-1 bg-white border border-slate-300 rounded text-xs font-mono font-bold hover:bg-slate-100">1/2 √3</button>
+                <button onclick="App.insertSymbol('1')" class="px-2 py-1 bg-white border border-slate-300 rounded text-xs font-mono font-bold hover:bg-slate-100">1</button>
+                <button onclick="App.insertSymbol('1/3 V3')" class="px-2 py-1 bg-white border border-slate-300 rounded text-xs font-mono font-bold hover:bg-slate-100">1/3 √3</button>
+                <button onclick="App.insertSymbol('V3')" class="px-2 py-1 bg-white border border-slate-300 rounded text-xs font-mono font-bold hover:bg-slate-100">√3</button>
+                <button onclick="App.insertSymbol('tak terdefinisi')" class="px-2 py-1 bg-white border border-slate-300 rounded text-xs font-mono font-bold hover:bg-slate-100">∞</button>
+              </div>
+            ` : ''}
           </div>
 
           <div class="overflow-x-auto rounded-xl border border-slate-200 mb-6">
@@ -1308,42 +1338,50 @@ const App = (function() {
                 <!-- Baris SIN -->
                 <tr>
                   <td class="p-3 text-left pl-6 font-bold text-rose-600 font-sans">sin θ</td>
-                  <td class="p-2.5"><input type="text" id="angle-sin_0" value="${savedVals['sin_0'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="0"></td>
-                  <td class="p-2.5"><input type="text" id="angle-sin_30" value="${savedVals['sin_30'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1/2"></td>
-                  <td class="p-2.5"><input type="text" id="angle-sin_45" value="${savedVals['sin_45'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1/2 V2"></td>
-                  <td class="p-2.5"><input type="text" id="angle-sin_60" value="${savedVals['sin_60'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1/2 V3"></td>
-                  <td class="p-2.5"><input type="text" id="angle-sin_90" value="${savedVals['sin_90'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1"></td>
+                  <td class="p-2.5"><input type="text" id="angle-sin_0" value="${savedVals['sin_0'] || ''}" ${isCompleted ? 'disabled readonly' : ''} class="angle-input w-24 p-2 border rounded-lg text-xs ${isCompleted ? 'border-slate-200 bg-slate-100 text-slate-700 cursor-not-allowed font-bold' : 'border-slate-300'}" placeholder="0"></td>
+                  <td class="p-2.5"><input type="text" id="angle-sin_30" value="${savedVals['sin_30'] || ''}" ${isCompleted ? 'disabled readonly' : ''} class="angle-input w-24 p-2 border rounded-lg text-xs ${isCompleted ? 'border-slate-200 bg-slate-100 text-slate-700 cursor-not-allowed font-bold' : 'border-slate-300'}" placeholder="1/2"></td>
+                  <td class="p-2.5"><input type="text" id="angle-sin_45" value="${savedVals['sin_45'] || ''}" ${isCompleted ? 'disabled readonly' : ''} class="angle-input w-24 p-2 border rounded-lg text-xs ${isCompleted ? 'border-slate-200 bg-slate-100 text-slate-700 cursor-not-allowed font-bold' : 'border-slate-300'}" placeholder="1/2 V2"></td>
+                  <td class="p-2.5"><input type="text" id="angle-sin_60" value="${savedVals['sin_60'] || ''}" ${isCompleted ? 'disabled readonly' : ''} class="angle-input w-24 p-2 border rounded-lg text-xs ${isCompleted ? 'border-slate-200 bg-slate-100 text-slate-700 cursor-not-allowed font-bold' : 'border-slate-300'}" placeholder="1/2 V3"></td>
+                  <td class="p-2.5"><input type="text" id="angle-sin_90" value="${savedVals['sin_90'] || ''}" ${isCompleted ? 'disabled readonly' : ''} class="angle-input w-24 p-2 border rounded-lg text-xs ${isCompleted ? 'border-slate-200 bg-slate-100 text-slate-700 cursor-not-allowed font-bold' : 'border-slate-300'}" placeholder="1"></td>
                 </tr>
                 <!-- Baris COS -->
                 <tr>
                   <td class="p-3 text-left pl-6 font-bold text-sky-600 font-sans">cos θ</td>
-                  <td class="p-2.5"><input type="text" id="angle-cos_0" value="${savedVals['cos_0'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1"></td>
-                  <td class="p-2.5"><input type="text" id="angle-cos_30" value="${savedVals['cos_30'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1/2 V3"></td>
-                  <td class="p-2.5"><input type="text" id="angle-cos_45" value="${savedVals['cos_45'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1/2 V2"></td>
-                  <td class="p-2.5"><input type="text" id="angle-cos_60" value="${savedVals['cos_60'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1/2"></td>
-                  <td class="p-2.5"><input type="text" id="angle-cos_90" value="${savedVals['cos_90'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="0"></td>
+                  <td class="p-2.5"><input type="text" id="angle-cos_0" value="${savedVals['cos_0'] || ''}" ${isCompleted ? 'disabled readonly' : ''} class="angle-input w-24 p-2 border rounded-lg text-xs ${isCompleted ? 'border-slate-200 bg-slate-100 text-slate-700 cursor-not-allowed font-bold' : 'border-slate-300'}" placeholder="1"></td>
+                  <td class="p-2.5"><input type="text" id="angle-cos_30" value="${savedVals['cos_30'] || ''}" ${isCompleted ? 'disabled readonly' : ''} class="angle-input w-24 p-2 border rounded-lg text-xs ${isCompleted ? 'border-slate-200 bg-slate-100 text-slate-700 cursor-not-allowed font-bold' : 'border-slate-300'}" placeholder="1/2 V3"></td>
+                  <td class="p-2.5"><input type="text" id="angle-cos_45" value="${savedVals['cos_45'] || ''}" ${isCompleted ? 'disabled readonly' : ''} class="angle-input w-24 p-2 border rounded-lg text-xs ${isCompleted ? 'border-slate-200 bg-slate-100 text-slate-700 cursor-not-allowed font-bold' : 'border-slate-300'}" placeholder="1/2 V2"></td>
+                  <td class="p-2.5"><input type="text" id="angle-cos_60" value="${savedVals['cos_60'] || ''}" ${isCompleted ? 'disabled readonly' : ''} class="angle-input w-24 p-2 border rounded-lg text-xs ${isCompleted ? 'border-slate-200 bg-slate-100 text-slate-700 cursor-not-allowed font-bold' : 'border-slate-300'}" placeholder="1/2"></td>
+                  <td class="p-2.5"><input type="text" id="angle-cos_90" value="${savedVals['cos_90'] || ''}" ${isCompleted ? 'disabled readonly' : ''} class="angle-input w-24 p-2 border rounded-lg text-xs ${isCompleted ? 'border-slate-200 bg-slate-100 text-slate-700 cursor-not-allowed font-bold' : 'border-slate-300'}" placeholder="0"></td>
                 </tr>
                 <!-- Baris TAN -->
                 <tr>
                   <td class="p-3 text-left pl-6 font-bold text-amber-600 font-sans">tan θ</td>
-                  <td class="p-2.5"><input type="text" id="angle-tan_0" value="${savedVals['tan_0'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="0"></td>
-                  <td class="p-2.5"><input type="text" id="angle-tan_30" value="${savedVals['tan_30'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1/3 V3"></td>
-                  <td class="p-2.5"><input type="text" id="angle-tan_45" value="${savedVals['tan_45'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="1"></td>
-                  <td class="p-2.5"><input type="text" id="angle-tan_60" value="${savedVals['tan_60'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="V3"></td>
-                  <td class="p-2.5"><input type="text" id="angle-tan_90" value="${savedVals['tan_90'] || ''}" class="angle-input w-24 p-2 border border-slate-300 rounded-lg text-xs" placeholder="tak terdefinisi"></td>
+                  <td class="p-2.5"><input type="text" id="angle-tan_0" value="${savedVals['tan_0'] || ''}" ${isCompleted ? 'disabled readonly' : ''} class="angle-input w-24 p-2 border rounded-lg text-xs ${isCompleted ? 'border-slate-200 bg-slate-100 text-slate-700 cursor-not-allowed font-bold' : 'border-slate-300'}" placeholder="0"></td>
+                  <td class="p-2.5"><input type="text" id="angle-tan_30" value="${savedVals['tan_30'] || ''}" ${isCompleted ? 'disabled readonly' : ''} class="angle-input w-24 p-2 border rounded-lg text-xs ${isCompleted ? 'border-slate-200 bg-slate-100 text-slate-700 cursor-not-allowed font-bold' : 'border-slate-300'}" placeholder="1/3 V3"></td>
+                  <td class="p-2.5"><input type="text" id="angle-tan_45" value="${savedVals['tan_45'] || ''}" ${isCompleted ? 'disabled readonly' : ''} class="angle-input w-24 p-2 border rounded-lg text-xs ${isCompleted ? 'border-slate-200 bg-slate-100 text-slate-700 cursor-not-allowed font-bold' : 'border-slate-300'}" placeholder="1"></td>
+                  <td class="p-2.5"><input type="text" id="angle-tan_60" value="${savedVals['tan_60'] || ''}" ${isCompleted ? 'disabled readonly' : ''} class="angle-input w-24 p-2 border rounded-lg text-xs ${isCompleted ? 'border-slate-200 bg-slate-100 text-slate-700 cursor-not-allowed font-bold' : 'border-slate-300'}" placeholder="V3"></td>
+                  <td class="p-2.5"><input type="text" id="angle-tan_90" value="${savedVals['tan_90'] || ''}" ${isCompleted ? 'disabled readonly' : ''} class="angle-input w-24 p-2 border rounded-lg text-xs ${isCompleted ? 'border-slate-200 bg-slate-100 text-slate-700 cursor-not-allowed font-bold' : 'border-slate-300'}" placeholder="tak terdefinisi"></td>
                 </tr>
               </tbody>
             </table>
           </div>
 
           <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-100">
-            <button onclick="App.autoFillSpecialAngles()" class="text-xs text-indigo-600 hover:text-indigo-800 font-semibold underline">
-              <i class="fa-solid fa-wand-magic"></i> Isi Contoh Nilai Benar (Bantuan Cepat)
-            </button>
-            <button onclick="App.submitAct4()" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
-              <i class="fa-solid fa-circle-check"></i>
-              <span>Validasi Jawaban & Lanjut</span>
-            </button>
+            ${isCompleted ? `
+              <div class="flex items-center gap-2 text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-2 rounded-xl border border-emerald-200">
+                <i class="fa-solid fa-lock text-emerald-600"></i> Tabel nilai telah divalidasi & terkunci
+              </div>
+              <button onclick="App.loadActivity(5)" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
+                <span>Lanjut ke Aktivitas 5</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            ` : `
+              <span class="text-xs text-slate-500">Lengkapi seluruh sel tabel untuk memvalidasi pemahaman sudut istimewa Anda.</span>
+              <button onclick="App.submitAct4()" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
+                <i class="fa-solid fa-circle-check"></i>
+                <span>Validasi Jawaban & Lanjut</span>
+              </button>
+            `}
           </div>
         </div>
       </div>
@@ -1372,9 +1410,9 @@ const App = (function() {
         optionsHtml = Object.entries(q.options).map(([optKey, optVal]) => {
           const isChecked = selected === optKey ? 'checked' : '';
           return `
-            <label class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 hover:bg-indigo-50/50 cursor-pointer transition-all has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50/80">
-              <input type="radio" name="q_${q.id}" value="${optKey}" ${isChecked} class="mt-1 text-indigo-600 focus:ring-indigo-500">
-              <div class="text-xs md:text-sm text-slate-800">
+            <label class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 ${isCompleted ? 'cursor-default pointer-events-none' : 'hover:bg-indigo-50/50 cursor-pointer'} transition-all has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50/80">
+              <input type="radio" name="q_${q.id}" value="${optKey}" ${isChecked} ${isCompleted ? 'disabled' : ''} class="mt-1 text-indigo-600 focus:ring-indigo-500 ${isCompleted ? 'cursor-not-allowed opacity-80' : ''}">
+              <div class="text-sm md:text-base text-slate-800">
                 <span class="font-bold text-indigo-700">${optKey}.</span> ${cleanMathText(optVal)}
               </div>
             </label>
@@ -1406,8 +1444,10 @@ const App = (function() {
             <span class="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs">${idx + 1}</span>
             <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Butir Soal Pemahaman ${idx + 1}</span>
           </div>
-          ${q.stimulus_text ? `<p class="text-xs text-slate-600 mb-3 bg-slate-50 p-3 rounded-xl border border-slate-200 italic leading-relaxed">${cleanMathText(q.stimulus_text)}</p>` : ''}
-          <h4 class="text-sm md:text-base font-bold text-slate-800 mb-4">${cleanMathText(q.question_text)}</h4>
+          <div class="text-sm md:text-base text-slate-800 leading-relaxed mb-4">
+            ${q.stimulus_text ? `<p class="mb-2 text-justify">${cleanMathText(q.stimulus_text)}</p>` : ''}
+            <p class="font-bold text-indigo-950">${cleanMathText(q.question_text)}</p>
+          </div>
           <div class="space-y-2 mb-2">
             ${optionsHtml}
           </div>
@@ -1423,17 +1463,27 @@ const App = (function() {
             <i class="fa-solid fa-list-ol text-indigo-600 text-lg"></i>
             <span>Kerjakan 5 butir soal di bawah untuk menguji pemahaman konsep perbandingan trigonometri dasar.</span>
           </div>
-          ${isCompleted ? '<span class="badge-status badge-completed"><i class="fa-solid fa-check"></i> Sudah Dinilai</span>' : ''}
+          ${isCompleted ? '<span class="badge-status badge-completed"><i class="fa-solid fa-lock"></i> Jawaban Terkunci</span>' : ''}
         </div>
 
         ${qHtml}
 
         <div class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-          <span class="text-xs text-slate-500">Nilai akan langsung dihitung otomatis dan pembahasan akan terbuka.</span>
-          <button onclick="App.submitAct5()" class="px-8 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
-            <span>${isCompleted ? 'Hitung Ulang & Lanjut' : 'Kirim Jawaban Latihan'}</span>
-            <i class="fa-solid fa-arrow-right"></i>
-          </button>
+          ${isCompleted ? `
+            <div class="flex items-center gap-2 text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-2 rounded-xl border border-emerald-200">
+              <i class="fa-solid fa-lock text-emerald-600"></i> Latihan telah dinilai & jawaban terkunci
+            </div>
+            <button onclick="App.loadActivity(6)" class="px-8 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
+              <span>Lanjut ke Aktivitas 6</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          ` : `
+            <span class="text-xs text-slate-500">Nilai akan langsung dihitung otomatis dan pembahasan akan terbuka.</span>
+            <button onclick="App.submitAct5()" class="px-8 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
+              <span>Kirim Jawaban Latihan</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          `}
         </div>
       </div>
     `;
@@ -1600,13 +1650,15 @@ const App = (function() {
             <span class="px-2.5 py-1 bg-purple-50 text-purple-700 rounded-full text-[11px] font-bold">AKM Literasi Numerasi</span>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center mb-4">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start mb-4">
             <div class="md:col-span-7">
-              <h4 class="text-base font-extrabold text-slate-800 mb-2">${cleanMathText(ex.question_text)}</h4>
-              <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3.5 rounded-xl border border-slate-200 mb-3">${cleanMathText(ex.stimulus_text)}</p>
+              <div class="text-sm md:text-base text-slate-800 leading-relaxed space-y-2.5">
+                ${ex.stimulus_text ? `<p class="text-justify">${cleanMathText(ex.stimulus_text)}</p>` : ''}
+                <p class="font-bold text-indigo-950">${cleanMathText(ex.question_text)}</p>
+              </div>
             </div>
             <div class="md:col-span-5">
-              <div class="rounded-xl overflow-hidden border border-slate-200 bg-white p-2">
+              <div class="rounded-xl overflow-hidden border border-slate-200 bg-white p-2 shadow-2xs">
                 <img src="${getStimulusImageUrl(ex.stimulus_image_url || 'stimulus_mercusuar.svg')}" onerror="var f=(this.src||'').split('/').pop().split('?')[0]; if(window.SVG_DATA && window.SVG_DATA[f]) this.src=window.SVG_DATA[f];" alt="Diagram Kasus" class="w-full h-auto rounded-lg">
               </div>
             </div>
@@ -1655,6 +1707,71 @@ const App = (function() {
     const questions = payload.questions || [];
     const existingAns = payload.existing_answers || [];
     const isCompleted = payload.activity.user_status === 'completed';
+    const sessionUser = (StorageService.auth.checkSession ? StorageService.auth.checkSession().user : null) || window.currentUser || {};
+    const userId = sessionUser.id || 'guest';
+
+    // 1. CEK STATUS BUKA TOKEN UJIAN (AKTIVITAS 8)
+    const isTokenUnlocked = isCompleted || (sessionStorage.getItem('exam_token_unlocked_' + userId) === 'true');
+
+    if (!isTokenUnlocked) {
+      return `
+        <div class="max-w-2xl mx-auto my-6">
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
+            <div class="bg-gradient-to-r from-rose-600 via-rose-700 to-red-600 p-8 text-white text-center relative overflow-hidden">
+              <div class="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center mx-auto mb-4 border border-white/20 shadow-lg text-2xl">
+                <i class="fa-solid fa-key text-amber-300"></i>
+              </div>
+              <h3 class="text-xl md:text-2xl font-black mb-2 tracking-tight">Asesmen Sumatif Literasi Numerasi</h3>
+              <p class="text-xs md:text-sm text-rose-100 max-w-md mx-auto">
+                Silakan masukkan token asesmen yang diberikan oleh guru untuk membuka butir soal dan memulai ujian.
+              </p>
+            </div>
+
+            <div class="p-8 space-y-6">
+              <!-- Info Ketentuan Ujian -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="p-3.5 bg-rose-50/70 border border-rose-100 rounded-2xl text-center">
+                  <i class="fa-solid fa-stopwatch text-rose-600 text-lg mb-1 block"></i>
+                  <span class="text-[11px] text-slate-500 block font-semibold">Durasi Waktu</span>
+                  <span class="text-sm font-black text-rose-950 font-mono">30 Menit</span>
+                </div>
+                <div class="p-3.5 bg-indigo-50/70 border border-indigo-100 rounded-2xl text-center">
+                  <i class="fa-solid fa-list-check text-indigo-600 text-lg mb-1 block"></i>
+                  <span class="text-[11px] text-slate-500 block font-semibold">Jumlah Soal</span>
+                  <span class="text-sm font-black text-indigo-950 font-mono">5 Butir AKM</span>
+                </div>
+                <div class="p-3.5 bg-amber-50/70 border border-amber-100 rounded-2xl text-center">
+                  <i class="fa-solid fa-lock text-amber-600 text-lg mb-1 block"></i>
+                  <span class="text-[11px] text-slate-500 block font-semibold">Sifat Ujian</span>
+                  <span class="text-sm font-black text-amber-950 font-mono">1x Submit (Terkunci)</span>
+                </div>
+              </div>
+
+              <!-- Form Input Token -->
+              <div class="space-y-3 pt-2">
+                <label for="input-exam-token" class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider text-center">
+                  Masukkan Token Ujian:
+                </label>
+                <div class="max-w-xs mx-auto">
+                  <input type="text" id="input-exam-token" maxlength="20" placeholder="Ketik token..." class="w-full text-center px-4 py-3.5 text-base md:text-lg font-mono font-black uppercase tracking-widest border-2 border-slate-300 rounded-2xl focus:ring-4 focus:ring-rose-500/20 focus:border-rose-600 outline-none transition-all placeholder:font-sans placeholder:text-xs placeholder:normal-case placeholder:tracking-normal placeholder:font-normal">
+                </div>
+                <p class="text-[11px] text-slate-400 text-center">
+                  *Timer 30 menit akan langsung berjalan setelah token berhasil diverifikasi.
+                </p>
+              </div>
+
+              <!-- Tombol Verifikasi -->
+              <div class="pt-2 text-center">
+                <button onclick="App.verifyExamToken()" class="w-full sm:w-auto px-10 py-3.5 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white font-bold rounded-xl shadow-lg shadow-rose-600/30 transition-all flex items-center justify-center gap-2 mx-auto">
+                  <i class="fa-solid fa-unlock-keyhole"></i>
+                  <span>Mulai Asesmen Sumatif</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
 
     const answerMap = {};
     existingAns.forEach(a => {
@@ -1669,9 +1786,9 @@ const App = (function() {
         optionsHtml = Object.entries(q.options).map(([optKey, optVal]) => {
           const isChecked = selected === optKey ? 'checked' : '';
           return `
-            <label class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 hover:bg-indigo-50/50 cursor-pointer transition-all has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50/80">
-              <input type="radio" name="sumatif_${q.id}" value="${optKey}" ${isChecked} class="mt-1 text-indigo-600 focus:ring-indigo-500">
-              <div class="text-xs md:text-sm text-slate-800">
+            <label class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 ${isCompleted ? 'cursor-default pointer-events-none' : 'hover:bg-indigo-50/50 cursor-pointer'} transition-all has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50/80">
+              <input type="radio" name="sumatif_${q.id}" value="${optKey}" ${isChecked} ${isCompleted ? 'disabled' : ''} class="mt-1 text-indigo-600 focus:ring-indigo-500 ${isCompleted ? 'cursor-not-allowed opacity-80' : ''}">
+              <div class="text-sm md:text-base text-slate-800">
                 <span class="font-bold text-indigo-700">${optKey}.</span> ${cleanMathText(optVal)}
               </div>
             </label>
@@ -1686,20 +1803,20 @@ const App = (function() {
             <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Soal Sumatif ${idx + 1}</span>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-12 gap-5 mb-4">
-            <div class="md:col-span-7">
-              <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-700 whitespace-pre-line leading-relaxed mb-3">
-                ${cleanMathText(q.stimulus_text)}
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-5 mb-4 items-start">
+            <div class="${q.stimulus_image_url ? 'md:col-span-7' : 'md:col-span-12'}">
+              <div class="text-sm md:text-base text-slate-800 leading-relaxed space-y-2.5">
+                ${q.stimulus_text ? `<p class="text-justify">${cleanMathText(q.stimulus_text)}</p>` : ''}
+                <p class="font-bold text-indigo-950">${cleanMathText(q.question_text)}</p>
               </div>
-              <h4 class="text-sm md:text-base font-bold text-slate-800 mb-3">${cleanMathText(q.question_text)}</h4>
             </div>
-            <div class="md:col-span-5">
-              ${q.stimulus_image_url ? `
-                <div class="rounded-xl overflow-hidden border border-slate-200 bg-white p-2">
+            ${q.stimulus_image_url ? `
+              <div class="md:col-span-5">
+                <div class="rounded-xl overflow-hidden border border-slate-200 bg-white p-2 shadow-2xs">
                   <img src="${getStimulusImageUrl(q.stimulus_image_url)}" onerror="var f=(this.src||'').split('/').pop().split('?')[0]; if(window.SVG_DATA && window.SVG_DATA[f]) this.src=window.SVG_DATA[f];" alt="Ilustrasi Stimulus" class="w-full h-auto rounded-lg">
                 </div>
-              ` : ''}
-            </div>
+              </div>
+            ` : ''}
           </div>
 
           <div class="space-y-2 mb-2">
@@ -1711,22 +1828,52 @@ const App = (function() {
 
     return `
       <div>
-        <div class="mb-6 p-4 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-900 flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <i class="fa-solid fa-file-signature text-rose-600 text-xl"></i>
-            <div><b>Asesmen Sumatif Literasi Numerasi:</b> Jawab setiap butir soal dengan teliti berdasarkan stimulus cerita dan ilustrasi gambar yang disajikan.</div>
+        ${!isCompleted ? `
+          <!-- Sticky Timer Bar 30 Menit -->
+          <div id="exam-timer-bar" class="sticky top-20 z-30 mb-6 p-4 bg-white/95 backdrop-blur-md rounded-2xl border-2 border-rose-200 shadow-md flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center text-lg font-bold">
+                <i class="fa-solid fa-stopwatch animate-pulse"></i>
+              </div>
+              <div>
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Sisa Waktu Asesmen</span>
+                <span class="text-[11px] text-slate-400">Total Durasi Ujian: 30 Menit</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <div id="exam-timer-display" class="px-5 py-2 rounded-xl bg-slate-900 text-white font-mono font-black text-xl tracking-widest shadow-inner">
+                30:00
+              </div>
+            </div>
           </div>
-          ${isCompleted ? '<span class="badge-status badge-completed"><i class="fa-solid fa-check"></i> Selesai Dinilai</span>' : ''}
-        </div>
+        ` : `
+          <div class="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <i class="fa-solid fa-circle-check text-emerald-600 text-xl"></i>
+              <div><b>Asesmen Sumatif Selesai:</b> Seluruh butir soal telah dinilai dan jawaban telah dikunci permanen.</div>
+            </div>
+            <span class="badge-status badge-completed"><i class="fa-solid fa-lock"></i> Terkunci</span>
+          </div>
+        `}
 
         ${qHtml}
 
         <div class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-          <span class="text-xs text-slate-500">Periksa kembali jawaban Anda sebelum mengonfirmasi pengiriman.</span>
-          <button onclick="App.submitAct8()" class="px-8 py-3.5 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
-            <i class="fa-solid fa-paper-plane"></i>
-            <span>${isCompleted ? 'Kirim Ulang / Perbarui' : 'Kirim Asesmen Sumatif'}</span>
-          </button>
+          ${isCompleted ? `
+            <div class="flex items-center gap-2 text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-2 rounded-xl border border-emerald-200">
+              <i class="fa-solid fa-lock text-emerald-600"></i> Asesmen Sumatif telah dikirim & terkunci
+            </div>
+            <button onclick="App.loadActivity(9)" class="px-8 py-3.5 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
+              <span>Lanjut ke Aktivitas 9 (Refleksi)</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          ` : `
+            <span class="text-xs text-slate-500">Periksa kembali seluruh jawaban sebelum mengirimkan asesmen.</span>
+            <button onclick="App.submitAct8()" class="px-8 py-3.5 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
+              <i class="fa-solid fa-paper-plane"></i>
+              <span>Kirim Asesmen Sumatif</span>
+            </button>
+          `}
         </div>
       </div>
     `;
@@ -1736,6 +1883,7 @@ const App = (function() {
   // VIEW MODUL 9: REFLEKSI BELAJAR
   // ==========================================
   function renderAct9(payload) {
+    const isCompleted = !!(payload && payload.activity && payload.activity.user_status === 'completed');
     const reflections = payload.reflections || [];
     const responses = payload.reflection_responses || [];
 
@@ -1756,9 +1904,9 @@ const App = (function() {
             <span class="text-xs text-slate-500">Kurang</span>
             <div class="flex items-center gap-2">
               ${[1, 2, 3, 4, 5].map(star => `
-                <label class="cursor-pointer">
-                  <input type="radio" name="ref_rating_${rf.id}" value="${star}" ${savedRating == star ? 'checked' : ''} class="sr-only peer">
-                  <div class="w-10 h-10 rounded-xl bg-slate-100 peer-checked:bg-amber-400 peer-checked:text-white text-slate-400 flex items-center justify-center font-bold text-sm transition-all hover:bg-slate-200">
+                <label class="${isCompleted ? 'cursor-default pointer-events-none' : 'cursor-pointer'}">
+                  <input type="radio" name="ref_rating_${rf.id}" value="${star}" ${savedRating == star ? 'checked' : ''} ${isCompleted ? 'disabled' : ''} class="sr-only peer">
+                  <div class="w-10 h-10 rounded-xl bg-slate-100 peer-checked:bg-amber-400 peer-checked:text-white text-slate-400 flex items-center justify-center font-bold text-sm transition-all hover:bg-slate-200 ${isCompleted ? 'opacity-90' : ''}">
                     <i class="fa-solid fa-star"></i>
                   </div>
                 </label>
@@ -1775,30 +1923,47 @@ const App = (function() {
             <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs">${idx + 1}</span>
             <span class="text-xs font-bold text-slate-400 uppercase">Pertanyaan Refleksi</span>
           </div>
-          <h4 class="text-sm md:text-base font-bold text-slate-800 mb-3">${rf.prompt_text}</h4>
+          <h4 class="text-sm md:text-base font-bold text-slate-800 mb-3">${cleanMathText(rf.prompt_text)}</h4>
           ${inputSection}
           <div class="mt-3">
-            <textarea id="ref_text_${rf.id}" rows="3" class="w-full p-3.5 border border-slate-300 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500" placeholder="Tuliskan refleksi atau tanggapan jujur Anda di sini...">${savedText}</textarea>
+            <textarea id="ref_text_${rf.id}" rows="3" ${isCompleted ? 'disabled readonly' : ''} class="w-full p-3.5 border rounded-xl text-xs ${isCompleted ? 'border-slate-200 bg-slate-100 text-slate-700 cursor-not-allowed' : 'border-slate-300 focus:ring-2 focus:ring-indigo-500'}" placeholder="Tuliskan refleksi atau tanggapan jujur Anda di sini...">${savedText}</textarea>
           </div>
         </div>
       `;
     }).join('');
 
+    if (reflections.length === 0) {
+      refHtml = `<div class="p-6 bg-amber-50 text-amber-800 rounded-xl mb-6">Instrumen refleksi sedang dimuat...</div>`;
+    }
+
     return `
       <div>
-        <div class="mb-6 p-4 bg-indigo-50 border border-indigo-200 rounded-xl text-xs text-indigo-900 flex items-center gap-3">
-          <i class="fa-solid fa-heart text-indigo-600 text-xl"></i>
-          <div>Refleksi membantu Bapak Guru Aswan mengevaluasi pemahaman Anda serta menyempurnakan kualitas media pembelajaran ini.</div>
+        <div class="mb-6 p-4 bg-indigo-50 border border-indigo-200 rounded-xl text-xs text-indigo-900 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-heart text-indigo-600 text-xl"></i>
+            <div>Refleksi membantu guru mengevaluasi pemahaman Anda serta menyempurnakan kualitas media pembelajaran ini.</div>
+          </div>
+          ${isCompleted ? '<span class="badge-status badge-completed"><i class="fa-solid fa-lock"></i> Terkunci</span>' : ''}
         </div>
 
         ${refHtml}
 
         <div class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-          <span class="text-xs text-slate-500">Isi seluruh instrumen untuk membuka Rapor Hasil Belajar.</span>
-          <button onclick="App.submitAct9()" class="px-8 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
-            <i class="fa-solid fa-check"></i>
-            <span>Kirim Refleksi & Buka Hasil Belajar</span>
-          </button>
+          ${isCompleted ? `
+            <div class="flex items-center gap-2 text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-2 rounded-xl border border-emerald-200">
+              <i class="fa-solid fa-lock text-emerald-600"></i> Refleksi telah terkirim & terkunci
+            </div>
+            <button onclick="App.loadActivity(10)" class="px-8 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
+              <i class="fa-solid fa-award"></i>
+              <span>Buka Hasil Belajar (Rapor)</span>
+            </button>
+          ` : `
+            <span class="text-xs text-slate-500">Isi seluruh instrumen untuk membuka Rapor Hasil Belajar.</span>
+            <button onclick="App.submitAct9()" class="px-8 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
+              <i class="fa-solid fa-check"></i>
+              <span>Kirim Refleksi & Buka Hasil Belajar</span>
+            </button>
+          `}
         </div>
       </div>
     `;
@@ -1940,6 +2105,13 @@ const App = (function() {
   // 3. LOGIKA SUBMIT PER AKTIVITAS SISWA
   // ==========================================
   async function submitAct1() {
+    const act = (currentActivityPayload && currentActivityPayload.activity) ? currentActivityPayload.activity : null;
+    if (act && act.user_status === 'completed') {
+      Swal.fire('Jawaban Terkunci', 'Jawaban Pertanyaan Pemantik telah Anda kirim sebelumnya dan terkunci permanen.', 'info');
+      loadActivity(2);
+      return;
+    }
+
     const essay = document.getElementById('act1-answer').value.trim();
     if (!essay || essay.length < 10) {
       Swal.fire('Perhatian', 'Harap isi ide jawaban Anda secara lebih lengkap (minimal 10 karakter).', 'warning');
@@ -1964,7 +2136,13 @@ const App = (function() {
           loadActivity(2);
         });
       } else {
-        Swal.fire('Gagal', data.message, 'error');
+        if (data.locked) {
+          Swal.fire('Jawaban Terkunci', data.message, 'info').then(() => {
+            loadActivity(data.next_activity || 2);
+          });
+        } else {
+          Swal.fire('Gagal', data.message, 'error');
+        }
       }
     } catch (e) {
       Swal.fire('Error', 'Gagal mengirim data.', 'error');
@@ -1972,6 +2150,13 @@ const App = (function() {
   }
 
   async function submitAct2() {
+    const act = (currentActivityPayload && currentActivityPayload.activity) ? currentActivityPayload.activity : null;
+    if (act && act.user_status === 'completed') {
+      Swal.fire('Jawaban Terkunci', 'LKPD Simulasi Konsep telah Anda kirim sebelumnya dan terkunci permanen.', 'info');
+      loadActivity(3);
+      return;
+    }
+
     const q1 = (document.getElementById('act2-q1')?.value || '').trim();
     const q2 = (document.getElementById('act2-q2')?.value || '').trim();
     const q3 = (document.getElementById('act2-q3')?.value || '').trim();
@@ -2006,7 +2191,7 @@ const App = (function() {
     });
 
     if (tableData.length < 2) {
-      Swal.fire('Perhatian', 'Tabel pengamatan belum cukup data. Catat hasil simulasi ke tabel minimal 2 baris (atau gunakan tombol "Contoh Data Lengkap").', 'warning');
+      Swal.fire('Perhatian', 'Tabel pengamatan belum cukup data. Catat hasil simulasi ke tabel minimal 2 baris.', 'warning');
       return;
     }
 
@@ -2038,7 +2223,13 @@ const App = (function() {
           loadActivity(3);
         });
       } else {
-        Swal.fire('Gagal', data.message, 'error');
+        if (data.locked) {
+          Swal.fire('Jawaban Terkunci', data.message, 'info').then(() => {
+            loadActivity(data.next_activity || 3);
+          });
+        } else {
+          Swal.fire('Gagal', data.message, 'error');
+        }
       }
     } catch (e) {
       Swal.fire('Error', 'Gagal mengirim LKPD.', 'error');
@@ -2071,6 +2262,13 @@ const App = (function() {
   }
 
   async function submitAct4() {
+    const act = (currentActivityPayload && currentActivityPayload.activity) ? currentActivityPayload.activity : null;
+    if (act && act.user_status === 'completed') {
+      Swal.fire('Jawaban Terkunci', 'Tabel nilai sudut istimewa telah Anda validasi dan terkunci permanen.', 'info');
+      loadActivity(5);
+      return;
+    }
+
     // Ambil seluruh input sel tabel
     const keys = [
       'sin_0', 'sin_30', 'sin_45', 'sin_60', 'sin_90',
@@ -2114,13 +2312,19 @@ const App = (function() {
           loadActivity(5);
         });
       } else {
-        if (data.invalid_fields) {
-          data.invalid_fields.forEach(k => {
-            const el = document.getElementById(`angle-${k}`);
-            if (el) el.classList.add('wrong');
+        if (data.locked) {
+          Swal.fire('Jawaban Terkunci', data.message, 'info').then(() => {
+            loadActivity(data.next_activity || 5);
           });
+        } else {
+          if (data.invalid_fields) {
+            data.invalid_fields.forEach(k => {
+              const el = document.getElementById(`angle-${k}`);
+              if (el) el.classList.add('wrong');
+            });
+          }
+          Swal.fire('Belum Tepat', data.message, 'warning');
         }
-        Swal.fire('Belum Tepat', data.message, 'warning');
       }
     } catch (e) {
       Swal.fire('Error', 'Gagal memvalidasi tabel sudut istimewa.', 'error');
@@ -2128,6 +2332,13 @@ const App = (function() {
   }
 
   async function submitAct5() {
+    const act = (currentActivityPayload && currentActivityPayload.activity) ? currentActivityPayload.activity : null;
+    if (act && act.user_status === 'completed') {
+      Swal.fire('Jawaban Terkunci', 'Latihan Soal telah Anda selesaikan dan jawaban terkunci permanen.', 'info');
+      loadActivity(6);
+      return;
+    }
+
     const radioInputs = document.querySelectorAll('input[type="radio"][name^="q_"]:checked');
     const answers = {};
     radioInputs.forEach(r => {
@@ -2166,6 +2377,14 @@ const App = (function() {
         }).then(() => {
           loadActivity(6);
         });
+      } else {
+        if (data.locked) {
+          Swal.fire('Jawaban Terkunci', data.message, 'info').then(() => {
+            loadActivity(data.next_activity || 6);
+          });
+        } else {
+          Swal.fire('Gagal', data.message || 'Gagal mengirim latihan soal.', 'error');
+        }
       }
     } catch (e) {
       Swal.fire('Error', 'Gagal mengirim latihan soal.', 'error');
@@ -2222,7 +2441,14 @@ const App = (function() {
     }
   }
 
-  async function submitAct8() {
+  async function submitAct8(isForce) {
+    const act = (currentActivityPayload && currentActivityPayload.activity) ? currentActivityPayload.activity : null;
+    if (act && act.user_status === 'completed') {
+      Swal.fire('Jawaban Terkunci', 'Asesmen Sumatif telah Anda kumpulkan sebelumnya dan terkunci permanen.', 'info');
+      loadActivity(9);
+      return;
+    }
+
     const radioInputs = document.querySelectorAll('input[type="radio"][name^="sumatif_"]:checked');
     const answers = {};
     radioInputs.forEach(r => {
@@ -2231,7 +2457,7 @@ const App = (function() {
     });
 
     const totalRadios = new Set(Array.from(document.querySelectorAll('input[type="radio"][name^="sumatif_"]')).map(r => r.name)).size;
-    if (Object.keys(answers).length < totalRadios) {
+    if (!isForce && Object.keys(answers).length < totalRadios) {
       const confirm = await Swal.fire({
         title: 'Konfirmasi Asesmen Sumatif',
         text: `Anda baru menjawab ${Object.keys(answers).length} dari ${totalRadios} soal sumatif. Kirim sekarang?`,
@@ -2252,6 +2478,13 @@ const App = (function() {
       });
       const data = await res.json();
       if (data.success) {
+        if (window._examTimerInterval) {
+          clearInterval(window._examTimerInterval);
+          window._examTimerInterval = null;
+        }
+        const sessionUser = (StorageService.auth.checkSession ? StorageService.auth.checkSession().user : null) || window.currentUser || {};
+        localStorage.removeItem('exam_timer_start_' + (sessionUser.id || 'guest'));
+
         confettiBurst();
         Swal.fire({
           icon: 'success',
@@ -2262,6 +2495,14 @@ const App = (function() {
         }).then(() => {
           loadActivity(9);
         });
+      } else {
+        if (data.locked) {
+          Swal.fire('Jawaban Terkunci', data.message, 'info').then(() => {
+            loadActivity(data.next_activity || 9);
+          });
+        } else {
+          Swal.fire('Gagal', data.message || 'Gagal mengirim asesmen sumatif.', 'error');
+        }
       }
     } catch (e) {
       Swal.fire('Error', 'Gagal mengirim asesmen sumatif.', 'error');
@@ -2269,6 +2510,13 @@ const App = (function() {
   }
 
   async function submitAct9() {
+    const act = (currentActivityPayload && currentActivityPayload.activity) ? currentActivityPayload.activity : null;
+    if (act && act.user_status === 'completed') {
+      Swal.fire('Jawaban Terkunci', 'Refleksi pembelajaran telah Anda kumpulkan sebelumnya dan terkunci permanen.', 'info');
+      loadActivity(10);
+      return;
+    }
+
     const textareas = document.querySelectorAll('textarea[id^="ref_text_"]');
     const reflections = {};
 
@@ -2298,6 +2546,14 @@ const App = (function() {
         }).then(() => {
           loadActivity(10);
         });
+      } else {
+        if (data.locked) {
+          Swal.fire('Jawaban Terkunci', data.message, 'info').then(() => {
+            loadActivity(data.next_activity || 10);
+          });
+        } else {
+          Swal.fire('Gagal', data.message || 'Gagal menyimpan refleksi.', 'error');
+        }
       }
     } catch (e) {
       Swal.fire('Error', 'Gagal menyimpan refleksi.', 'error');
@@ -2415,6 +2671,171 @@ const App = (function() {
       document.getElementById('slider-kite-s').addEventListener('input', e => currentSimObjects.kite.setStringLength(e.target.value));
       document.getElementById('slider-kite-theta').addEventListener('input', e => currentSimObjects.kite.setAngle(e.target.value));
     }
+
+    if (actNum === 8) {
+      const isCompleted = payload.activity && payload.activity.user_status === 'completed';
+      const sessionUser = (StorageService.auth.checkSession ? StorageService.auth.checkSession().user : null) || window.currentUser || {};
+      const userId = sessionUser.id || 'guest';
+      const isTokenUnlocked = isCompleted || (sessionStorage.getItem('exam_token_unlocked_' + userId) === 'true');
+
+      if (!isCompleted && isTokenUnlocked) {
+        initExamTimer(userId);
+      }
+    }
+  }
+
+  // ==========================================
+  // MANAJEMEN TIMER & TOKEN UJIAN AKTIVITAS 8
+  // ==========================================
+  function initExamTimer(userId) {
+    if (window._examTimerInterval) {
+      clearInterval(window._examTimerInterval);
+      window._examTimerInterval = null;
+    }
+
+    const timerKey = 'exam_timer_start_' + userId;
+    let startTime = parseInt(localStorage.getItem(timerKey), 10);
+    if (!startTime || isNaN(startTime)) {
+      startTime = Date.now();
+      localStorage.setItem(timerKey, startTime.toString());
+    }
+
+    const DURATION_SECONDS = 30 * 60; // 30 menit (1800 detik)
+
+    function updateTimer() {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const remaining = Math.max(0, DURATION_SECONDS - elapsed);
+      const m = Math.floor(remaining / 60);
+      const s = remaining % 60;
+      const formatted = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+
+      const el = document.getElementById('exam-timer-display');
+      if (el) {
+        el.textContent = formatted;
+        if (remaining <= 300) { // < 5 menit
+          el.className = 'px-5 py-2 rounded-xl bg-rose-600 text-white font-mono font-black text-xl tracking-widest shadow-inner animate-pulse';
+        } else if (remaining <= 600) { // < 10 menit
+          el.className = 'px-5 py-2 rounded-xl bg-amber-600 text-white font-mono font-black text-xl tracking-widest shadow-inner';
+        } else {
+          el.className = 'px-5 py-2 rounded-xl bg-slate-900 text-white font-mono font-black text-xl tracking-widest shadow-inner';
+        }
+      }
+
+      if (remaining <= 0) {
+        if (window._examTimerInterval) {
+          clearInterval(window._examTimerInterval);
+          window._examTimerInterval = null;
+        }
+        Swal.fire({
+          icon: 'warning',
+          title: 'Waktu Pengerjaan Habis!',
+          text: 'Waktu 30 menit telah berakhir. Jawaban Asesmen Sumatif Anda akan langsung dikirimkan.',
+          confirmButtonColor: '#e11d48',
+          allowOutsideClick: false
+        }).then(() => {
+          submitAct8(true);
+        });
+      }
+    }
+
+    updateTimer();
+    window._examTimerInterval = setInterval(updateTimer, 1000);
+  }
+
+  async function verifyExamToken() {
+    const inputEl = document.getElementById('input-exam-token');
+    const entered = inputEl ? inputEl.value.trim().toUpperCase() : '';
+    if (!entered) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Token Belum Diisi',
+        text: 'Silakan ketikkan token ujian yang diberikan guru.',
+        confirmButtonColor: '#e11d48'
+      });
+      return;
+    }
+
+    const validToken = StorageService.settings ? StorageService.settings.getExamToken() : 'TRIGONO2026';
+    if (entered !== validToken) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Token Tidak Valid!',
+        text: 'Token yang Anda masukkan salah. Silakan tanyakan kode token resmi kepada guru.',
+        confirmButtonColor: '#e11d48'
+      });
+      return;
+    }
+
+    const sessionUser = (StorageService.auth.checkSession ? StorageService.auth.checkSession().user : null) || window.currentUser || {};
+    const userId = sessionUser.id || 'guest';
+    sessionStorage.setItem('exam_token_unlocked_' + userId, 'true');
+
+    // Inisialisasi waktu mulai timer jika belum ada
+    const timerKey = 'exam_timer_start_' + userId;
+    if (!localStorage.getItem(timerKey)) {
+      localStorage.setItem(timerKey, Date.now().toString());
+    }
+
+    await Swal.fire({
+      icon: 'success',
+      title: 'Token Berhasil Diverifikasi!',
+      text: 'Waktu pengerjaan 30 menit telah dimulai. Selamat mengerjakan!',
+      timer: 1600,
+      showConfirmButton: false
+    });
+
+    loadActivity(8);
+  }
+
+  function updateTeacherTokenDisplay() {
+    const token = StorageService.settings ? StorageService.settings.getExamToken() : 'TRIGONO2026';
+    const badge = document.getElementById('teacher-token-badge');
+    if (badge) badge.textContent = token;
+    const badgeQ = document.getElementById('teacher-questions-token-badge');
+    if (badgeQ) badgeQ.textContent = token;
+  }
+
+  function openEditTokenModal() {
+    const currentToken = StorageService.settings ? StorageService.settings.getExamToken() : 'TRIGONO2026';
+    Swal.fire({
+      title: 'Pengaturan Token Ujian (Akt 8)',
+      html: `
+        <div class="text-left space-y-3 text-xs text-slate-600">
+          <p>Tentukan kode token ujian yang wajib dimasukkan oleh siswa sebelum membuka butir soal Asesmen Sumatif (Aktivitas 8):</p>
+          <div>
+            <label class="block font-bold text-slate-700 uppercase mb-1">Kode Token Baru:</label>
+            <input type="text" id="swal-token-input" value="${currentToken}" maxlength="20" class="w-full p-3 font-mono font-bold text-center uppercase tracking-widest text-lg border-2 border-rose-300 rounded-xl focus:border-rose-600 outline-none">
+          </div>
+          <p class="text-[11px] text-slate-400 italic">*Token bersifat peka huruf kapital (otomatis dikonversi ke huruf besar).</p>
+        </div>
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'Simpan Token',
+      cancelButtonText: 'Batal',
+      confirmButtonColor: '#e11d48',
+      preConfirm: () => {
+        const inp = document.getElementById('swal-token-input');
+        const val = inp ? inp.value.trim().toUpperCase() : '';
+        if (!val) {
+          Swal.showValidationMessage('Token ujian tidak boleh kosong!');
+          return false;
+        }
+        return val;
+      }
+    }).then(async (res) => {
+      if (res.isConfirmed && res.value) {
+        if (StorageService.settings) {
+          StorageService.settings.setExamToken(res.value);
+        }
+        updateTeacherTokenDisplay();
+        Swal.fire({
+          icon: 'success',
+          title: 'Token Berhasil Diperbarui!',
+          html: `Token Asesmen Sumatif saat ini adalah: <b class="font-mono text-rose-600 text-lg">${res.value}</b>`,
+          confirmButtonColor: '#e11d48'
+        });
+      }
+    });
   }
 
   function recordToLKPDTable() {
@@ -2839,6 +3260,7 @@ const App = (function() {
     loadTeacherRoster(currentClassFilter);
     initTeacherQuestionBank();
     initTeacherReflections();
+    updateTeacherTokenDisplay();
   }
 
   async function loadTeacherRoster(className = 'all') {
@@ -3265,6 +3687,33 @@ const App = (function() {
 
       listContainer.innerHTML = '';
       teacherQuestionsMap = {};
+
+      if (actNum === 8) {
+        const currentToken = StorageService.settings ? StorageService.settings.getExamToken() : 'TRIGONO2026';
+        const bannerEl = document.createElement('div');
+        bannerEl.className = 'mb-4 p-4 bg-gradient-to-r from-rose-50 via-white to-amber-50 border border-rose-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs';
+        bannerEl.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-base shrink-0">
+              <i class="fa-solid fa-key"></i>
+            </div>
+            <div>
+              <span class="text-xs font-bold text-slate-800 block">Token Akses Ujian Siswa (Akt 8)</span>
+              <span class="text-[11px] text-slate-500">Siswa wajib memasukkan token ini sebelum membuka butir soal asesmen sumatif.</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="teacher-questions-token-badge" class="px-3 py-1.5 bg-rose-600 text-white font-mono font-black text-sm rounded-xl tracking-wider shadow-2xs">
+              ${currentToken}
+            </span>
+            <button onclick="App.openEditTokenModal()" class="px-3.5 py-1.5 bg-white hover:bg-rose-50 text-rose-700 border border-rose-300 rounded-xl text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5">
+              <i class="fa-solid fa-pen-to-square"></i>
+              <span>Ubah Token</span>
+            </button>
+          </div>
+        `;
+        listContainer.appendChild(bannerEl);
+      }
 
       if (data.questions.length === 0) {
         listContainer.innerHTML = '<div class="py-8 text-center text-slate-400 bg-white rounded-2xl border border-slate-200 p-8">Belum ada butir soal di modul ini. Klik tombol <b>Tambah Soal Baru</b> untuk menambahkan.</div>';
@@ -4132,16 +4581,6 @@ const App = (function() {
                 <p class="text-xs text-indigo-200 mt-1">Siswa SMAS Al Azhar Mandiri Palu • ID Akun: #${st.id}</p>
               </div>
             </div>
-
-            <!-- Tombol Aksi Siswa -->
-            <div class="flex flex-wrap items-center gap-2">
-              <button onclick="App.exportSpecificStudentSubmission(${st.id})" class="px-3.5 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold border border-white/20 transition-all flex items-center gap-1.5 backdrop-blur-md">
-                <i class="fa-solid fa-file-arrow-down"></i> Unduh Lembar Kerja (.json)
-              </button>
-              <button onclick="App.copyStudentSubmissionJSON(${st.id})" class="px-3.5 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold border border-white/20 transition-all flex items-center gap-1.5 backdrop-blur-md">
-                <i class="fa-solid fa-copy"></i> Salin JSON
-              </button>
-            </div>
           </div>
 
           <!-- 4 KPI Mini Nilai & Progres -->
@@ -4638,7 +5077,7 @@ const App = (function() {
     Swal.fire({
       icon: 'success',
       title: 'Berhasil Diunduh!',
-      text: 'File tugas trigonometri Anda telah diunduh (.json). File ini dapat Anda simpan atau kirimkan ke Bapak Guru Aswan.',
+      text: 'File tugas trigonometri Anda telah diunduh (.json). File ini dapat Anda simpan atau kirimkan ke guru.',
       confirmButtonColor: '#6366f1'
     });
   }
@@ -4693,7 +5132,10 @@ const App = (function() {
     copyStudentSubmissionJSON,
     populateSampleSubmissions,
     openImportSubmissionModal,
-    exportCurrentStudentSubmission
+    exportCurrentStudentSubmission,
+    verifyExamToken,
+    openEditTokenModal,
+    updateTeacherTokenDisplay
   };
 })();
 
