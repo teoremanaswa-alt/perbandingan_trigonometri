@@ -156,7 +156,7 @@ CREATE TABLE `reflections` (
 
 LOCK TABLES `reflections` WRITE;
 /*!40000 ALTER TABLE `reflections` DISABLE KEYS */;
-INSERT INTO `reflections` VALUES (1,'Seberapa pahamkah Anda mengenai konsep sinus, kosinus, dan tangen setelah mengikuti pembelajaran ini?','scale',1,'2026-10-12 14:56:40'),(2,'Seberapa menarik dan membantukah media pembelajaran digital ini dalam memudahkan Anda memahami konsep abstrak matematika?','scale',1,'2026-10-12 14:56:40'),(3,'Aktivitas pembelajaran nomor berapa yang menurut Anda paling menantang dan memerlukan penjelasan tambahan dari Bapak Guru Aswan?','essay',1,'2026-10-12 14:56:40'),(4,'Tuliskan satu hikmah atau penerapan perbandingan trigonometri di kehidupan sehari-hari yang paling berkesan bagi Anda!','essay',1,'2026-10-12 14:56:40');
+INSERT INTO `reflections` VALUES (1,'Seberapa pahamkah Anda mengenai konsep sinus, kosinus, dan tangen setelah mengikuti pembelajaran ini?','scale',1,'2026-10-12 14:56:40'),(2,'Seberapa menarik dan membantukah media pembelajaran digital ini dalam memudahkan Anda memahami konsep abstrak matematika?','scale',1,'2026-10-12 14:56:40'),(3,'Aktivitas pembelajaran nomor berapa yang menurut Anda paling menantang dan memerlukan penjelasan tambahan dari guru?','essay',1,'2026-10-12 14:56:40'),(4,'Tuliskan satu hikmah atau penerapan perbandingan trigonometri di kehidupan sehari-hari yang paling berkesan bagi Anda!','essay',1,'2026-10-12 14:56:40');
 /*!40000 ALTER TABLE `reflections` ENABLE KEYS */;
 UNLOCK TABLES;
 

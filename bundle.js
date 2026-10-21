@@ -6791,6 +6791,30 @@ window.StorageService = (function() {
         });
       }
 
+      // Auto-repair relasi activity_id pada butir soal seed jika sebelumnya tergeser karena bug
+      const seedMap = {
+        1: 1,
+        2: 2,
+        3: 5, 4: 5, 5: 5, 6: 5, 7: 5,
+        8: 7, 9: 7, 10: 7, 11: 7, 12: 7,
+        13: 8, 14: 8, 15: 8, 16: 8, 17: 8, 18: 8, 19: 8, 20: 8, 21: 8, 22: 8
+      };
+      Object.keys(seedMap).forEach(qIdStr => {
+        const qId = parseInt(qIdStr, 10);
+        const correctActId = seedMap[qId];
+        const existing = db.questions.find(q => q.id === qId);
+        if (existing) {
+          if (existing.activity_id !== correctActId) {
+            existing.activity_id = correctActId;
+          }
+        } else if (window.INITIAL_DB_SEED && Array.isArray(window.INITIAL_DB_SEED.questions)) {
+          const seedQ = window.INITIAL_DB_SEED.questions.find(sq => sq.id === qId);
+          if (seedQ) {
+            db.questions.push(sanitizeObject(JSON.parse(JSON.stringify(seedQ))));
+          }
+        }
+      });
+
       saveDB(db);
       return db;
     }
@@ -7822,7 +7846,12 @@ window.StorageService = (function() {
     if (!act) return { success: false, questions: [] };
 
     const questions = db.questions.filter(q => q.activity_id == act.id)
-      .sort((a, b) => (a.order_num || 0) - (b.order_num || 0));
+      .sort((a, b) => (a.order_num || 0) - (b.order_num || 0))
+      .map(q => {
+        const copy = Object.assign({}, q);
+        copy.activity_number = act.activity_number;
+        return copy;
+      });
 
     return { success: true, questions };
   }
@@ -7830,42 +7859,67 @@ window.StorageService = (function() {
   function saveQuestion(payload) {
     const db = getDB();
     let act = null;
-    if (payload.activity_number) {
-      act = db.activities.find(a => a.activity_number == payload.activity_number);
-    } else if (payload.activity_id) {
-      act = db.activities.find(a => a.id == payload.activity_id);
-    } else if (payload.id) {
+    const targetActNum = payload.activity_number || payload.activity_id;
+    if (targetActNum) {
+      act = db.activities.find(a => a.activity_number == targetActNum || a.id == targetActNum);
+    }
+    if (!act && payload.id) {
       const existingQ = db.questions.find(q => q.id == payload.id);
       if (existingQ) {
         act = db.activities.find(a => a.id == existingQ.activity_id);
       }
     }
+    if (!act) {
+      act = db.activities.find(a => a.activity_number == 5);
+    }
     if (!act) return { success: false, message: 'Aktivitas tidak valid.' };
 
-    if (payload.id && payload.id > 0) {
-      let q = db.questions.find(q => q.id == payload.id);
+    const qId = parseInt(payload.id, 10) || 0;
+    const cleanedStimulus = payload.stimulus_text ? cleanMathText(payload.stimulus_text) : '';
+    const cleanedQuestion = payload.question_text ? cleanMathText(payload.question_text) : '';
+    const cleanedCorrect = (payload.correct_answer !== undefined && payload.correct_answer !== null) ? cleanMathText(String(payload.correct_answer)) : '';
+    const cleanedExplanation = payload.explanation ? cleanMathText(payload.explanation) : '';
+    let cleanedOptions = payload.options;
+    if (cleanedOptions && typeof cleanedOptions === 'object') {
+      cleanedOptions = sanitizeObject(cleanedOptions);
+    }
+
+    if (qId > 0) {
+      let q = db.questions.find(q => q.id == qId);
       if (q) {
         q.activity_id = act.id;
-        q.order_num = payload.order_num;
-        q.stimulus_text = payload.stimulus_text;
-        q.stimulus_image_url = payload.stimulus_image_url;
-        q.question_text = payload.question_text;
-        q.options = payload.options;
-        q.correct_answer = payload.correct_answer;
-        q.explanation = payload.explanation;
+        q.order_num = parseInt(payload.order_num, 10) || q.order_num || 1;
+        q.stimulus_text = cleanedStimulus;
+        q.stimulus_image_url = payload.stimulus_image_url || '';
+        q.question_text = cleanedQuestion;
+        q.options = cleanedOptions;
+        q.correct_answer = cleanedCorrect;
+        q.explanation = cleanedExplanation;
+      } else {
+        db.questions.push({
+          id: qId,
+          activity_id: act.id,
+          order_num: parseInt(payload.order_num, 10) || 1,
+          stimulus_text: cleanedStimulus,
+          stimulus_image_url: payload.stimulus_image_url || '',
+          question_text: cleanedQuestion,
+          options: cleanedOptions,
+          correct_answer: cleanedCorrect,
+          explanation: cleanedExplanation
+        });
       }
     } else {
       const maxId = db.questions.reduce((m, q) => Math.max(m, q.id || 0), 0);
       db.questions.push({
         id: maxId + 1,
         activity_id: act.id,
-        order_num: payload.order_num || 1,
-        stimulus_text: payload.stimulus_text || '',
+        order_num: parseInt(payload.order_num, 10) || 1,
+        stimulus_text: cleanedStimulus,
         stimulus_image_url: payload.stimulus_image_url || '',
-        question_text: payload.question_text,
-        options: payload.options,
-        correct_answer: payload.correct_answer,
-        explanation: payload.explanation || ''
+        question_text: cleanedQuestion,
+        options: cleanedOptions,
+        correct_answer: cleanedCorrect,
+        explanation: cleanedExplanation
       });
     }
 
@@ -8408,6 +8462,10 @@ window.StorageService = (function() {
 
   return {
     init: getDB,
+    db: {
+      getDB,
+      saveDB
+    },
     resetToDefault,
     auth: {
       loginStudent,
@@ -13324,7 +13382,7 @@ const App = (function() {
     currentQBActivity = actNum;
 
     // Update styling tab filter soal
-    [5, 7, 8].forEach(n => {
+    [1, 5, 7, 8].forEach(n => {
       const btn = document.getElementById(`qb-tab-${n}`);
       if (btn) {
         if (n === actNum) {
@@ -13385,21 +13443,40 @@ const App = (function() {
         const item = document.createElement('div');
         item.className = 'p-5 bg-white border border-slate-200 rounded-2xl shadow-sm mb-4 text-xs space-y-3';
 
-        // Render Opsi Jawaban Preview
-        let optionsHtml = '';
-        if (q.options && typeof q.options === 'object') {
-          optionsHtml = '<div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2 pt-2 border-t border-slate-100">';
+        // Render Opsi Jawaban Preview atau Info Kasus
+        let previewHtml = '';
+        if (actNum === 7) {
+          const tipe = (q.options && q.options.Tipe) ? q.options.Tipe : 'Contoh Soal Kontekstual Literasi';
+          const konsep = (q.options && q.options.Konsep) ? q.options.Konsep : 'Perbandingan Trigonometri';
+          previewHtml = `
+            <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
+              <span class="px-2.5 py-1 bg-purple-50 text-purple-700 border border-purple-200 rounded-lg text-[11px] font-bold">
+                <i class="fa-solid fa-tag mr-1"></i>${tipe}
+              </span>
+              <span class="px-2.5 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg text-[11px] font-bold">
+                <i class="fa-solid fa-compass mr-1"></i>${konsep}
+              </span>
+            </div>
+          `;
+        } else if (actNum === 1) {
+          previewHtml = `
+            <div class="pt-2 border-t border-slate-100 text-slate-500 italic text-[11px]">
+              Tipe: Pertanyaan Pemantik Berpikir Kritis (Esai Mandiri Siswa)
+            </div>
+          `;
+        } else if (q.options && typeof q.options === 'object') {
+          previewHtml = '<div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2 pt-2 border-t border-slate-100">';
           Object.keys(q.options).forEach(optKey => {
             const isCorrect = q.correct_answer === optKey;
-            optionsHtml += `
+            previewHtml += `
               <div class="p-2 rounded-lg text-[11px] flex items-start gap-2 ${isCorrect ? 'bg-emerald-50 text-emerald-900 font-bold border border-emerald-200' : 'bg-slate-50 text-slate-600'}">
                 <span class="w-5 h-5 rounded flex items-center justify-center text-xs font-bold ${isCorrect ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-700'}">${optKey}</span>
-                <span class="flex-1">${q.options[optKey]}</span>
+                <span class="flex-1">${cleanMathText(q.options[optKey])}</span>
                 ${isCorrect ? '<i class="fa-solid fa-check text-emerald-600 mt-0.5"></i>' : ''}
               </div>
             `;
           });
-          optionsHtml += '</div>';
+          previewHtml += '</div>';
         }
 
         // Render Stimulus Gambar jika ada
@@ -13413,13 +13490,31 @@ const App = (function() {
           `;
         }
 
+        // Header badge
+        let badgeHtml = '';
+        if (actNum === 7) {
+          badgeHtml = `
+            <span class="font-extrabold text-purple-700 uppercase bg-purple-50 px-2.5 py-1 rounded-lg">Kasus #${idx + 1} (Urutan ${q.order_num})</span>
+            <span class="px-2.5 py-1 bg-purple-100 text-purple-800 rounded-lg font-bold font-mono text-[11px]"><i class="fa-solid fa-calculator mr-1"></i>Hasil: ${cleanMathText(q.correct_answer || '-')}</span>
+          `;
+        } else if (actNum === 1) {
+          badgeHtml = `
+            <span class="font-extrabold text-emerald-700 uppercase bg-emerald-50 px-2.5 py-1 rounded-lg">Pertanyaan Pemantik #${idx + 1}</span>
+            <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-lg font-bold text-[11px]"><i class="fa-solid fa-pen-nib mr-1"></i>Esai Siswa</span>
+          `;
+        } else {
+          badgeHtml = `
+            <span class="font-extrabold text-indigo-700 uppercase bg-indigo-50 px-2.5 py-1 rounded-lg">Soal #${idx + 1} (Urutan ${q.order_num})</span>
+            <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-lg font-bold font-mono"><i class="fa-solid fa-key mr-1"></i>Kunci: ${q.correct_answer || '-'}</span>
+          `;
+        }
+
         item.innerHTML = `
           <div class="flex items-center justify-between pb-2 border-b border-slate-100">
-            <div class="flex items-center gap-2">
-              <span class="font-extrabold text-indigo-700 uppercase bg-indigo-50 px-2.5 py-1 rounded-lg">Soal #${idx + 1} (Urutan ${q.order_num})</span>
-              <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-lg font-bold font-mono"><i class="fa-solid fa-key mr-1"></i>Kunci: ${q.correct_answer}</span>
+            <div class="flex items-center gap-2 flex-wrap">
+              ${badgeHtml}
             </div>
-            <div class="flex items-center gap-1.5">
+            <div class="flex items-center gap-1.5 shrink-0">
               <button onclick="App.openEditQuestionModal(${q.id})" class="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all">
                 <i class="fa-solid fa-pen-to-square"></i> Edit Soal
               </button>
@@ -13429,13 +13524,13 @@ const App = (function() {
             </div>
           </div>
 
-          ${q.stimulus_text ? `<div class="p-3 bg-slate-50 border-l-4 border-indigo-400 rounded text-slate-700 italic leading-relaxed">${q.stimulus_text}</div>` : ''}
+          ${q.stimulus_text ? `<div class="p-3 bg-slate-50 border-l-4 border-indigo-400 rounded text-slate-700 italic leading-relaxed">${cleanMathText(q.stimulus_text)}</div>` : ''}
           ${imageHtml}
-          <div class="font-bold text-slate-800 text-sm leading-relaxed">${q.question_text}</div>
-          ${optionsHtml}
+          <div class="font-bold text-slate-800 text-sm leading-relaxed">${cleanMathText(q.question_text)}</div>
+          ${previewHtml}
           ${q.explanation ? `
             <div class="mt-2 p-2.5 bg-sky-50/70 border border-sky-100 rounded-xl text-sky-900 text-[11px] leading-relaxed">
-              <b class="text-sky-800"><i class="fa-solid fa-lightbulb mr-1"></i>Pembahasan:</b> ${q.explanation}
+              <b class="text-sky-800"><i class="fa-solid fa-lightbulb mr-1"></i>${actNum === 7 ? 'Langkah Penyelesaian / Analisis:' : 'Pembahasan:'}</b> ${cleanMathText(q.explanation)}
             </div>
           ` : ''}
         `;
@@ -13448,27 +13543,39 @@ const App = (function() {
 
   // Modal Tambah / Edit Soal
   function openEditQuestionModal(qId = 0) {
-    const q = (qId && teacherQuestionsMap[qId]) ? teacherQuestionsMap[qId] : null;
+    let q = (qId && teacherQuestionsMap[qId]) ? teacherQuestionsMap[qId] : null;
+    if (!q && qId && window.StorageService && StorageService.db) {
+      const db = StorageService.db.getDB();
+      q = db.questions.find(x => x.id == qId) || null;
+    }
     const isEdit = !!q;
 
-    const currentAct = q ? q.activity_number : currentQBActivity;
-    const currentOrder = q ? q.order_num : 1;
+    let currentAct = currentQBActivity || 5;
+    if (q) {
+      if (q.activity_number) currentAct = parseInt(q.activity_number, 10);
+      else if (q.activity_id) currentAct = parseInt(q.activity_id, 10);
+    }
+    const currentOrder = q ? (q.order_num || 1) : 1;
     const currentStimulus = q ? (q.stimulus_text || '') : '';
     const currentImage = q ? (q.stimulus_image_url || '') : '';
     const currentText = q ? (q.question_text || '') : '';
-    const currentOpts = (q && q.options) ? q.options : { A: '', B: '', C: '', D: '', E: '' };
-    const currentKey = q ? q.correct_answer : 'A';
+    const currentOpts = (q && q.options && typeof q.options === 'object') ? q.options : { A: '', B: '', C: '', D: '', E: '' };
+    const currentKey = q ? (q.correct_answer || 'A') : 'A';
     const currentExp = q ? (q.explanation || '') : '';
 
+    const currentTipe = (q && q.options && q.options.Tipe) ? q.options.Tipe : 'Contoh Soal Kontekstual Literasi Numerasi';
+    const currentKonsep = (q && q.options && q.options.Konsep) ? q.options.Konsep : 'Perbandingan Trigonometri';
+
     Swal.fire({
-      title: isEdit ? `Edit Soal #${q.order_num}` : 'Tambah Soal Baru',
-      width: '680px',
+      title: isEdit ? `Edit Butir Soal (Aktivitas ${currentAct})` : 'Tambah Soal Baru',
+      width: '720px',
       html: `
-        <div class="text-left text-xs space-y-3 max-h-[70vh] overflow-y-auto pr-1">
+        <div class="text-left text-xs space-y-3 max-h-[72vh] overflow-y-auto pr-1">
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block font-bold text-slate-700 mb-1">Pilihan Modul Aktivitas:</label>
               <select id="edit-q-act" class="w-full p-2 border border-slate-300 rounded-lg text-xs font-bold text-slate-800">
+                <option value="1" ${currentAct == 1 ? 'selected' : ''}>Aktivitas 1 (Pertanyaan Pemantik)</option>
                 <option value="5" ${currentAct == 5 ? 'selected' : ''}>Aktivitas 5 (Latihan Pemahaman)</option>
                 <option value="7" ${currentAct == 7 ? 'selected' : ''}>Aktivitas 7 (Contoh Literasi Numerasi)</option>
                 <option value="8" ${currentAct == 8 ? 'selected' : ''}>Aktivitas 8 (Sumatif Literasi Numerasi)</option>
@@ -13482,12 +13589,12 @@ const App = (function() {
 
           <div>
             <label class="block font-bold text-slate-700 mb-1">Teks Stimulus Narasi / Konteks Nyata (Opsional):</label>
-            <textarea id="edit-q-stimulus" rows="2" class="w-full p-2 border border-slate-300 rounded-lg text-xs" placeholder="Cerita pengantar atau data situasi kontekstual...">${currentStimulus}</textarea>
+            <textarea id="edit-q-stimulus" rows="3" class="w-full p-2 border border-slate-300 rounded-lg text-xs" placeholder="Cerita pengantar atau data situasi kontekstual...">${currentStimulus}</textarea>
           </div>
 
           <div>
             <label class="block font-bold text-slate-700 mb-1">URL / Path Media Gambar Pendukung (Opsional):</label>
-            <input type="text" id="edit-q-image" value="${currentImage}" placeholder="Contoh: assets/images/stimulus_pesawat.png atau link gambar..." class="w-full p-2 border border-slate-300 rounded-lg text-xs">
+            <input type="text" id="edit-q-image" value="${currentImage}" placeholder="Contoh: assets/images/stimulus_pesawat.svg atau nama file..." class="w-full p-2 border border-slate-300 rounded-lg text-xs">
           </div>
 
           <div>
@@ -13495,7 +13602,23 @@ const App = (function() {
             <textarea id="edit-q-text" rows="3" class="w-full p-2 border border-slate-300 rounded-lg text-xs font-bold" placeholder="Tuliskan bunyi pertanyaan soal...">${currentText}</textarea>
           </div>
 
-          <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+          <!-- Bagian Khusus Aktivitas 7: Tipe & Konsep -->
+          <div id="section-act7-meta" class="${currentAct == 7 ? '' : 'hidden'} p-3 bg-purple-50/70 border border-purple-200 rounded-xl space-y-2">
+            <div class="font-bold text-purple-900 uppercase text-[11px] tracking-wider">Metadata Kasus Literasi (Aktivitas 7):</div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-slate-600 text-[11px] font-bold mb-1">Label Tipe Kasus:</label>
+                <input type="text" id="edit-q-tipe" value="${currentTipe.replace(/"/g, '&quot;')}" class="w-full p-1.5 border border-purple-200 rounded-lg text-xs bg-white" placeholder="Contoh: Contoh Soal Desain Arsitektur">
+              </div>
+              <div>
+                <label class="block text-slate-600 text-[11px] font-bold mb-1">Fokus Konsep Matematis:</label>
+                <input type="text" id="edit-q-konsep" value="${currentKonsep.replace(/"/g, '&quot;')}" class="w-full p-1.5 border border-purple-200 rounded-lg text-xs bg-white" placeholder="Contoh: Tangen & Teorema Pythagoras">
+              </div>
+            </div>
+          </div>
+
+          <!-- Bagian Khusus Aktivitas 5 & 8: Opsi Pilihan Ganda -->
+          <div id="section-mc-options" class="${(currentAct == 5 || currentAct == 8) ? '' : 'hidden'} p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
             <label class="block font-bold text-slate-700 uppercase text-[11px] tracking-wider">Opsi Jawaban Pilihan Ganda (A - E):</label>
             <div class="space-y-1.5">
               ${['A', 'B', 'C', 'D', 'E'].map(opt => `
@@ -13507,10 +13630,11 @@ const App = (function() {
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-3">
-            <div>
+          <!-- Bagian Kunci Jawaban / Hasil Akhir -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div id="section-mc-key" class="${(currentAct == 5 || currentAct == 8) ? '' : 'hidden'}">
               <label class="block font-bold text-slate-700 mb-1">Kunci Jawaban Benar: <span class="text-rose-500">*</span></label>
-              <select id="edit-q-correct" class="w-full p-2 border border-slate-300 rounded-lg text-xs font-mono font-bold text-indigo-700">
+              <select id="edit-q-correct-select" class="w-full p-2 border border-slate-300 rounded-lg text-xs font-mono font-bold text-indigo-700">
                 <option value="A" ${currentKey === 'A' ? 'selected' : ''}>A</option>
                 <option value="B" ${currentKey === 'B' ? 'selected' : ''}>B</option>
                 <option value="C" ${currentKey === 'C' ? 'selected' : ''}>C</option>
@@ -13518,15 +13642,21 @@ const App = (function() {
                 <option value="E" ${currentKey === 'E' ? 'selected' : ''}>E</option>
               </select>
             </div>
-            <div>
-              <label class="block font-bold text-slate-700 mb-1">Status Aktivitas Terkait:</label>
-              <div class="p-2 bg-slate-100 rounded-lg text-slate-500 text-xs italic">Tersimpan di database MySQL</div>
+
+            <div id="section-text-answer" class="${currentAct == 7 ? '' : 'hidden'} md:col-span-2">
+              <label class="block font-bold text-slate-700 mb-1">Hasil Jawaban Kasus: <span class="text-rose-500">*</span></label>
+              <input type="text" id="edit-q-correct-text" value="${(currentKey || '').replace(/"/g, '&quot;')}" placeholder="Contoh: 45√3 meter (sekitar 77,94 meter)..." class="w-full p-2 border border-purple-300 rounded-lg text-xs font-bold text-purple-900 bg-purple-50/50">
+            </div>
+
+            <div class="${(currentAct == 5 || currentAct == 8) ? '' : 'hidden'}" id="section-status-db">
+              <label class="block font-bold text-slate-700 mb-1">Penyimpanan Terintegrasi:</label>
+              <div class="p-2 bg-slate-100 rounded-lg text-slate-500 text-xs italic">Tersimpan otomatis ke database website</div>
             </div>
           </div>
 
           <div>
-            <label class="block font-bold text-slate-700 mb-1">Pembahasan Soal / Langkah Penyelesaian (Opsional):</label>
-            <textarea id="edit-q-explanation" rows="2" class="w-full p-2 border border-slate-300 rounded-lg text-xs" placeholder="Tuliskan rumus atau pembahasan rinci...">${currentExp}</textarea>
+            <label class="block font-bold text-slate-700 mb-1">${currentAct == 7 ? 'Langkah Penyelesaian / Analisis Matematis Kasus:' : 'Pembahasan Soal / Solusi Langkah:'}</label>
+            <textarea id="edit-q-explanation" rows="3" class="w-full p-2 border border-slate-300 rounded-lg text-xs" placeholder="Tuliskan rumus atau langkah penyelesaian rinci...">${currentExp}</textarea>
           </div>
         </div>
       `,
@@ -13534,13 +13664,44 @@ const App = (function() {
       confirmButtonText: '<i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Soal',
       cancelButtonText: 'Batal',
       confirmButtonColor: '#6366f1',
+      didOpen: () => {
+        const actSelect = document.getElementById('edit-q-act');
+        const secAct7 = document.getElementById('section-act7-meta');
+        const secMcOpts = document.getElementById('section-mc-options');
+        const secMcKey = document.getElementById('section-mc-key');
+        const secTextAns = document.getElementById('section-text-answer');
+        const secStatusDb = document.getElementById('section-status-db');
+
+        actSelect.addEventListener('change', () => {
+          const val = parseInt(actSelect.value, 10);
+          if (val === 7) {
+            secAct7.classList.remove('hidden');
+            secMcOpts.classList.add('hidden');
+            secMcKey.classList.add('hidden');
+            secTextAns.classList.remove('hidden');
+            secStatusDb.classList.add('hidden');
+          } else if (val === 1) {
+            secAct7.classList.add('hidden');
+            secMcOpts.classList.add('hidden');
+            secMcKey.classList.add('hidden');
+            secTextAns.classList.add('hidden');
+            secStatusDb.classList.add('hidden');
+          } else {
+            // 5 or 8
+            secAct7.classList.add('hidden');
+            secMcOpts.classList.remove('hidden');
+            secMcKey.classList.remove('hidden');
+            secTextAns.classList.add('hidden');
+            secStatusDb.classList.remove('hidden');
+          }
+        });
+      },
       preConfirm: () => {
-        const actNum = parseInt(document.getElementById('edit-q-act').value);
-        const orderNum = parseInt(document.getElementById('edit-q-order').value) || 1;
+        const actNum = parseInt(document.getElementById('edit-q-act').value, 10);
+        const orderNum = parseInt(document.getElementById('edit-q-order').value, 10) || 1;
         const stimulusText = document.getElementById('edit-q-stimulus').value.trim();
         const stimulusImage = document.getElementById('edit-q-image').value.trim();
         const questionText = document.getElementById('edit-q-text').value.trim();
-        const correct = document.getElementById('edit-q-correct').value;
         const explanation = document.getElementById('edit-q-explanation').value.trim();
 
         if (!questionText) {
@@ -13548,13 +13709,32 @@ const App = (function() {
           return false;
         }
 
-        const options = {
-          A: document.getElementById('edit-q-opt-A').value.trim(),
-          B: document.getElementById('edit-q-opt-B').value.trim(),
-          C: document.getElementById('edit-q-opt-C').value.trim(),
-          D: document.getElementById('edit-q-opt-D').value.trim(),
-          E: document.getElementById('edit-q-opt-E').value.trim()
-        };
+        let options = null;
+        let correct = '';
+
+        if (actNum === 7) {
+          const tipe = document.getElementById('edit-q-tipe').value.trim() || 'Contoh Soal Kontekstual Literasi Numerasi';
+          const konsep = document.getElementById('edit-q-konsep').value.trim() || 'Perbandingan Trigonometri';
+          options = { Tipe: tipe, Konsep: konsep };
+          correct = document.getElementById('edit-q-correct-text').value.trim();
+          if (!correct) {
+            Swal.showValidationMessage('Hasil jawaban kasus wajib diisi.');
+            return false;
+          }
+        } else if (actNum === 1) {
+          options = null;
+          correct = 'Esai Analisis';
+        } else {
+          // Act 5 or 8
+          options = {
+            A: document.getElementById('edit-q-opt-A').value.trim(),
+            B: document.getElementById('edit-q-opt-B').value.trim(),
+            C: document.getElementById('edit-q-opt-C').value.trim(),
+            D: document.getElementById('edit-q-opt-D').value.trim(),
+            E: document.getElementById('edit-q-opt-E').value.trim()
+          };
+          correct = document.getElementById('edit-q-correct-select').value;
+        }
 
         return {
           id: isEdit ? q.id : 0,

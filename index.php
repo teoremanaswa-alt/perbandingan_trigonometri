@@ -202,6 +202,7 @@
           <h1 class="text-sm md:text-base font-black font-heading tracking-tight leading-none text-slate-800">
             PERBANDINGAN TRIGONOMETRI
           </h1>
+          <p class="text-[11px] font-bold text-slate-500 mt-0.5 tracking-normal">Matematika Umum Kelas X</p>
         </div>
       </div>
 
@@ -375,6 +376,27 @@
             <i class="fa-solid fa-user-plus"></i>
             <span>Tambah Siswa Baru</span>
           </button>
+        </div>
+
+        <!-- Manajemen Token Ujian (Aktivitas 8) -->
+        <div class="pt-3 border-t border-slate-100 space-y-2">
+          <div class="p-3.5 bg-gradient-to-br from-rose-50 via-white to-amber-50 rounded-2xl border border-rose-200 space-y-2 shadow-2xs">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-bold text-rose-800 uppercase tracking-wider flex items-center gap-1.5">
+                <i class="fa-solid fa-key text-rose-600"></i> Token Ujian (Akt 8)
+              </span>
+              <span id="teacher-token-badge" class="px-2 py-0.5 rounded-lg bg-rose-600 text-white font-mono font-black text-xs shadow-2xs">
+                TRIGONO2026
+              </span>
+            </div>
+            <p class="text-[11px] text-slate-500 leading-tight">
+              Token yang wajib diinput siswa sebelum membuka Asesmen Sumatif (Aktivitas 8).
+            </p>
+            <button onclick="App.openEditTokenModal()" class="w-full py-2 px-2.5 bg-rose-100 hover:bg-rose-200 text-rose-800 rounded-xl text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all border border-rose-200">
+              <i class="fa-solid fa-pen-to-square text-xs"></i>
+              <span>Ubah Token Ujian</span>
+            </button>
+          </div>
         </div>
 
         <!-- Manajemen & Backup Database (Khusus GitHub Pages & Offline) -->

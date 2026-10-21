@@ -604,7 +604,7 @@ try {
     $reflectionsData = [
         ["Bagaimana tingkat pemahaman Anda terhadap konsep rasio trigonometri (sin, cos, tan) setelah mempraktikkan simulasi interaktif ini?", "scale", true],
         ["Seberapa menarik dan membantukah media pembelajaran digital ini dalam memudahkan Anda memahami konsep abstrak matematika?", "scale", true],
-        ["Aktivitas pembelajaran nomor berapa yang menurut Anda paling menantang dan memerlukan penjelasan tambahan dari Bapak Guru Aswan?", "essay", true],
+        ["Aktivitas pembelajaran nomor berapa yang menurut Anda paling menantang dan memerlukan penjelasan tambahan dari guru?", "essay", true],
         ["Tuliskan satu hikmah atau penerapan perbandingan trigonometri di kehidupan sehari-hari yang paling berkesan bagi Anda!", "essay", true]
     ];
 
