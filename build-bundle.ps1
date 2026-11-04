@@ -1,3 +1,6 @@
+$root = $PSScriptRoot
+if (-not $root) { $root = "C:\Users\ThinkPad\.gemini\antigravity\scratch\trigonometri-interaktif" }
+
 $files = @(
   'assets/js/logo-data.js',
   'assets/js/svg-data.js',
@@ -10,14 +13,18 @@ $files = @(
 )
 $parts = @()
 foreach ($f in $files) {
-  $p = (Resolve-Path $f).Path
-  $text = [System.IO.File]::ReadAllText($p, [System.Text.Encoding]::UTF8)
-  $parts += $text
+  $p = Join-Path $root $f
+  if (Test-Path $p) {
+    $text = [System.IO.File]::ReadAllText($p, [System.Text.Encoding]::UTF8)
+    $parts += $text
+  } else {
+    Write-Error "File not found: $p"
+  }
 }
 $bundle = $parts -join "`n;`n"
 
-$bundlePath1 = (Resolve-Path "bundle.js").Path
-$bundlePath2 = (Resolve-Path "assets/js/bundle.js").Path
+$bundlePath1 = Join-Path $root "bundle.js"
+$bundlePath2 = Join-Path $root "assets/js/bundle.js"
 
 [System.IO.File]::WriteAllText($bundlePath1, $bundle, [System.Text.Encoding]::UTF8)
 [System.IO.File]::WriteAllText($bundlePath2, $bundle, [System.Text.Encoding]::UTF8)

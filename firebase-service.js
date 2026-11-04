@@ -523,6 +523,16 @@ window.FirebaseService = (function() {
         questionsMap[q.id] = q;
       });
 
+      const q1List = Object.values(questionsMap).filter(q => q.activity_id == 1);
+      const q2List = Object.values(questionsMap).filter(q => q.activity_id == 2);
+      const q5List = Object.values(questionsMap).filter(q => q.activity_id == 5);
+      const q8List = Object.values(questionsMap).filter(q => q.activity_id == 8);
+
+      const q1Ids = q1List.map(q => q.id);
+      const q2Ids = q2List.map(q => q.id);
+      const q5Ids = q5List.map(q => q.id);
+      const q8Ids = q8List.map(q => q.id);
+
       const progressList = [];
       progSnap.forEach(d => progressList.push(d.data()));
 
@@ -535,17 +545,17 @@ window.FirebaseService = (function() {
         if (classFilter && classFilter !== 'all' && u.class_name !== classFilter) return;
 
         // Cari aktivitas tertinggi
-        const uProgs = progressList.filter(p => p.user_id === u.id);
+        const uProgs = progressList.filter(p => p.user_id == u.id);
         let curAct = 1;
         uProgs.forEach(p => {
           if (p.status === 'completed' || p.status === 'in_progress') {
-            if (p.activity_id > curAct) curAct = p.activity_id;
+            const aId = parseInt(p.activity_id, 10) || 1;
+            if (aId > curAct) curAct = aId;
           }
         });
 
         // Skor Akt 5
-        const q5Ids = Object.values(questionsMap).filter(q => q.activity_id === 5).map(q => q.id);
-        const a5 = answersList.filter(a => a.user_id === u.id && q5Ids.includes(a.question_id));
+        const a5 = answersList.filter(a => a.user_id == u.id && q5Ids.some(qid => qid == a.question_id));
         let act5Score = null;
         if (a5.length > 0) {
           const sum = a5.reduce((acc, curr) => acc + (parseFloat(curr.score) || 0), 0);
@@ -553,28 +563,44 @@ window.FirebaseService = (function() {
         }
 
         // Skor Akt 8
-        const q8Ids = Object.values(questionsMap).filter(q => q.activity_id === 8).map(q => q.id);
-        const a8 = answersList.filter(a => a.user_id === u.id && q8Ids.includes(a.question_id));
+        const a8 = answersList.filter(a => a.user_id == u.id && q8Ids.some(qid => qid == a.question_id));
         let act8Score = null;
         if (a8.length > 0) {
           const sum = a8.reduce((acc, curr) => acc + (parseFloat(curr.score) || 0), 0);
           act8Score = Math.round(sum / a8.length);
         }
 
+        // Nilai & Jawaban LKPD (Akt 2) & Pemantik (Akt 1)
+        const a1 = answersList.find(a => a.user_id == u.id && q1Ids.some(qid => qid == a.question_id));
+        const a2 = answersList.find(a => a.user_id == u.id && q2Ids.some(qid => qid == a.question_id));
+
         students.push({
           id: u.id,
-          name: u.name,
-          access_code: u.access_code,
+          name: u.name || '',
+          access_code: u.access_code || '',
+          role: u.role || 'siswa',
           class_name: u.class_name || 'XA',
+          class_id: u.class_id,
           current_activity: curAct,
           act5_score: act5Score,
-          act8_score: act8Score
+          act8_score: act8Score,
+          act1_score: a1 ? (a1.score ?? null) : null,
+          act1_feedback: a1 ? (a1.teacher_feedback ?? null) : null,
+          act1_answer: a1 ? (a1.student_answer ?? null) : null,
+          act2_score: a2 ? (a2.score ?? null) : null,
+          act2_feedback: a2 ? (a2.teacher_feedback ?? null) : null,
+          act2_answer: a2 ? (a2.student_answer ?? null) : null
         });
       });
 
-      // Sort
+      // Natural numerical sort: A1 to A36
       students.sort((a, b) => {
-        if (a.class_name !== b.class_name) return a.class_name.localeCompare(b.class_name);
+        if (a.class_name !== b.class_name) {
+          return (a.class_name || '').localeCompare(b.class_name || '');
+        }
+        const numA = parseInt((a.access_code || '').replace(/\D/g, ''), 10) || 0;
+        const numB = parseInt((b.access_code || '').replace(/\D/g, ''), 10) || 0;
+        if (numA !== numB) return numA - numB;
         return (a.access_code || '').localeCompare(b.access_code || '');
       });
 
@@ -585,8 +611,19 @@ window.FirebaseService = (function() {
       const scores8 = students.filter(s => s.act8_score !== null).map(s => s.act8_score);
       const avgAct8 = scores8.length > 0 ? (scores8.reduce((a, b) => a + b, 0) / scores8.length).toFixed(1) : 0;
 
+      const defaultClasses = [
+        { id: 1, class_name: 'XA' },
+        { id: 2, class_name: 'XB' },
+        { id: 3, class_name: 'XC' },
+        { id: 4, class_name: 'XD' },
+        { id: 5, class_name: 'XE' },
+        { id: 6, class_name: 'XF' }
+      ];
+
       return {
         success: true,
+        classes: defaultClasses,
+        selected_class: classFilter || 'all',
         students,
         stats: {
           total_students: totalStudents,

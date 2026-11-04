@@ -556,6 +556,16 @@ window.FirebaseService = (function() {
         questionsMap[q.id] = q;
       });
 
+      const q1List = Object.values(questionsMap).filter(q => q.activity_id == 1);
+      const q2List = Object.values(questionsMap).filter(q => q.activity_id == 2);
+      const q5List = Object.values(questionsMap).filter(q => q.activity_id == 5);
+      const q8List = Object.values(questionsMap).filter(q => q.activity_id == 8);
+
+      const q1Ids = q1List.map(q => q.id);
+      const q2Ids = q2List.map(q => q.id);
+      const q5Ids = q5List.map(q => q.id);
+      const q8Ids = q8List.map(q => q.id);
+
       const progressList = [];
       progSnap.forEach(d => progressList.push(d.data()));
 
@@ -568,17 +578,17 @@ window.FirebaseService = (function() {
         if (classFilter && classFilter !== 'all' && u.class_name !== classFilter) return;
 
         // Cari aktivitas tertinggi
-        const uProgs = progressList.filter(p => p.user_id === u.id);
+        const uProgs = progressList.filter(p => p.user_id == u.id);
         let curAct = 1;
         uProgs.forEach(p => {
           if (p.status === 'completed' || p.status === 'in_progress') {
-            if (p.activity_id > curAct) curAct = p.activity_id;
+            const aId = parseInt(p.activity_id, 10) || 1;
+            if (aId > curAct) curAct = aId;
           }
         });
 
         // Skor Akt 5
-        const q5Ids = Object.values(questionsMap).filter(q => q.activity_id === 5).map(q => q.id);
-        const a5 = answersList.filter(a => a.user_id === u.id && q5Ids.includes(a.question_id));
+        const a5 = answersList.filter(a => a.user_id == u.id && q5Ids.some(qid => qid == a.question_id));
         let act5Score = null;
         if (a5.length > 0) {
           const sum = a5.reduce((acc, curr) => acc + (parseFloat(curr.score) || 0), 0);
@@ -586,28 +596,44 @@ window.FirebaseService = (function() {
         }
 
         // Skor Akt 8
-        const q8Ids = Object.values(questionsMap).filter(q => q.activity_id === 8).map(q => q.id);
-        const a8 = answersList.filter(a => a.user_id === u.id && q8Ids.includes(a.question_id));
+        const a8 = answersList.filter(a => a.user_id == u.id && q8Ids.some(qid => qid == a.question_id));
         let act8Score = null;
         if (a8.length > 0) {
           const sum = a8.reduce((acc, curr) => acc + (parseFloat(curr.score) || 0), 0);
           act8Score = Math.round(sum / a8.length);
         }
 
+        // Nilai & Jawaban LKPD (Akt 2) & Pemantik (Akt 1)
+        const a1 = answersList.find(a => a.user_id == u.id && q1Ids.some(qid => qid == a.question_id));
+        const a2 = answersList.find(a => a.user_id == u.id && q2Ids.some(qid => qid == a.question_id));
+
         students.push({
           id: u.id,
-          name: u.name,
-          access_code: u.access_code,
+          name: u.name || '',
+          access_code: u.access_code || '',
+          role: u.role || 'siswa',
           class_name: u.class_name || 'XA',
+          class_id: u.class_id,
           current_activity: curAct,
           act5_score: act5Score,
-          act8_score: act8Score
+          act8_score: act8Score,
+          act1_score: a1 ? (a1.score ?? null) : null,
+          act1_feedback: a1 ? (a1.teacher_feedback ?? null) : null,
+          act1_answer: a1 ? (a1.student_answer ?? null) : null,
+          act2_score: a2 ? (a2.score ?? null) : null,
+          act2_feedback: a2 ? (a2.teacher_feedback ?? null) : null,
+          act2_answer: a2 ? (a2.student_answer ?? null) : null
         });
       });
 
-      // Sort
+      // Natural numerical sort: A1 to A36
       students.sort((a, b) => {
-        if (a.class_name !== b.class_name) return a.class_name.localeCompare(b.class_name);
+        if (a.class_name !== b.class_name) {
+          return (a.class_name || '').localeCompare(b.class_name || '');
+        }
+        const numA = parseInt((a.access_code || '').replace(/\D/g, ''), 10) || 0;
+        const numB = parseInt((b.access_code || '').replace(/\D/g, ''), 10) || 0;
+        if (numA !== numB) return numA - numB;
         return (a.access_code || '').localeCompare(b.access_code || '');
       });
 
@@ -618,8 +644,19 @@ window.FirebaseService = (function() {
       const scores8 = students.filter(s => s.act8_score !== null).map(s => s.act8_score);
       const avgAct8 = scores8.length > 0 ? (scores8.reduce((a, b) => a + b, 0) / scores8.length).toFixed(1) : 0;
 
+      const defaultClasses = [
+        { id: 1, class_name: 'XA' },
+        { id: 2, class_name: 'XB' },
+        { id: 3, class_name: 'XC' },
+        { id: 4, class_name: 'XD' },
+        { id: 5, class_name: 'XE' },
+        { id: 6, class_name: 'XF' }
+      ];
+
       return {
         success: true,
+        classes: defaultClasses,
+        selected_class: classFilter || 'all',
         students,
         stats: {
           total_students: totalStudents,
@@ -9671,6 +9708,20 @@ window.StorageService = (function() {
           try {
             const cloudDash = await FirebaseService.teacher.getDashboard(className);
             if (cloudDash && cloudDash.success && cloudDash.students && cloudDash.students.length > 0) {
+              if (!cloudDash.classes || !cloudDash.classes.length) {
+                const localData = StorageService.teacher.getDashboard(className);
+                cloudDash.classes = localData.classes || [
+                  { id: 1, class_name: 'XA' },
+                  { id: 2, class_name: 'XB' },
+                  { id: 3, class_name: 'XC' },
+                  { id: 4, class_name: 'XD' },
+                  { id: 5, class_name: 'XE' },
+                  { id: 6, class_name: 'XF' }
+                ];
+              }
+              if (!cloudDash.selected_class) {
+                cloudDash.selected_class = className;
+              }
               return cloudDash;
             }
           } catch (fe) {
@@ -14055,20 +14106,36 @@ const App = (function() {
     try {
       const res = await fetch(`api/teacher.php?action=dashboard&class=${className}`);
       const data = await res.json();
-      if (!data.success) return;
+      if (!data || !data.success) {
+        rosterBody.innerHTML = `
+          <tr>
+            <td colspan="7" class="text-center py-10 text-rose-500 font-bold">
+              Gagal memuat data siswa. Silakan klik muat ulang.
+            </td>
+          </tr>
+        `;
+        return;
+      }
 
       // Update KPIs
-      document.getElementById('kpi-total-students').textContent = data.stats.total_students;
-      document.getElementById('kpi-completed-students').textContent = data.stats.completed_students;
-      document.getElementById('kpi-avg-act5').textContent = data.stats.avg_act5;
-      document.getElementById('kpi-avg-act8').textContent = data.stats.avg_act8;
+      if (data.stats) {
+        const kpiTotal = document.getElementById('kpi-total-students');
+        const kpiComp = document.getElementById('kpi-completed-students');
+        const kpiAct5 = document.getElementById('kpi-avg-act5');
+        const kpiAct8 = document.getElementById('kpi-avg-act8');
+        if (kpiTotal) kpiTotal.textContent = data.stats.total_students ?? 0;
+        if (kpiComp) kpiComp.textContent = data.stats.completed_students ?? 0;
+        if (kpiAct5) kpiAct5.textContent = data.stats.avg_act5 ?? 0;
+        if (kpiAct8) kpiAct8.textContent = data.stats.avg_act8 ?? 0;
+      }
 
-      // Render tab kelas
-      renderClassTabs(data.classes, data.selected_class);
+      // Render tab kelas (defensif)
+      renderClassTabs(data.classes, data.selected_class || className);
 
       // Render Tabel Siswa
       rosterBody.innerHTML = '';
-      if (data.students.length === 0) {
+      const studentList = Array.isArray(data.students) ? data.students : [];
+      if (studentList.length === 0) {
         rosterBody.innerHTML = `
           <tr>
             <td colspan="7" class="text-center py-10 text-slate-400">
@@ -14079,41 +14146,46 @@ const App = (function() {
         return;
       }
 
-      data.students.forEach((st, idx) => {
+      studentList.forEach((st, idx) => {
         const tr = document.createElement('tr');
         tr.className = 'hover:bg-slate-50 transition-colors border-b border-slate-100';
 
-        const actBadge = st.current_activity >= 10
+        const curAct = st.current_activity || 1;
+        const actBadge = curAct >= 10
           ? '<span class="badge-status badge-completed"><i class="fa-solid fa-check"></i> Tamat (Akt 10)</span>'
-          : `<span class="badge-status badge-in-progress">Aktivitas ${st.current_activity}</span>`;
+          : `<span class="badge-status badge-in-progress">Aktivitas ${curAct}</span>`;
+
+        const safeName = (st.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        const safeFeedback = (st.act2_feedback || '').replace(/'/g, "\\'");
+        const safeAnswer = encodeURIComponent(st.act2_answer || '');
 
         tr.innerHTML = `
           <td class="p-3.5 text-center font-bold text-slate-400 font-sans">${idx + 1}</td>
           <td class="p-3.5 font-bold text-slate-800">
-            ${st.name}
+            ${st.name || '-'}
             <div class="text-[11px] text-slate-400 font-normal">ID: #${st.id}</div>
           </td>
-          <td class="p-3.5 text-center font-bold text-indigo-700">${st.class_name}</td>
-          <td class="p-3.5 text-center font-mono font-bold text-slate-700">${st.access_code}</td>
+          <td class="p-3.5 text-center font-bold text-indigo-700">${st.class_name || '-'}</td>
+          <td class="p-3.5 text-center font-mono font-bold text-slate-700">${st.access_code || '-'}</td>
           <td class="p-3.5 text-center">${actBadge}</td>
-          <td class="p-3.5 text-center font-mono font-bold ${st.act8_score !== null ? 'text-rose-600' : 'text-slate-300'}">
-            ${st.act8_score !== null ? st.act8_score : '-'}
+          <td class="p-3.5 text-center font-mono font-bold ${st.act8_score !== null && st.act8_score !== undefined ? 'text-rose-600' : 'text-slate-300'}">
+            ${st.act8_score !== null && st.act8_score !== undefined ? st.act8_score : '-'}
           </td>
           <td class="p-3.5 text-center">
             <div class="flex items-center justify-center gap-1.5">
               <button onclick="App.viewStudentDetailSubmission(${st.id})" title="Periksa Seluruh Hasil Pengerjaan Siswa" class="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg text-xs font-bold border border-indigo-200 flex items-center gap-1">
                 <i class="fa-solid fa-clipboard-check"></i> Periksa
               </button>
-              <button onclick="App.openEditStudentModal(${st.id}, '${st.name.replace(/'/g, "\\'")}', '${st.class_name}', '${st.access_code}')" title="Edit Data Siswa (Nama, Kelas, Kode)" class="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg text-xs font-bold border border-amber-200 flex items-center gap-1">
+              <button onclick="App.openEditStudentModal(${st.id}, '${safeName}', '${st.class_name || ''}', '${st.access_code || ''}')" title="Edit Data Siswa (Nama, Kelas, Kode)" class="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg text-xs font-bold border border-amber-200 flex items-center gap-1">
                 <i class="fa-solid fa-pen"></i> Edit
               </button>
-              <button onclick="App.openGradingModal(${st.id}, '${st.name.replace(/'/g, "\\'")}', 2, ${st.act2_score ?? 0}, '${(st.act2_feedback ?? '').replace(/'/g, "\\'")}', '${encodeURIComponent(st.act2_answer || '')}')" title="Nilai LKPD (Akt 2)" class="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg text-xs font-bold border border-emerald-200 flex items-center gap-1">
+              <button onclick="App.openGradingModal(${st.id}, '${safeName}', 2, ${st.act2_score ?? 0}, '${safeFeedback}', '${safeAnswer}')" title="Nilai LKPD (Akt 2)" class="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg text-xs font-bold border border-emerald-200 flex items-center gap-1">
                 <i class="fa-solid fa-pen-to-square"></i> LKPD
               </button>
-              <button onclick="App.resetStudentProgress(${st.id}, '${st.name.replace(/'/g, "\\'")}')" title="Reset Remedial" class="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg text-xs font-bold border border-amber-200">
+              <button onclick="App.resetStudentProgress(${st.id}, '${safeName}')" title="Reset Remedial" class="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg text-xs font-bold border border-amber-200">
                 <i class="fa-solid fa-rotate-left"></i>
               </button>
-              <button onclick="App.deleteStudent(${st.id}, '${st.name.replace(/'/g, "\\'")}')" title="Hapus Siswa" class="p-1.5 text-red-500 hover:bg-red-50 rounded-lg text-xs font-bold border border-red-200">
+              <button onclick="App.deleteStudent(${st.id}, '${safeName}')" title="Hapus Siswa" class="p-1.5 text-red-500 hover:bg-red-50 rounded-lg text-xs font-bold border border-red-200">
                 <i class="fa-solid fa-trash"></i>
               </button>
             </div>
@@ -14124,17 +14196,36 @@ const App = (function() {
 
       const badge = document.getElementById('roster-count-badge');
       if (badge) {
-        badge.textContent = `Total: ${data.students.length} Siswa (${className === 'all' ? 'Semua Kelas' : 'Kelas ' + className})`;
+        badge.textContent = `Total: ${studentList.length} Siswa (${className === 'all' ? 'Semua Kelas' : 'Kelas ' + className})`;
       }
 
     } catch (e) {
-      console.error(e);
+      console.error('loadTeacherRoster error:', e);
+      if (rosterBody) {
+        rosterBody.innerHTML = `
+          <tr>
+            <td colspan="7" class="text-center py-10 text-rose-500 font-bold">
+              Terjadi kendala saat memuat data siswa: ${e.message}
+            </td>
+          </tr>
+        `;
+      }
     }
   }
 
-  function renderClassTabs(classes, current) {
+  function renderClassTabs(classes, current = 'all') {
     const container = document.getElementById('teacher-class-tabs');
     const sidebarContainer = document.getElementById('teacher-class-sidebar-pills');
+
+    const defaultClasses = [
+      { id: 1, class_name: 'XA' },
+      { id: 2, class_name: 'XB' },
+      { id: 3, class_name: 'XC' },
+      { id: 4, class_name: 'XD' },
+      { id: 5, class_name: 'XE' },
+      { id: 6, class_name: 'XF' }
+    ];
+    const classList = (Array.isArray(classes) && classes.length > 0) ? classes : defaultClasses;
 
     if (container) {
       container.innerHTML = '';
@@ -14144,7 +14235,7 @@ const App = (function() {
       allBtn.onclick = () => loadTeacherRoster('all');
       container.appendChild(allBtn);
 
-      classes.forEach(c => {
+      classList.forEach(c => {
         const btn = document.createElement('button');
         btn.className = `px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${current === c.class_name ? 'bg-indigo-600 text-white shadow' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`;
         btn.textContent = `Kelas ${c.class_name}`;
@@ -14161,7 +14252,7 @@ const App = (function() {
       allSideBtn.onclick = () => loadTeacherRoster('all');
       sidebarContainer.appendChild(allSideBtn);
 
-      classes.forEach(c => {
+      classList.forEach(c => {
         const btn = document.createElement('button');
         btn.className = `py-1.5 px-2 rounded-lg text-[11px] font-bold transition-all text-center ${current === c.class_name ? 'bg-indigo-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`;
         btn.textContent = c.class_name;
@@ -15109,7 +15200,17 @@ const App = (function() {
         allBtn.onclick = () => initTeacherSubmissions('all');
         pillsContainer.appendChild(allBtn);
 
-        data.classes.forEach(c => {
+        const defaultClasses = [
+          { id: 1, class_name: 'XA' },
+          { id: 2, class_name: 'XB' },
+          { id: 3, class_name: 'XC' },
+          { id: 4, class_name: 'XD' },
+          { id: 5, class_name: 'XE' },
+          { id: 6, class_name: 'XF' }
+        ];
+        const subClasses = (Array.isArray(data.classes) && data.classes.length > 0) ? data.classes : defaultClasses;
+
+        subClasses.forEach(c => {
           const btn = document.createElement('button');
           btn.className = `px-3 py-1 rounded-lg text-xs font-bold transition-all ${currentSubmissionClass === c.class_name ? 'bg-indigo-600 text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`;
           btn.textContent = c.class_name;
