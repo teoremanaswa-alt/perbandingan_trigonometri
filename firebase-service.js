@@ -56,13 +56,11 @@ window.FirebaseService = (function() {
       currentConfig = config;
       if (!firebase.apps || firebase.apps.length === 0) {
         firebase.initializeApp(config);
-      } else {
-        // App sudah ada
       }
 
       db = firebase.firestore();
 
-      // Coba aktifkan offline persistence jika didukung browser
+      // Aktifkan offline persistence jika didukung browser
       try {
         db.enablePersistence({ synchronizeTabs: true }).catch(err => {
           if (err.code !== 'failed-precondition' && err.code !== 'unimplemented') {
@@ -140,7 +138,7 @@ window.FirebaseService = (function() {
         }
       }, err => console.warn('Listener settings notice:', err));
 
-      // B. Listener Bank Soal (Jika guru mengubah soal di laptop, siswa langsung terima)
+      // B. Listener Bank Soal
       db.collection('questions').onSnapshot(snapshot => {
         if (snapshot && !snapshot.empty) {
           const cloudQuestions = [];
@@ -218,7 +216,6 @@ window.FirebaseService = (function() {
         return { success: false, message: 'Data awal (INITIAL_DB_SEED) tidak ditemukan.' };
       }
 
-      // Gunakan Firestore Batch untuk efisiensi maksimal
       let batch = db.batch();
       let opCount = 0;
       const MAX_BATCH = 450;
@@ -317,7 +314,8 @@ window.FirebaseService = (function() {
   function resolveClassName(u) {
     if (!u) return 'XA';
     if (u.class_name && typeof u.class_name === 'string' && u.class_name.trim().length > 0) {
-      return u.class_name.trim().toUpperCase();
+      const cn = u.class_name.trim().toUpperCase();
+      if (['XA', 'XB', 'XC', 'XD', 'XE', 'XF'].includes(cn)) return cn;
     }
     const cid = parseInt(u.class_id, 10);
     if (cid === 1) return 'XA';
@@ -343,8 +341,14 @@ window.FirebaseService = (function() {
     if (!init()) return null;
     try {
       const cleanCode = (code || '').trim().toUpperCase().replace(/[\s\-_]/g, '');
-      const snap = await db.collection('users').where('role', '==', 'siswa').get();
-      if (snap.empty) return null;
+      let snap = await db.collection('users').where('role', '==', 'siswa').get();
+
+      // Jika database Cloud masih kosong, otomatis seed data awal
+      if (snap.empty) {
+        console.log('Database Cloud Firestore masih kosong. Melakukan inisialisasi otomatis data awal...');
+        await seedInitialData();
+        snap = await db.collection('users').where('role', '==', 'siswa').get();
+      }
 
       let matchedUser = null;
       snap.forEach(doc => {
@@ -430,9 +434,11 @@ window.FirebaseService = (function() {
   async function cloudGetActivity(actNum, userId) {
     if (!init()) return null;
     try {
+      const uId = parseInt(userId, 10);
+
       // 1. Cek status aktivitas sebelumnya
       if (actNum > 1) {
-        const prevProgDoc = await db.collection('student_progress').doc(`${userId}_${actNum - 1}`).get();
+        const prevProgDoc = await db.collection('student_progress').doc(`${uId}_${actNum - 1}`).get();
         if (!prevProgDoc.exists || prevProgDoc.data().status !== 'completed') {
           return {
             success: false,
@@ -461,15 +467,20 @@ window.FirebaseService = (function() {
       qSnap.forEach(d => questions.push(d.data()));
       questions.sort((a, b) => (a.order_num || 0) - (b.order_num || 0));
 
+      if (questions.length === 0 && window.StorageService && StorageService.activities) {
+        const localAct = StorageService.activities.get(actNum);
+        if (localAct && localAct.questions) questions = localAct.questions;
+      }
+
       // 4. Ambil progres & jawaban tersimpan
-      const progDoc = await db.collection('student_progress').doc(`${userId}_${actNum}`).get();
+      const progDoc = await db.collection('student_progress').doc(`${uId}_${actNum}`).get();
       const prog = progDoc.exists ? progDoc.data() : { status: actNum === 1 ? 'in_progress' : 'locked' };
 
-      const ansSnap = await db.collection('student_answers').where('user_id', '==', userId).get();
+      const ansSnap = await db.collection('student_answers').where('user_id', '==', uId).get();
       const existingAnswers = [];
       ansSnap.forEach(d => {
         const a = d.data();
-        if (questions.some(q => q.id === a.question_id)) {
+        if (questions.some(q => q.id === a.question_id) || a.question_id == actNum) {
           existingAnswers.push(a);
         }
       });
@@ -504,7 +515,7 @@ window.FirebaseService = (function() {
         }
 
         try {
-          const respSnap = await db.collection('reflection_responses').where('user_id', '==', userId).get();
+          const respSnap = await db.collection('reflection_responses').where('user_id', '==', uId).get();
           respSnap.forEach(d => reflectionResponses.push(d.data()));
         } catch (re) {}
       }
@@ -538,66 +549,279 @@ window.FirebaseService = (function() {
     return null;
   }
 
-  async function cloudSubmitActivity(actNum, payload, userId) {
+  async function cloudGetProgress(userId) {
+    if (!init()) return null;
+    try {
+      const uId = parseInt(userId, 10);
+      let progSnap = await db.collection('student_progress').where('user_id', '==', uId).get();
+
+      if (progSnap.empty) {
+        const batch = db.batch();
+        for (let i = 1; i <= 10; i++) {
+          const pref = db.collection('student_progress').doc(`${uId}_${i}`);
+          batch.set(pref, {
+            user_id: uId,
+            activity_id: i,
+            status: i === 1 ? 'in_progress' : 'locked',
+            score: null,
+            completed_at: null
+          });
+        }
+        await batch.commit();
+        progSnap = await db.collection('student_progress').where('user_id', '==', uId).get();
+      }
+
+      const progMap = {};
+      progSnap.forEach(d => {
+        const p = d.data();
+        progMap[p.activity_id] = p;
+      });
+
+      const progress = [];
+      let completedCount = 0;
+      let currentActive = 1;
+
+      for (let i = 1; i <= 10; i++) {
+        const sp = progMap[i];
+        const actInfo = ACTIVITY_INFO[i] || { title: `Aktivitas ${i}`, subtitle: '' };
+        const status = sp ? sp.status : (i === 1 ? 'in_progress' : 'locked');
+        if (status === 'completed') completedCount++;
+        if (status === 'in_progress') currentActive = i;
+
+        progress.push({
+          activity_id: i,
+          activity_number: i,
+          title: actInfo.title,
+          subtitle: actInfo.subtitle,
+          status: status,
+          score: sp ? sp.score : null,
+          updated_at: sp ? sp.completed_at : null
+        });
+      }
+
+      if (completedCount === 10) currentActive = 10;
+      const percentage = Math.round((completedCount / 10) * 100);
+
+      // Sinkronkan ke StorageService lokal agar instan
+      if (window.StorageService && StorageService.db) {
+        try {
+          const ldb = StorageService.db.getDB();
+          if (ldb && Array.isArray(ldb.student_progress)) {
+            progress.forEach(p => {
+              let lsp = ldb.student_progress.find(x => x.user_id == uId && x.activity_id == p.activity_id);
+              if (lsp) {
+                lsp.status = p.status;
+                lsp.score = p.score;
+              } else {
+                ldb.student_progress.push({
+                  user_id: uId,
+                  activity_id: p.activity_id,
+                  status: p.status,
+                  score: p.score
+                });
+              }
+            });
+            StorageService.db.saveDB(ldb);
+          }
+        } catch (le) {}
+      }
+
+      return {
+        success: true,
+        message: 'Progres belajar Cloud Firestore berhasil dimuat',
+        progress,
+        completed_count: completedCount,
+        total_activities: 10,
+        percentage,
+        current_active: currentActive
+      };
+    } catch (e) {
+      console.warn('cloudGetProgress error:', e);
+    }
+    return null;
+  }
+
+  async function cloudSubmitActivity(actNum, payload, userId, localRes) {
     if (!init()) return null;
     try {
       const batch = db.batch();
+      const uId = parseInt(userId, 10);
+      const nowIso = new Date().toISOString();
 
-      // 1. Simpan jawaban per butir soal
-      if (payload.answers && typeof payload.answers === 'object') {
-        for (const qIdStr of Object.keys(payload.answers)) {
-          const qId = parseInt(qIdStr, 10);
-          const studentAns = payload.answers[qIdStr];
-          const isCorrect = (payload.details && payload.details[qIdStr] && payload.details[qIdStr].is_correct) ? 1 : 0;
-          const score = isCorrect ? 100 : 0;
+      let computedScore = null;
+      if (localRes && localRes.score !== undefined) {
+        computedScore = localRes.score;
+      } else if (payload.score !== undefined) {
+        computedScore = payload.score;
+      }
 
-          const ansRef = db.collection('student_answers').doc(`${userId}_${qId}`);
-          batch.set(ansRef, {
-            user_id: userId,
-            question_id: qId,
-            student_answer: studentAns,
-            is_correct: isCorrect,
-            score: score,
-            submitted_at: new Date().toISOString()
-          }, { merge: true });
+      // 1. Simpan jawaban per tipe aktivitas ke student_answers di Cloud Firestore
+      // A. Aktivitas 1: Pertanyaan Pemantik (Esai)
+      if (actNum === 1) {
+        const essay = (payload.essay_answer || payload.essay || payload.answer || '').trim();
+        const ansRef = db.collection('student_answers').doc(`${uId}_1`);
+        batch.set(ansRef, {
+          user_id: uId,
+          question_id: 1,
+          student_answer: essay,
+          score: 0,
+          teacher_feedback: null,
+          submitted_at: nowIso
+        }, { merge: true });
+      }
+
+      // B. Aktivitas 2: LKPD Simulasi Konsep (Tabel Observasi & Kesimpulan)
+      else if (actNum === 2) {
+        const conclusion = (payload.conclusion || '').trim();
+        const answerPayload = JSON.stringify({
+          observation_table: payload.observation_table || [],
+          conclusion: conclusion,
+          q1: payload.q1 || '',
+          q2: payload.q2 || '',
+          q3: payload.q3 || '',
+          submitted_at: nowIso
+        });
+        const ansRef = db.collection('student_answers').doc(`${uId}_2`);
+        batch.set(ansRef, {
+          user_id: uId,
+          question_id: 2,
+          student_answer: answerPayload,
+          score: 0,
+          teacher_feedback: null,
+          submitted_at: nowIso
+        }, { merge: true });
+      }
+
+      // C. Aktivitas 4: Verifikasi Sudut Istimewa
+      else if (actNum === 4) {
+        const answerPayload = JSON.stringify({
+          table_answers: payload.table_answers || {},
+          submitted_at: nowIso
+        });
+        const ansRef = db.collection('student_answers').doc(`${uId}_4`);
+        batch.set(ansRef, {
+          user_id: uId,
+          question_id: 4,
+          student_answer: answerPayload,
+          score: 100,
+          submitted_at: nowIso
+        }, { merge: true });
+      }
+
+      // D. Aktivitas 5 atau Aktivitas 8: Pilihan Ganda / Soal AKM
+      else if (actNum === 5 || actNum === 8) {
+        if (localRes && Array.isArray(localRes.results)) {
+          localRes.results.forEach(r => {
+            const ansRef = db.collection('student_answers').doc(`${uId}_${r.question_id}`);
+            batch.set(ansRef, {
+              user_id: uId,
+              question_id: r.question_id,
+              student_answer: r.student_answer || '',
+              is_correct: r.is_correct ? 1 : 0,
+              score: r.is_correct ? 100 : 0,
+              submitted_at: nowIso
+            }, { merge: true });
+          });
+        } else if (payload.answers && typeof payload.answers === 'object') {
+          for (const qIdStr of Object.keys(payload.answers)) {
+            const qId = parseInt(qIdStr, 10);
+            const studentAns = payload.answers[qIdStr];
+            const isCorrect = (payload.details && payload.details[qIdStr] && payload.details[qIdStr].is_correct) ? 1 : 0;
+            const itemScore = isCorrect ? 100 : 0;
+
+            const ansRef = db.collection('student_answers').doc(`${uId}_${qId}`);
+            batch.set(ansRef, {
+              user_id: uId,
+              question_id: qId,
+              student_answer: studentAns,
+              is_correct: isCorrect,
+              score: itemScore,
+              submitted_at: nowIso
+            }, { merge: true });
+          }
         }
       }
 
-      // 2. Jawaban refleksi (Aktivitas 9)
-      if (actNum === 9 && payload.reflections && typeof payload.reflections === 'object') {
-        for (const refIdStr of Object.keys(payload.reflections)) {
-          const rId = parseInt(refIdStr, 10);
-          const rVal = payload.reflections[refIdStr];
-          const respRef = db.collection('reflection_responses').doc(`${userId}_${rId}`);
-          batch.set(respRef, {
-            user_id: userId,
-            reflection_id: rId,
-            response_text: String(rVal),
-            rating: typeof rVal === 'number' ? rVal : null,
-            submitted_at: new Date().toISOString()
-          }, { merge: true });
+      // E. Aktivitas 9: Refleksi Belajar Siswa
+      else if (actNum === 9) {
+        const rawRefs = payload.reflections || payload.responses || {};
+        if (Array.isArray(rawRefs)) {
+          rawRefs.forEach(r => {
+            const rId = parseInt(r.reflection_id || r.id, 10);
+            const respRef = db.collection('reflection_responses').doc(`${uId}_${rId}`);
+            batch.set(respRef, {
+              user_id: uId,
+              reflection_id: rId,
+              response_text: r.response_text || r.text || '',
+              rating: r.rating !== undefined ? Number(r.rating) : 5,
+              submitted_at: nowIso
+            }, { merge: true });
+          });
+        } else if (typeof rawRefs === 'object') {
+          for (const refIdStr of Object.keys(rawRefs)) {
+            const rId = parseInt(refIdStr, 10);
+            const rVal = rawRefs[refIdStr];
+            let respText = '';
+            let ratingVal = 5;
+            if (typeof rVal === 'object' && rVal !== null) {
+              respText = rVal.text || rVal.response_text || '';
+              ratingVal = rVal.rating !== undefined ? Number(rVal.rating) : 5;
+            } else if (typeof rVal === 'number') {
+              ratingVal = rVal;
+              respText = String(rVal);
+            } else {
+              respText = String(rVal || '');
+            }
+
+            const respRef = db.collection('reflection_responses').doc(`${uId}_${rId}`);
+            batch.set(respRef, {
+              user_id: uId,
+              reflection_id: rId,
+              response_text: respText,
+              rating: ratingVal,
+              submitted_at: nowIso
+            }, { merge: true });
+          }
         }
       }
 
-      // 3. Update progres aktivitas saat ini -> completed
-      const curProgRef = db.collection('student_progress').doc(`${userId}_${actNum}`);
+      // 2. Update progres aktivitas saat ini -> completed
+      const curProgRef = db.collection('student_progress').doc(`${uId}_${actNum}`);
       batch.set(curProgRef, {
-        user_id: userId,
+        user_id: uId,
         activity_id: actNum,
         status: 'completed',
-        score: payload.score !== undefined ? payload.score : null,
-        completed_at: new Date().toISOString()
+        score: computedScore,
+        completed_at: nowIso
       }, { merge: true });
 
-      // 4. Buka kunci aktivitas berikutnya -> in_progress
+      // 3. Buka kunci aktivitas berikutnya -> in_progress
       if (actNum < 10) {
-        const nextProgRef = db.collection('student_progress').doc(`${userId}_${actNum + 1}`);
+        const nextProgRef = db.collection('student_progress').doc(`${uId}_${actNum + 1}`);
         batch.set(nextProgRef, {
-          user_id: userId,
+          user_id: uId,
           activity_id: actNum + 1,
           status: 'in_progress'
         }, { merge: true });
       }
+
+      // Jika Aktivitas 9 tuntas, buka & selesaikan Aktivitas 10
+      if (actNum === 9) {
+        const act10Ref = db.collection('student_progress').doc(`${uId}_10`);
+        batch.set(act10Ref, {
+          user_id: uId,
+          activity_id: 10,
+          status: 'completed',
+          completed_at: nowIso
+        }, { merge: true });
+      }
+
+      // 4. Update data user di collection 'users'
+      const userDocRef = db.collection('users').doc(String(uId));
+      batch.set(userDocRef, {
+        current_activity: Math.min(10, actNum + 1),
+        last_active: nowIso
+      }, { merge: true });
 
       await batch.commit();
       return { success: true, message: 'Progres belajar dan jawaban berhasil disimpan ke Cloud Firestore!' };
@@ -611,7 +835,15 @@ window.FirebaseService = (function() {
   async function cloudGetTeacherDashboard(classFilter) {
     if (!init()) return null;
     try {
-      const usersSnap = await db.collection('users').where('role', '==', 'siswa').get();
+      let usersSnap = await db.collection('users').where('role', '==', 'siswa').get();
+
+      // Jika database Cloud masih kosong, otomatis seed data awal
+      if (usersSnap.empty) {
+        console.log('Database Cloud Firestore kosong. Mengunggah data awal...');
+        await seedInitialData();
+        usersSnap = await db.collection('users').where('role', '==', 'siswa').get();
+      }
+
       const progSnap = await db.collection('student_progress').get();
       const ansSnap = await db.collection('student_answers').get();
       const questionsSnap = await db.collection('questions').get();
@@ -644,35 +876,65 @@ window.FirebaseService = (function() {
         const resolvedClass = resolveClassName(u);
         if (classFilter && classFilter !== 'all' && resolvedClass !== classFilter) return;
 
-        // Cari aktivitas tertinggi
         const uProgs = progressList.filter(p => p.user_id == u.id);
+        const p1 = uProgs.find(p => p.activity_id == 1);
+        const p2 = uProgs.find(p => p.activity_id == 2);
+        const p5 = uProgs.find(p => p.activity_id == 5);
+        const p8 = uProgs.find(p => p.activity_id == 8);
+
+        // Cari aktivitas tertinggi
         let curAct = 1;
         uProgs.forEach(p => {
-          if (p.status === 'completed' || p.status === 'in_progress') {
-            const aId = parseInt(p.activity_id, 10) || 1;
+          const aId = parseInt(p.activity_id, 10) || 1;
+          if (p.status === 'completed') {
+            if (aId + 1 > curAct) curAct = Math.min(10, aId + 1);
+          } else if (p.status === 'in_progress') {
             if (aId > curAct) curAct = aId;
           }
         });
+        if (u.current_activity && u.current_activity > curAct) {
+          curAct = u.current_activity;
+        }
 
         // Skor Akt 5
-        const a5 = answersList.filter(a => a.user_id == u.id && q5Ids.some(qid => qid == a.question_id));
         let act5Score = null;
-        if (a5.length > 0) {
-          const sum = a5.reduce((acc, curr) => acc + (parseFloat(curr.score) || 0), 0);
-          act5Score = Math.round(sum / a5.length);
+        if (p5 && p5.score !== null && p5.score !== undefined) {
+          act5Score = p5.score;
+        } else {
+          const a5 = answersList.filter(a => a.user_id == u.id && q5Ids.some(qid => qid == a.question_id));
+          if (a5.length > 0) {
+            const sum = a5.reduce((acc, curr) => acc + (parseFloat(curr.score) || 0), 0);
+            act5Score = Math.round(sum / a5.length);
+          }
         }
 
         // Skor Akt 8
-        const a8 = answersList.filter(a => a.user_id == u.id && q8Ids.some(qid => qid == a.question_id));
         let act8Score = null;
-        if (a8.length > 0) {
-          const sum = a8.reduce((acc, curr) => acc + (parseFloat(curr.score) || 0), 0);
-          act8Score = Math.round(sum / a8.length);
+        if (p8 && p8.score !== null && p8.score !== undefined) {
+          act8Score = p8.score;
+        } else {
+          const a8 = answersList.filter(a => a.user_id == u.id && q8Ids.some(qid => qid == a.question_id));
+          if (a8.length > 0) {
+            const sum = a8.reduce((acc, curr) => acc + (parseFloat(curr.score) || 0), 0);
+            act8Score = Math.round(sum / a8.length);
+          }
         }
 
         // Nilai & Jawaban LKPD (Akt 2) & Pemantik (Akt 1)
-        const a1 = answersList.find(a => a.user_id == u.id && q1Ids.some(qid => qid == a.question_id));
-        const a2 = answersList.find(a => a.user_id == u.id && q2Ids.some(qid => qid == a.question_id));
+        const a1 = answersList.find(a => a.user_id == u.id && (a.question_id == 1 || q1Ids.some(qid => qid == a.question_id)));
+        const a2 = answersList.find(a => a.user_id == u.id && (a.question_id == 2 || q2Ids.some(qid => qid == a.question_id)));
+
+        const act1Score = (p1 && (p1.teacher_score !== undefined || p1.score !== null))
+          ? (p1.teacher_score ?? p1.score)
+          : (a1 ? (a1.score ?? null) : null);
+        const act1Feedback = (p1 && p1.teacher_feedback) ? p1.teacher_feedback : (a1 ? a1.teacher_feedback : null);
+        const act1Answer = a1 ? (a1.student_answer ?? null) : null;
+
+        const act2Score = (p2 && (p2.teacher_score !== undefined || p2.score !== null))
+          ? (p2.teacher_score ?? p2.score)
+          : (a2 ? (a2.score ?? null) : null);
+        const act2Feedback = (p2 && p2.teacher_feedback) ? p2.teacher_feedback : (a2 ? a2.teacher_feedback : null);
+        const act2Answer = a2 ? (a2.student_answer ?? null) : null;
 
         students.push({
           id: u.id,
@@ -684,12 +946,12 @@ window.FirebaseService = (function() {
           current_activity: curAct,
           act5_score: act5Score,
           act8_score: act8Score,
-          act1_score: a1 ? (a1.score ?? null) : null,
-          act1_feedback: a1 ? (a1.teacher_feedback ?? null) : null,
-          act1_answer: a1 ? (a1.student_answer ?? null) : null,
-          act2_score: a2 ? (a2.score ?? null) : null,
-          act2_feedback: a2 ? (a2.teacher_feedback ?? null) : null,
-          act2_answer: a2 ? (a2.student_answer ?? null) : null
+          act1_score: act1Score,
+          act1_feedback: act1Feedback,
+          act1_answer: act1Answer,
+          act2_score: act2Score,
+          act2_feedback: act2Feedback,
+          act2_answer: act2Answer
         });
       });
 
@@ -738,6 +1000,358 @@ window.FirebaseService = (function() {
     return null;
   }
 
+  // D. DETAIL SUBMISSI KARYA SISWA UNTUK GURU
+  async function cloudGetStudentDetailSubmission(studentId) {
+    if (!init()) return null;
+    try {
+      const sId = parseInt(studentId, 10);
+
+      // 1. Ambil profil siswa
+      const userDoc = await db.collection('users').doc(String(sId)).get();
+      let st = userDoc.exists ? userDoc.data() : null;
+      if (!st) {
+        const uSnap = await db.collection('users').where('id', '==', sId).get();
+        if (!uSnap.empty) st = uSnap.docs[0].data();
+      }
+      if (!st) {
+        if (window.StorageService && StorageService.teacher) {
+          return StorageService.teacher.getStudentDetailSubmission(sId);
+        }
+        return { success: false, message: 'Siswa tidak ditemukan di Cloud Firestore.' };
+      }
+      const resolvedClassName = resolveClassName(st);
+
+      // 2. Ambil progres semua aktivitas
+      const progSnap = await db.collection('student_progress').where('user_id', '==', sId).get();
+      const progressMap = {};
+      progSnap.forEach(d => {
+        const p = d.data();
+        progressMap[p.activity_id] = p;
+      });
+
+      const progressList = [];
+      for (let i = 1; i <= 10; i++) {
+        const p = progressMap[i];
+        const actInfo = ACTIVITY_INFO[i] || { title: `Aktivitas ${i}` };
+        progressList.push({
+          activity_id: i,
+          activity_number: i,
+          title: actInfo.title,
+          status: p ? p.status : (i === 1 ? 'in_progress' : 'locked'),
+          score: p ? (p.score ?? null) : null,
+          completed_at: p ? (p.completed_at ?? null) : null
+        });
+      }
+
+      // 3. Ambil seluruh jawaban siswa
+      const ansSnap = await db.collection('student_answers').where('user_id', '==', sId).get();
+      const answersMap = {};
+      ansSnap.forEach(d => {
+        const a = d.data();
+        answersMap[a.question_id] = a;
+      });
+
+      // 4. Ambil seluruh butir pertanyaan
+      const qSnap = await db.collection('questions').get();
+      const allQuestions = [];
+      qSnap.forEach(d => allQuestions.push(d.data()));
+
+      // A. Aktivitas 1: Pertanyaan Pemantik
+      const q1List = allQuestions.filter(q => q.activity_id == 1);
+      const q1 = q1List[0] || { id: 1, question_text: "Bagaimana cara mengukur tinggi pohon tanpa memanjatnya?", stimulus_text: "" };
+      const a1 = answersMap[q1.id] || answersMap[1];
+      const p1 = progressMap[1];
+
+      // B. Aktivitas 2: LKPD Simulasi Konsep
+      const q2List = allQuestions.filter(q => q.activity_id == 2);
+      const q2 = q2List[0] || { id: 2 };
+      const a2 = answersMap[q2.id] || answersMap[2];
+      const p2 = progressMap[2];
+      let act2Parsed = null;
+      if (a2 && a2.student_answer) {
+        try {
+          act2Parsed = typeof a2.student_answer === 'object' ? a2.student_answer : JSON.parse(a2.student_answer);
+        } catch (e) {
+          act2Parsed = { conclusion: a2.student_answer, observation_table: [] };
+        }
+      }
+
+      // C. Aktivitas 4: Sudut Istimewa
+      const q4List = allQuestions.filter(q => q.activity_id == 4);
+      const q4 = q4List[0] || { id: 4 };
+      const a4 = answersMap[q4.id] || answersMap[4];
+      let act4Parsed = null;
+      if (a4 && a4.student_answer) {
+        try {
+          act4Parsed = typeof a4.student_answer === 'object' ? a4.student_answer : JSON.parse(a4.student_answer);
+        } catch (e) {}
+      }
+
+      // D. Aktivitas 5: Latihan Soal
+      const q5List = allQuestions.filter(q => q.activity_id == 5).sort((a, b) => (a.order_num || 0) - (b.order_num || 0));
+      let act5CorrectCount = 0;
+      const act5Details = q5List.map((q, idx) => {
+        const sa = answersMap[q.id];
+        const studentAns = sa ? sa.student_answer : null;
+        const isCorrect = sa ? (sa.is_correct === 1 || sa.is_correct === true || (studentAns && studentAns.trim().toUpperCase() === (q.correct_answer || '').trim().toUpperCase())) : false;
+        if (isCorrect) act5CorrectCount++;
+        return {
+          number: idx + 1,
+          question_id: q.id,
+          stimulus_text: q.stimulus_text || '',
+          stimulus_image_url: q.stimulus_image_url || '',
+          question_text: q.question_text || '',
+          options: q.options || {},
+          student_answer: studentAns,
+          correct_answer: q.correct_answer,
+          is_correct: isCorrect,
+          score: sa ? (sa.score ?? (isCorrect ? 100 : 0)) : 0,
+          explanation: q.explanation || ''
+        };
+      });
+      const act5Score = progressMap[5] && progressMap[5].score !== null && progressMap[5].score !== undefined
+        ? progressMap[5].score
+        : (q5List.length > 0 ? Math.round((act5CorrectCount / q5List.length) * 100) : null);
+
+      // E. Aktivitas 8: Sumatif Literasi Numerasi
+      const q8List = allQuestions.filter(q => q.activity_id == 8).sort((a, b) => (a.order_num || 0) - (b.order_num || 0));
+      let act8CorrectCount = 0;
+      const act8Details = q8List.map((q, idx) => {
+        const sa = answersMap[q.id];
+        const studentAns = sa ? sa.student_answer : null;
+        const isCorrect = sa ? (sa.is_correct === 1 || sa.is_correct === true || (studentAns && studentAns.trim().toUpperCase() === (q.correct_answer || '').trim().toUpperCase())) : false;
+        if (isCorrect) act8CorrectCount++;
+        return {
+          number: idx + 1,
+          question_id: q.id,
+          stimulus_text: q.stimulus_text || '',
+          stimulus_image_url: q.stimulus_image_url || '',
+          question_text: q.question_text || '',
+          options: q.options || {},
+          student_answer: studentAns,
+          correct_answer: q.correct_answer,
+          is_correct: isCorrect,
+          score: sa ? (sa.score ?? (isCorrect ? 100 : 0)) : 0,
+          explanation: q.explanation || ''
+        };
+      });
+      const act8Score = progressMap[8] && progressMap[8].score !== null && progressMap[8].score !== undefined
+        ? progressMap[8].score
+        : (q8List.length > 0 ? Math.round((act8CorrectCount / q8List.length) * 100) : null);
+
+      // F. Aktivitas 9: Refleksi Siswa
+      const refSnap = await db.collection('reflections').get();
+      const cloudRefList = [];
+      refSnap.forEach(d => cloudRefList.push(d.data()));
+      cloudRefList.sort((a, b) => (a.order_num || a.id || 0) - (b.order_num || b.id || 0));
+
+      const refRespSnap = await db.collection('reflection_responses').where('user_id', '==', sId).get();
+      const refRespMap = {};
+      refRespSnap.forEach(d => {
+        const r = d.data();
+        refRespMap[r.reflection_id] = r;
+      });
+
+      const refList = cloudRefList.map(rf => {
+        const rr = refRespMap[rf.id];
+        return {
+          id: rf.id,
+          prompt_text: rf.prompt_text,
+          type: rf.type,
+          rating: rr ? rr.rating : null,
+          response_text: rr ? rr.response_text : null,
+          submitted_at: rr ? rr.submitted_at : null
+        };
+      });
+
+      return {
+        success: true,
+        student: {
+          id: st.id,
+          name: st.name,
+          access_code: st.access_code,
+          class_name: resolvedClassName,
+          class_id: st.class_id
+        },
+        progress: progressList,
+        act1: {
+          stimulus_text: q1 ? q1.stimulus_text : '',
+          question_text: q1 ? q1.question_text : '',
+          answer: a1 ? a1.student_answer : null,
+          score: (a1 && a1.score !== undefined && a1.score !== null) ? a1.score : (p1 ? p1.teacher_score ?? p1.score : null),
+          teacher_feedback: (a1 && a1.teacher_feedback) ? a1.teacher_feedback : (p1 ? p1.teacher_feedback : null)
+        },
+        act2: {
+          observation_table: (act2Parsed && act2Parsed.observation_table) || [],
+          conclusion: (act2Parsed && act2Parsed.conclusion) || '',
+          q1: (act2Parsed && act2Parsed.q1) || '',
+          q2: (act2Parsed && act2Parsed.q2) || '',
+          q3: (act2Parsed && act2Parsed.q3) || '',
+          score: (a2 && a2.score !== undefined && a2.score !== null) ? a2.score : (p2 ? p2.teacher_score ?? p2.score : null),
+          teacher_feedback: (a2 && a2.teacher_feedback) ? a2.teacher_feedback : (p2 ? p2.teacher_feedback : null)
+        },
+        act4: {
+          table_answers: (act4Parsed && act4Parsed.table_answers) || null,
+          status: (progressMap[4] && progressMap[4].status) || 'locked'
+        },
+        act5: {
+          score: act5Score,
+          correct_count: act5CorrectCount,
+          total_questions: q5List.length,
+          items: act5Details
+        },
+        act8: {
+          score: act8Score,
+          correct_count: act8CorrectCount,
+          total_questions: q8List.length,
+          items: act8Details
+        },
+        act9: {
+          reflections: refList
+        }
+      };
+    } catch (e) {
+      console.warn('cloudGetStudentDetailSubmission error:', e);
+    }
+    return null;
+  }
+
+  // E. REKAP JAWABAN REFLEKSI UNTUK GURU
+  async function cloudViewReflectionResponses(refId) {
+    if (!init()) return null;
+    try {
+      const rId = parseInt(refId, 10);
+      const respSnap = await db.collection('reflection_responses').where('reflection_id', '==', rId).get();
+      if (respSnap.empty) {
+        return { success: true, responses: [] };
+      }
+
+      const usersSnap = await db.collection('users').get();
+      const userMap = {};
+      usersSnap.forEach(d => {
+        const u = d.data();
+        userMap[u.id] = u;
+      });
+
+      const responses = [];
+      respSnap.forEach(d => {
+        const rr = d.data();
+        const u = userMap[rr.user_id] || {};
+        responses.push({
+          student_name: u.name || 'Siswa #' + rr.user_id,
+          access_code: u.access_code || '-',
+          class_name: resolveClassName(u),
+          rating: rr.rating,
+          response_text: rr.response_text,
+          submitted_at: rr.submitted_at || new Date().toISOString()
+        });
+      });
+
+      responses.sort((a, b) => (a.student_name || '').localeCompare(b.student_name || ''));
+      return { success: true, responses };
+    } catch (e) {
+      console.warn('cloudViewReflectionResponses error:', e);
+    }
+    return null;
+  }
+
+  // F. INSTRUMEN REFLEKSI (GET / SAVE / DELETE)
+  async function cloudGetReflections() {
+    if (!init()) return null;
+    try {
+      const snap = await db.collection('reflections').get();
+      const respSnap = await db.collection('reflection_responses').get();
+      const responses = [];
+      respSnap.forEach(d => responses.push(d.data()));
+
+      let refs = [];
+      snap.forEach(d => refs.push(d.data()));
+      if (refs.length === 0) return null;
+
+      refs.sort((a, b) => (a.order_num || a.id || 0) - (b.order_num || b.id || 0));
+      refs = refs.map(rf => {
+        const count = responses.filter(r => r.reflection_id == rf.id).length;
+        return Object.assign({}, rf, { response_count: count });
+      });
+      return { success: true, reflections: refs };
+    } catch (e) {}
+    return null;
+  }
+
+  async function cloudSaveReflection(payload) {
+    if (!init()) return null;
+    try {
+      const rfId = parseInt(payload.id, 10);
+      let finalId = rfId;
+      if (!finalId || finalId <= 0) {
+        const snap = await db.collection('reflections').get();
+        let maxId = 0;
+        snap.forEach(d => {
+          const id = parseInt(d.id, 10) || d.data().id || 0;
+          if (id > maxId) maxId = id;
+        });
+        finalId = maxId + 1;
+      }
+      const docData = {
+        id: finalId,
+        prompt_text: payload.prompt_text,
+        type: payload.type || 'essay',
+        is_active: payload.is_active !== undefined ? payload.is_active : 1,
+        order_num: finalId
+      };
+      await db.collection('reflections').doc(String(finalId)).set(docData, { merge: true });
+      return { success: true, message: 'Pertanyaan refleksi berhasil disimpan ke Cloud.' };
+    } catch (e) {
+      console.warn('cloudSaveReflection error:', e);
+    }
+    return null;
+  }
+
+  async function cloudDeleteReflection(rfId) {
+    if (!init()) return null;
+    try {
+      await db.collection('reflections').doc(String(rfId)).delete();
+      return { success: true, message: 'Pertanyaan refleksi berhasil dihapus dari Cloud.' };
+    } catch (e) {}
+    return null;
+  }
+
+  // G. PENILAIAN MANUAL LKPD / PEMANTIK OLEH GURU
+  async function cloudGradeManual(studentId, actId, score, feedback) {
+    if (!init()) return null;
+    try {
+      const sId = parseInt(studentId, 10);
+      const aId = parseInt(actId, 10);
+      const numScore = parseInt(score, 10) || 0;
+      const cleanFeedback = feedback || '';
+
+      const batch = db.batch();
+      const progRef = db.collection('student_progress').doc(`${sId}_${aId}`);
+      batch.set(progRef, {
+        user_id: sId,
+        activity_id: aId,
+        teacher_score: numScore,
+        teacher_feedback: cleanFeedback,
+        score: numScore
+      }, { merge: true });
+
+      const ansRef = db.collection('student_answers').doc(`${sId}_${aId}`);
+      batch.set(ansRef, {
+        user_id: sId,
+        question_id: aId,
+        teacher_feedback: cleanFeedback,
+        score: numScore
+      }, { merge: true });
+
+      await batch.commit();
+      return { success: true, message: 'Nilai dan catatan umpan balik guru berhasil disimpan ke Cloud.' };
+    } catch (e) {
+      console.warn('cloudGradeManual error:', e);
+    }
+    return null;
+  }
+
+  // H. KELOLA BANK SOAL
   async function cloudSaveQuestion(payload) {
     if (!init()) return null;
     try {
@@ -804,7 +1418,7 @@ window.FirebaseService = (function() {
               </div>
               <div>
                 <span class="font-extrabold text-sm block">${isConnectedNow ? 'Cloud Firestore Aktif & Terhubung' : 'Mode Penyimpanan Lokal (Offline)'}</span>
-                <span class="text-[11px] opacity-80">${isConnectedNow ? `Project ID: <b>${currentConfig.projectId}</b> (Tersinkronisasi Realtime)` : 'Data saat ini tersimpan di browser masing-masing. Hubungkan Firebase agar data siswa tersinkronisasi online.'}</span>
+                <span class="text-[11px] opacity-80">${isConnectedNow ? `Project ID: <b>${currentConfig.projectId}</b> (Tersinkronisasi Realtime Antar Perangkat)` : 'Data saat ini tersimpan di browser masing-masing. Hubungkan Firebase agar seluruh siswa online.'}</span>
               </div>
             </div>
             <div class="flex items-center gap-2 shrink-0">
@@ -818,7 +1432,7 @@ window.FirebaseService = (function() {
           <div class="p-3.5 bg-indigo-50/60 rounded-xl border border-indigo-100 flex items-center justify-between gap-3">
             <div>
               <span class="font-bold text-indigo-950 block text-xs">Sinkronisasi Data Awal ke Cloud</span>
-              <span class="text-[11px] text-slate-500">Unggah otomatis daftar 108 siswa, 10 aktivitas, bank soal, dan refleksi ke Cloud Firestore.</span>
+              <span class="text-[11px] text-slate-500">Unggah otomatis daftar 108 siswa, 10 modul, bank soal, dan refleksi ke Cloud Firestore.</span>
             </div>
             <button type="button" onclick="FirebaseService.runSeedUpload()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs shadow-2xs transition-all flex items-center gap-1.5 shrink-0">
               <i class="fa-solid fa-cloud-arrow-up"></i> Unggah Data
@@ -869,9 +1483,9 @@ window.FirebaseService = (function() {
           <div class="p-3.5 bg-slate-100 rounded-xl text-slate-600 text-[11px] space-y-1">
             <b class="text-slate-800 block"><i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i>Cara Cepat Membuat Database di Firebase:</b>
             <ol class="list-decimal pl-4 space-y-1 text-slate-600">
-              <li>Buka <a href="https://console.firebase.google.com/" target="_blank" class="text-indigo-600 font-bold underline">Firebase Console</a> lalu klik <b>Add Project</b> (Beri nama misal: <i>trigonometri-sma</i>).</li>
+              <li>Buka <a href="https://console.firebase.google.com/" target="_blank" class="text-indigo-600 font-bold underline">Firebase Console</a> lalu klik <b>Add Project</b>.</li>
               <li>Klik ikon Web (<b>&lt;/&gt;</b>) untuk mendaftarkan web app, lalu salin kodenya ke formulir di atas.</li>
-              <li>Di menu kiri, pilih <b>Firestore Database</b> &gt; <b>Create Database</b> &gt; pilih lokasi (<i>asia-southeast2 Jakarta</i>).</li>
+              <li>Di menu kiri, pilih <b>Firestore Database</b> &gt; <b>Create Database</b>.</li>
               <li>Pada tab <b>Rules</b>, ubah menjadi: <code class="text-rose-600 font-mono font-bold bg-white px-1 rounded">allow read, write: if true;</code> lalu klik <b>Publish</b>.</li>
             </ol>
           </div>
@@ -928,7 +1542,6 @@ window.FirebaseService = (function() {
     });
   }
 
-  // Parse otomatis jika guru menempel seluruh script config
   function parseRawConfigInput(raw) {
     if (!raw) return;
     try {
@@ -948,7 +1561,6 @@ window.FirebaseService = (function() {
     } catch (e) {}
   }
 
-  // Handler tombol Uji Ping
   async function runPingTest() {
     Swal.fire({
       title: 'Menguji Koneksi...',
@@ -973,7 +1585,6 @@ window.FirebaseService = (function() {
     }
   }
 
-  // Handler tombol Unggah Data Awal
   async function runSeedUpload() {
     const confirm = await Swal.fire({
       title: 'Unggah Data Awal ke Firebase?',
@@ -1030,13 +1641,20 @@ window.FirebaseService = (function() {
     },
     activities: {
       get: cloudGetActivity,
-      submit: cloudSubmitActivity
+      submit: cloudSubmitActivity,
+      getProgress: cloudGetProgress
     },
     teacher: {
       getDashboard: cloudGetTeacherDashboard,
       saveQuestion: cloudSaveQuestion,
       deleteQuestion: cloudDeleteQuestion,
-      setExamToken: cloudSetExamToken
+      setExamToken: cloudSetExamToken,
+      getStudentDetailSubmission: cloudGetStudentDetailSubmission,
+      viewReflectionResponses: cloudViewReflectionResponses,
+      getReflections: cloudGetReflections,
+      saveReflection: cloudSaveReflection,
+      deleteReflection: cloudDeleteReflection,
+      gradeManual: cloudGradeManual
     }
   };
 })();
