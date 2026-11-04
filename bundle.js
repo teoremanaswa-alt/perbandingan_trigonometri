@@ -9395,6 +9395,8 @@ window.StorageService = (function() {
       loginTeacher,
       registerStudent,
       checkSession,
+      getSession,
+      setSession,
       logout
     },
     progress: {
@@ -9532,6 +9534,29 @@ window.StorageService = (function() {
     }
   };
 
+  function getActiveSession() {
+    if (window.StorageService && StorageService.auth && StorageService.auth.checkSession) {
+      const s = StorageService.auth.checkSession();
+      if (s && s.user) return s.user;
+    }
+    try {
+      const raw = localStorage.getItem('trigonometri_session_v2') || localStorage.getItem('trigonometri_session_v1');
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function setActiveSession(user) {
+    if (window.StorageService && StorageService.auth && StorageService.auth.setSession) {
+      StorageService.auth.setSession(user);
+      return;
+    }
+    try {
+      localStorage.setItem('trigonometri_session_v2', JSON.stringify(user));
+    } catch (e) {}
+  }
+
   async function handleMockApi(rawUrl, init) {
     let urlPath = rawUrl;
     let queryStr = '';
@@ -9565,7 +9590,7 @@ window.StorageService = (function() {
           try {
             const cloudUser = await FirebaseService.auth.loginStudent(body.access_code);
             if (cloudUser && cloudUser.success) {
-              setSession(cloudUser.user);
+              setActiveSession(cloudUser.user);
               return cloudUser;
             }
           } catch (fe) {
@@ -9609,7 +9634,7 @@ window.StorageService = (function() {
     if (urlPath.includes('api/activities.php')) {
       if (action === 'get') {
         const actNum = parseInt(searchParams.get('activity_number') || '1', 10);
-        const session = getSession();
+        const session = getActiveSession();
         if (window.FirebaseService && FirebaseService.isAvailable() && session && session.id) {
           try {
             const cloudAct = await FirebaseService.activities.get(actNum, session.id);
@@ -9624,7 +9649,7 @@ window.StorageService = (function() {
       }
       if (action.startsWith('submit_act')) {
         const actNum = parseInt(action.replace('submit_act', ''), 10);
-        const session = getSession();
+        const session = getActiveSession();
         const localRes = StorageService.activities.submit(actNum, body);
         if (window.FirebaseService && FirebaseService.isAvailable() && session && session.id) {
           try {
