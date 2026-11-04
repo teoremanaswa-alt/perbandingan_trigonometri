@@ -284,7 +284,11 @@ window.FirebaseService = (function() {
       if (Array.isArray(seed.users)) {
         for (const u of seed.users) {
           const docRef = db.collection('users').doc(String(u.id));
-          batch.set(docRef, u, { merge: true });
+          const uCopy = Object.assign({}, u);
+          if (uCopy.role === 'siswa') {
+            uCopy.class_name = resolveClassName(uCopy);
+          }
+          batch.set(docRef, uCopy, { merge: true });
           opCount++;
           await commitBatchIfNeeded();
         }
@@ -310,6 +314,30 @@ window.FirebaseService = (function() {
   // 7. OPERASI DATABASE CLOUD (DIPANGGIL OLEH INTERCEPTOR / APP)
   // ====================================================================================
 
+  function resolveClassName(u) {
+    if (!u) return 'XA';
+    if (u.class_name && typeof u.class_name === 'string' && u.class_name.trim().length > 0) {
+      return u.class_name.trim().toUpperCase();
+    }
+    const cid = parseInt(u.class_id, 10);
+    if (cid === 1) return 'XA';
+    if (cid === 2) return 'XB';
+    if (cid === 3) return 'XC';
+    if (cid === 4) return 'XD';
+    if (cid === 5) return 'XE';
+    if (cid === 6) return 'XF';
+    if (u.access_code) {
+      const p = u.access_code.trim().charAt(0).toUpperCase();
+      if (p === 'A') return 'XA';
+      if (p === 'B') return 'XB';
+      if (p === 'C') return 'XC';
+      if (p === 'D') return 'XD';
+      if (p === 'E') return 'XE';
+      if (p === 'F') return 'XF';
+    }
+    return 'XA';
+  }
+
   // A. AUTHENTICATION
   async function cloudLoginStudent(code) {
     if (!init()) return null;
@@ -322,15 +350,14 @@ window.FirebaseService = (function() {
       snap.forEach(doc => {
         const u = doc.data();
         const uCode = (u.access_code || '').toUpperCase().replace(/[\s\-_]/g, '');
-        if (uCode === cleanCode) matchedUser = u;
+        if (uCode === cleanCode) {
+          matchedUser = Object.assign({}, u, {
+            class_name: resolveClassName(u)
+          });
+        }
       });
 
       if (matchedUser) {
-        // Ambil kelas
-        let clsName = 'XA';
-        const clsDoc = await db.collection('classes').doc(String(matchedUser.class_id)).get();
-        if (clsDoc.exists) clsName = clsDoc.data().class_name;
-        matchedUser.class_name = clsName;
         return { success: true, user: matchedUser, message: `Selamat datang, ${matchedUser.name}!` };
       }
     } catch (e) {
@@ -387,6 +414,19 @@ window.FirebaseService = (function() {
   }
 
   // B. ACTIVITIES & SUBMISSIONS
+  const ACTIVITY_INFO = {
+    1: { title: "Pertanyaan Pemantik", subtitle: "Mengamati fenomena pengukuran tinggi pohon & gedung tanpa memanjat." },
+    2: { title: "LKPD Simulasi Konsep", subtitle: "Eksplorasi segitiga siku-siku & penemuan rasio sin, cos, tan." },
+    3: { title: "Materi Trigonometri", subtitle: "Definisi sisi depan, samping, miring & mnemonik Demi-Sami-Desa." },
+    4: { title: "Sudut Istimewa", subtitle: "Pembuktian geometris & tabel nilai sudut istimewa 0°, 30°, 45°, 60°, 90°." },
+    5: { title: "Latihan Soal", subtitle: "5 butir latihan uji pemahaman konsep dasar dengan umpan balik instan." },
+    6: { title: "Simulasi Terapan", subtitle: "3 Simulasi interaktif: Tinggi Pohon, Pendaratan Pesawat, Layang-layang." },
+    7: { title: "Contoh Literasi Numerasi", subtitle: "5 Contoh soal kontekstual AKM/literasi numerasi dan pembahasannya." },
+    8: { title: "Sumatif Literasi Numerasi", subtitle: "Asesmen sumatif terstruktur berbasis stimulus narasi dan diagram." },
+    9: { title: "Refleksi Belajar", subtitle: "Evaluasi proses belajar dan pemahaman materi secara mandiri." },
+    10: { title: "Hasil Belajar", subtitle: "Laporan akhir pencapaian, sertifikat kompetensi & umpan balik guru." }
+  };
+
   async function cloudGetActivity(actNum, userId) {
     if (!init()) return null;
     try {
@@ -403,13 +443,25 @@ window.FirebaseService = (function() {
         }
       }
 
-      // 2. Ambil soal untuk aktivitas ini
+      // 2. Ambil metadata aktivitas (title, subtitle)
+      let actTitle = (ACTIVITY_INFO[actNum] && ACTIVITY_INFO[actNum].title) || `Aktivitas ${actNum}`;
+      let actSubtitle = (ACTIVITY_INFO[actNum] && ACTIVITY_INFO[actNum].subtitle) || '';
+      try {
+        const actDoc = await db.collection('activities').doc(String(actNum)).get();
+        if (actDoc.exists) {
+          const ad = actDoc.data();
+          if (ad.title) actTitle = ad.title;
+          if (ad.subtitle) actSubtitle = ad.subtitle;
+        }
+      } catch (ae) {}
+
+      // 3. Ambil soal untuk aktivitas ini
       const qSnap = await db.collection('questions').where('activity_id', '==', actNum).get();
       let questions = [];
       qSnap.forEach(d => questions.push(d.data()));
       questions.sort((a, b) => (a.order_num || 0) - (b.order_num || 0));
 
-      // 3. Ambil progres & jawaban tersimpan
+      // 4. Ambil progres & jawaban tersimpan
       const progDoc = await db.collection('student_progress').doc(`${userId}_${actNum}`).get();
       const prog = progDoc.exists ? progDoc.data() : { status: actNum === 1 ? 'in_progress' : 'locked' };
 
@@ -422,16 +474,63 @@ window.FirebaseService = (function() {
         }
       });
 
+      // 5. Khusus Aktivitas 9: Ambil instrumen refleksi & respon siswa
+      let reflections = [];
+      let reflectionResponses = [];
+      if (actNum === 9) {
+        try {
+          const refSnap = await db.collection('reflections').get();
+          if (!refSnap.empty) {
+            refSnap.forEach(d => {
+              const r = d.data();
+              if (r.is_active == 1 || r.is_active === true || r.is_active === undefined) {
+                reflections.push(r);
+              }
+            });
+            reflections.sort((a, b) => (a.order_num || a.id || 0) - (b.order_num || b.id || 0));
+          }
+        } catch (re) {}
+
+        if (reflections.length === 0) {
+          const defaultRefs = (window.INITIAL_DB_SEED && Array.isArray(window.INITIAL_DB_SEED.reflections))
+            ? window.INITIAL_DB_SEED.reflections
+            : [
+                { id: 1, prompt_text: "Seberapa pahamkah Anda mengenai konsep sinus, kosinus, dan tangen setelah mengikuti pembelajaran ini?", type: "scale", is_active: 1 },
+                { id: 2, prompt_text: "Seberapa menarik dan membantukah media pembelajaran digital ini dalam memudahkan Anda memahami konsep abstrak matematika?", type: "scale", is_active: 1 },
+                { id: 3, prompt_text: "Aktivitas pembelajaran nomor berapa yang menurut Anda paling menantang dan memerlukan penjelasan tambahan dari guru?", type: "essay", is_active: 1 },
+                { id: 4, prompt_text: "Tuliskan satu hikmah atau penerapan perbandingan trigonometri di kehidupan sehari-hari yang paling berkesan bagi Anda!", type: "essay", is_active: 1 }
+              ];
+          reflections = defaultRefs.filter(r => r.is_active == 1 || r.is_active === true || r.is_active === undefined);
+        }
+
+        try {
+          const respSnap = await db.collection('reflection_responses').where('user_id', '==', userId).get();
+          respSnap.forEach(d => reflectionResponses.push(d.data()));
+        } catch (re) {}
+      }
+
+      // 6. Khusus Aktivitas 10: Rapor Hasil Belajar
+      let recap = null;
+      if (actNum === 10 && window.StorageService && StorageService.activities) {
+        const localAct10 = StorageService.activities.get(10);
+        if (localAct10 && localAct10.recap) recap = localAct10.recap;
+      }
+
       return {
         success: true,
         activity: {
           id: actNum,
           activity_number: actNum,
+          title: actTitle,
+          subtitle: actSubtitle,
           user_status: prog.status,
           score: prog.score
         },
         questions,
-        existing_answers: existingAnswers
+        existing_answers: existingAnswers,
+        reflections,
+        reflection_responses: reflectionResponses,
+        recap
       };
     } catch (e) {
       console.warn('cloudGetActivity notice:', e);
@@ -542,7 +641,8 @@ window.FirebaseService = (function() {
       const students = [];
       usersSnap.forEach(d => {
         const u = d.data();
-        if (classFilter && classFilter !== 'all' && u.class_name !== classFilter) return;
+        const resolvedClass = resolveClassName(u);
+        if (classFilter && classFilter !== 'all' && resolvedClass !== classFilter) return;
 
         // Cari aktivitas tertinggi
         const uProgs = progressList.filter(p => p.user_id == u.id);
@@ -579,7 +679,7 @@ window.FirebaseService = (function() {
           name: u.name || '',
           access_code: u.access_code || '',
           role: u.role || 'siswa',
-          class_name: u.class_name || 'XA',
+          class_name: resolvedClass,
           class_id: u.class_id,
           current_activity: curAct,
           act5_score: act5Score,

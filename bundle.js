@@ -317,7 +317,11 @@ window.FirebaseService = (function() {
       if (Array.isArray(seed.users)) {
         for (const u of seed.users) {
           const docRef = db.collection('users').doc(String(u.id));
-          batch.set(docRef, u, { merge: true });
+          const uCopy = Object.assign({}, u);
+          if (uCopy.role === 'siswa') {
+            uCopy.class_name = resolveClassName(uCopy);
+          }
+          batch.set(docRef, uCopy, { merge: true });
           opCount++;
           await commitBatchIfNeeded();
         }
@@ -343,6 +347,30 @@ window.FirebaseService = (function() {
   // 7. OPERASI DATABASE CLOUD (DIPANGGIL OLEH INTERCEPTOR / APP)
   // ====================================================================================
 
+  function resolveClassName(u) {
+    if (!u) return 'XA';
+    if (u.class_name && typeof u.class_name === 'string' && u.class_name.trim().length > 0) {
+      return u.class_name.trim().toUpperCase();
+    }
+    const cid = parseInt(u.class_id, 10);
+    if (cid === 1) return 'XA';
+    if (cid === 2) return 'XB';
+    if (cid === 3) return 'XC';
+    if (cid === 4) return 'XD';
+    if (cid === 5) return 'XE';
+    if (cid === 6) return 'XF';
+    if (u.access_code) {
+      const p = u.access_code.trim().charAt(0).toUpperCase();
+      if (p === 'A') return 'XA';
+      if (p === 'B') return 'XB';
+      if (p === 'C') return 'XC';
+      if (p === 'D') return 'XD';
+      if (p === 'E') return 'XE';
+      if (p === 'F') return 'XF';
+    }
+    return 'XA';
+  }
+
   // A. AUTHENTICATION
   async function cloudLoginStudent(code) {
     if (!init()) return null;
@@ -355,15 +383,14 @@ window.FirebaseService = (function() {
       snap.forEach(doc => {
         const u = doc.data();
         const uCode = (u.access_code || '').toUpperCase().replace(/[\s\-_]/g, '');
-        if (uCode === cleanCode) matchedUser = u;
+        if (uCode === cleanCode) {
+          matchedUser = Object.assign({}, u, {
+            class_name: resolveClassName(u)
+          });
+        }
       });
 
       if (matchedUser) {
-        // Ambil kelas
-        let clsName = 'XA';
-        const clsDoc = await db.collection('classes').doc(String(matchedUser.class_id)).get();
-        if (clsDoc.exists) clsName = clsDoc.data().class_name;
-        matchedUser.class_name = clsName;
         return { success: true, user: matchedUser, message: `Selamat datang, ${matchedUser.name}!` };
       }
     } catch (e) {
@@ -420,6 +447,19 @@ window.FirebaseService = (function() {
   }
 
   // B. ACTIVITIES & SUBMISSIONS
+  const ACTIVITY_INFO = {
+    1: { title: "Pertanyaan Pemantik", subtitle: "Mengamati fenomena pengukuran tinggi pohon & gedung tanpa memanjat." },
+    2: { title: "LKPD Simulasi Konsep", subtitle: "Eksplorasi segitiga siku-siku & penemuan rasio sin, cos, tan." },
+    3: { title: "Materi Trigonometri", subtitle: "Definisi sisi depan, samping, miring & mnemonik Demi-Sami-Desa." },
+    4: { title: "Sudut Istimewa", subtitle: "Pembuktian geometris & tabel nilai sudut istimewa 0°, 30°, 45°, 60°, 90°." },
+    5: { title: "Latihan Soal", subtitle: "5 butir latihan uji pemahaman konsep dasar dengan umpan balik instan." },
+    6: { title: "Simulasi Terapan", subtitle: "3 Simulasi interaktif: Tinggi Pohon, Pendaratan Pesawat, Layang-layang." },
+    7: { title: "Contoh Literasi Numerasi", subtitle: "5 Contoh soal kontekstual AKM/literasi numerasi dan pembahasannya." },
+    8: { title: "Sumatif Literasi Numerasi", subtitle: "Asesmen sumatif terstruktur berbasis stimulus narasi dan diagram." },
+    9: { title: "Refleksi Belajar", subtitle: "Evaluasi proses belajar dan pemahaman materi secara mandiri." },
+    10: { title: "Hasil Belajar", subtitle: "Laporan akhir pencapaian, sertifikat kompetensi & umpan balik guru." }
+  };
+
   async function cloudGetActivity(actNum, userId) {
     if (!init()) return null;
     try {
@@ -436,13 +476,25 @@ window.FirebaseService = (function() {
         }
       }
 
-      // 2. Ambil soal untuk aktivitas ini
+      // 2. Ambil metadata aktivitas (title, subtitle)
+      let actTitle = (ACTIVITY_INFO[actNum] && ACTIVITY_INFO[actNum].title) || `Aktivitas ${actNum}`;
+      let actSubtitle = (ACTIVITY_INFO[actNum] && ACTIVITY_INFO[actNum].subtitle) || '';
+      try {
+        const actDoc = await db.collection('activities').doc(String(actNum)).get();
+        if (actDoc.exists) {
+          const ad = actDoc.data();
+          if (ad.title) actTitle = ad.title;
+          if (ad.subtitle) actSubtitle = ad.subtitle;
+        }
+      } catch (ae) {}
+
+      // 3. Ambil soal untuk aktivitas ini
       const qSnap = await db.collection('questions').where('activity_id', '==', actNum).get();
       let questions = [];
       qSnap.forEach(d => questions.push(d.data()));
       questions.sort((a, b) => (a.order_num || 0) - (b.order_num || 0));
 
-      // 3. Ambil progres & jawaban tersimpan
+      // 4. Ambil progres & jawaban tersimpan
       const progDoc = await db.collection('student_progress').doc(`${userId}_${actNum}`).get();
       const prog = progDoc.exists ? progDoc.data() : { status: actNum === 1 ? 'in_progress' : 'locked' };
 
@@ -455,16 +507,63 @@ window.FirebaseService = (function() {
         }
       });
 
+      // 5. Khusus Aktivitas 9: Ambil instrumen refleksi & respon siswa
+      let reflections = [];
+      let reflectionResponses = [];
+      if (actNum === 9) {
+        try {
+          const refSnap = await db.collection('reflections').get();
+          if (!refSnap.empty) {
+            refSnap.forEach(d => {
+              const r = d.data();
+              if (r.is_active == 1 || r.is_active === true || r.is_active === undefined) {
+                reflections.push(r);
+              }
+            });
+            reflections.sort((a, b) => (a.order_num || a.id || 0) - (b.order_num || b.id || 0));
+          }
+        } catch (re) {}
+
+        if (reflections.length === 0) {
+          const defaultRefs = (window.INITIAL_DB_SEED && Array.isArray(window.INITIAL_DB_SEED.reflections))
+            ? window.INITIAL_DB_SEED.reflections
+            : [
+                { id: 1, prompt_text: "Seberapa pahamkah Anda mengenai konsep sinus, kosinus, dan tangen setelah mengikuti pembelajaran ini?", type: "scale", is_active: 1 },
+                { id: 2, prompt_text: "Seberapa menarik dan membantukah media pembelajaran digital ini dalam memudahkan Anda memahami konsep abstrak matematika?", type: "scale", is_active: 1 },
+                { id: 3, prompt_text: "Aktivitas pembelajaran nomor berapa yang menurut Anda paling menantang dan memerlukan penjelasan tambahan dari guru?", type: "essay", is_active: 1 },
+                { id: 4, prompt_text: "Tuliskan satu hikmah atau penerapan perbandingan trigonometri di kehidupan sehari-hari yang paling berkesan bagi Anda!", type: "essay", is_active: 1 }
+              ];
+          reflections = defaultRefs.filter(r => r.is_active == 1 || r.is_active === true || r.is_active === undefined);
+        }
+
+        try {
+          const respSnap = await db.collection('reflection_responses').where('user_id', '==', userId).get();
+          respSnap.forEach(d => reflectionResponses.push(d.data()));
+        } catch (re) {}
+      }
+
+      // 6. Khusus Aktivitas 10: Rapor Hasil Belajar
+      let recap = null;
+      if (actNum === 10 && window.StorageService && StorageService.activities) {
+        const localAct10 = StorageService.activities.get(10);
+        if (localAct10 && localAct10.recap) recap = localAct10.recap;
+      }
+
       return {
         success: true,
         activity: {
           id: actNum,
           activity_number: actNum,
+          title: actTitle,
+          subtitle: actSubtitle,
           user_status: prog.status,
           score: prog.score
         },
         questions,
-        existing_answers: existingAnswers
+        existing_answers: existingAnswers,
+        reflections,
+        reflection_responses: reflectionResponses,
+        recap
       };
     } catch (e) {
       console.warn('cloudGetActivity notice:', e);
@@ -575,7 +674,8 @@ window.FirebaseService = (function() {
       const students = [];
       usersSnap.forEach(d => {
         const u = d.data();
-        if (classFilter && classFilter !== 'all' && u.class_name !== classFilter) return;
+        const resolvedClass = resolveClassName(u);
+        if (classFilter && classFilter !== 'all' && resolvedClass !== classFilter) return;
 
         // Cari aktivitas tertinggi
         const uProgs = progressList.filter(p => p.user_id == u.id);
@@ -612,7 +712,7 @@ window.FirebaseService = (function() {
           name: u.name || '',
           access_code: u.access_code || '',
           role: u.role || 'siswa',
-          class_name: u.class_name || 'XA',
+          class_name: resolvedClass,
           class_id: u.class_id,
           current_activity: curAct,
           act5_score: act5Score,
@@ -8621,9 +8721,30 @@ window.StorageService = (function() {
     const q1 = act1 ? db.questions.find(q => q.activity_id == act1.id) : null;
     const q2 = act2 ? db.questions.find(q => q.activity_id == act2.id) : null;
 
+    function resolveLocalClass(u) {
+      if (u.class_name && typeof u.class_name === 'string' && u.class_name.trim().length > 0) return u.class_name.trim().toUpperCase();
+      const cid = parseInt(u.class_id, 10);
+      if (cid === 1) return 'XA';
+      if (cid === 2) return 'XB';
+      if (cid === 3) return 'XC';
+      if (cid === 4) return 'XD';
+      if (cid === 5) return 'XE';
+      if (cid === 6) return 'XF';
+      if (u.access_code) {
+        const p = u.access_code.trim().charAt(0).toUpperCase();
+        if (p === 'A') return 'XA';
+        if (p === 'B') return 'XB';
+        if (p === 'C') return 'XC';
+        if (p === 'D') return 'XD';
+        if (p === 'E') return 'XE';
+        if (p === 'F') return 'XF';
+      }
+      return 'XA';
+    }
+
     let students = db.users.filter(u => u.role === 'siswa').map(u => {
       const cls = db.classes.find(c => c.id == u.class_id);
-      const className = cls ? cls.class_name : 'XA';
+      const className = cls ? cls.class_name : resolveLocalClass(u);
 
       // Posisi aktivitas terakhir
       const uProg = db.student_progress.filter(p => p.user_id == u.id);
@@ -9676,6 +9797,18 @@ window.StorageService = (function() {
           try {
             const cloudAct = await FirebaseService.activities.get(actNum, session.id);
             if (cloudAct && cloudAct.success) {
+              const localAct = StorageService.activities.get(actNum);
+              if (localAct && localAct.activity) {
+                if (!cloudAct.activity.title) cloudAct.activity.title = localAct.activity.title;
+                if (!cloudAct.activity.subtitle) cloudAct.activity.subtitle = localAct.activity.subtitle;
+              }
+              if (actNum === 9 && (!cloudAct.reflections || cloudAct.reflections.length === 0)) {
+                cloudAct.reflections = localAct.reflections;
+                cloudAct.reflection_responses = cloudAct.reflection_responses || localAct.reflection_responses;
+              }
+              if (actNum === 10 && !cloudAct.recap) {
+                cloudAct.recap = localAct.recap;
+              }
               return cloudAct;
             }
           } catch (fe) {
@@ -11287,11 +11420,28 @@ const App = (function() {
     }
   }
 
+  const ACTIVITY_STATIC_TITLES = {
+    1: { title: "Pertanyaan Pemantik", subtitle: "Mengamati fenomena pengukuran tinggi pohon & gedung tanpa memanjat." },
+    2: { title: "LKPD Simulasi Konsep", subtitle: "Eksplorasi segitiga siku-siku & penemuan rasio sin, cos, tan." },
+    3: { title: "Materi Trigonometri", subtitle: "Definisi sisi depan, samping, miring & mnemonik Demi-Sami-Desa." },
+    4: { title: "Sudut Istimewa", subtitle: "Pembuktian geometris & tabel nilai sudut istimewa 0°, 30°, 45°, 60°, 90°." },
+    5: { title: "Latihan Soal", subtitle: "5 butir latihan uji pemahaman konsep dasar dengan umpan balik instan." },
+    6: { title: "Simulasi Terapan", subtitle: "3 Simulasi interaktif: Tinggi Pohon, Pendaratan Pesawat, Layang-layang." },
+    7: { title: "Contoh Literasi Numerasi", subtitle: "5 Contoh soal kontekstual AKM/literasi numerasi dan pembahasannya." },
+    8: { title: "Sumatif Literasi Numerasi", subtitle: "Asesmen sumatif terstruktur berbasis stimulus narasi dan diagram." },
+    9: { title: "Refleksi Belajar", subtitle: "Evaluasi proses belajar dan pemahaman materi secara mandiri." },
+    10: { title: "Hasil Belajar", subtitle: "Laporan akhir pencapaian, sertifikat kompetensi & umpan balik guru." }
+  };
+
   // Router Tampilan Aktivitas 1 - 10
   function renderActivityModule(actNum, payload) {
     currentActivityPayload = payload;
     const contentArea = document.getElementById('activity-content-area');
     const act = payload.activity;
+
+    const staticMeta = ACTIVITY_STATIC_TITLES[actNum] || { title: `Aktivitas ${actNum}`, subtitle: '' };
+    const actTitle = (act && act.title) ? act.title : staticMeta.title;
+    const actSubtitle = (act && act.subtitle !== undefined && act.subtitle !== null) ? act.subtitle : staticMeta.subtitle;
 
     let headerHtml = `
       <div class="mb-6 p-6 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-700 to-purple-700 text-white shadow-lg relative overflow-hidden">
@@ -11299,8 +11449,8 @@ const App = (function() {
         <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-bold uppercase tracking-wider mb-2">
           <i class="fa-solid fa-graduation-cap"></i> Aktivitas Pembelajaran ${actNum} dari 10
         </div>
-        <h2 class="text-2xl md:text-3xl font-extrabold font-heading">${act.title}</h2>
-        <p class="text-indigo-100 text-sm md:text-base mt-1 max-w-2xl">${act.subtitle || ''}</p>
+        <h2 class="text-2xl md:text-3xl font-extrabold font-heading">${actTitle}</h2>
+        <p class="text-indigo-100 text-sm md:text-base mt-1 max-w-2xl">${actSubtitle}</p>
       </div>
     `;
 
@@ -12564,7 +12714,7 @@ const App = (function() {
                 <div class="p-3.5 bg-indigo-50/70 border border-indigo-100 rounded-2xl text-center">
                   <i class="fa-solid fa-list-check text-indigo-600 text-lg mb-1 block"></i>
                   <span class="text-[11px] text-slate-500 block font-semibold">Jumlah Soal</span>
-                  <span class="text-sm font-black text-indigo-950 font-mono">5 Butir AKM</span>
+                  <span class="text-sm font-black text-indigo-950 font-mono">10 Butir AKM</span>
                 </div>
                 <div class="p-3.5 bg-amber-50/70 border border-amber-100 rounded-2xl text-center">
                   <i class="fa-solid fa-lock text-amber-600 text-lg mb-1 block"></i>
@@ -12710,8 +12860,17 @@ const App = (function() {
   // ==========================================
   function renderAct9(payload) {
     const isCompleted = !!(payload && payload.activity && payload.activity.user_status === 'completed');
-    const reflections = payload.reflections || [];
-    const responses = payload.reflection_responses || [];
+    let reflections = (payload && Array.isArray(payload.reflections) && payload.reflections.length > 0)
+      ? payload.reflections
+      : (window.INITIAL_DB_SEED && Array.isArray(window.INITIAL_DB_SEED.reflections))
+        ? window.INITIAL_DB_SEED.reflections.filter(r => r.is_active == 1 || r.is_active === true || r.is_active === undefined)
+        : [
+            { id: 1, prompt_text: "Seberapa pahamkah Anda mengenai konsep sinus, kosinus, dan tangen setelah mengikuti pembelajaran ini?", type: "scale", is_active: 1 },
+            { id: 2, prompt_text: "Seberapa menarik dan membantukah media pembelajaran digital ini dalam memudahkan Anda memahami konsep abstrak matematika?", type: "scale", is_active: 1 },
+            { id: 3, prompt_text: "Aktivitas pembelajaran nomor berapa yang menurut Anda paling menantang dan memerlukan penjelasan tambahan dari guru?", type: "essay", is_active: 1 },
+            { id: 4, prompt_text: "Tuliskan satu hikmah atau penerapan perbandingan trigonometri di kehidupan sehari-hari yang paling berkesan bagi Anda!", type: "essay", is_active: 1 }
+          ];
+    const responses = (payload && payload.reflection_responses) || [];
 
     const respMap = {};
     responses.forEach(r => {
