@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="assets/js/firebase-config.js"></script>
+  <script src="assets/js/firebase-service.js"></script>
+  <script src="assets/js/db-seed.js"></script>
+  <script src="assets/js/storage.js"></script>
+</head>
+<body>
+  <div id="status">Connecting...</div>
+  <script>
+    async function test() {
+      try {
+        const pingRes = await FirebaseService.testConnection();
+        if (pingRes.success) {
+          // Attempt seeding data if needed
+          const seedRes = await FirebaseService.seedInitialData();
+          document.getElementById('status').innerText = 'FIREBASE_LIVE_SUCCESS: ' + pingRes.message + ' | ' + seedRes.message;
+        } else {
+          document.getElementById('status').innerText = 'FIREBASE_LIVE_FAILED: ' + pingRes.message;
+        }
+      } catch (err) {
+        document.getElementById('status').innerText = 'FIREBASE_ERROR: ' + err.message;
+      }
+    }
+    window.addEventListener('DOMContentLoaded', test);
+  </script>
+</body>
+</html>

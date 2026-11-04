@@ -1,6 +1,8 @@
 $files = @(
   'assets/js/logo-data.js',
   'assets/js/svg-data.js',
+  'assets/js/firebase-config.js',
+  'assets/js/firebase-service.js',
   'assets/js/db-seed.js',
   'assets/js/storage.js',
   'assets/js/simulations.js',

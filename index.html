@@ -100,8 +100,14 @@
           <p class="text-xs text-indigo-200 font-medium tracking-wide">Media Pembelajaran interaktif Trigonometri</p>
         </div>
       </div>
-      <div class="hidden md:flex items-center gap-2 px-3.5 py-1.5 bg-white/10 backdrop-blur-md rounded-full border border-white/15 text-xs text-indigo-100 font-semibold shadow-sm">
-        <i class="fa-solid fa-user-check text-amber-400"></i> Pengembang: Aswan, M.Pd., Gr.
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="if(window.FirebaseService) FirebaseService.openConfigModal();" id="nav-cloud-status" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full border border-white/15 text-xs text-indigo-100 font-semibold shadow-sm transition-all" title="Klik untuk Pengaturan Database Firebase">
+          <i class="fa-solid fa-cloud-arrow-up text-amber-400"></i>
+          <span>Mode Lokal / Hubungkan Firebase</span>
+        </button>
+        <div class="hidden md:flex items-center gap-2 px-3.5 py-1.5 bg-white/10 backdrop-blur-md rounded-full border border-white/15 text-xs text-indigo-100 font-semibold shadow-sm">
+          <i class="fa-solid fa-user-check text-amber-400"></i> Pengembang: Aswan, M.Pd., Gr.
+        </div>
       </div>
     </header>
 
@@ -325,7 +331,11 @@
       </div>
 
       <!-- Profil Guru & Logout -->
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-3">
+        <button type="button" onclick="FirebaseService.openConfigModal()" id="firebase-status-badge" class="firebase-status-badge text-[11px] font-bold px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 flex items-center gap-1.5 shadow-2xs transition-all" title="Pengaturan Database Firebase">
+          <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+          <span>Firebase: Mode Lokal</span>
+        </button>
         <div class="flex items-center gap-2 px-3.5 py-1.5 bg-indigo-50 border border-indigo-200 rounded-2xl text-xs">
           <i class="fa-solid fa-user-tie text-indigo-600"></i>
           <span class="font-bold text-indigo-950">Aswan, M.Pd., Gr.</span>
@@ -441,6 +451,18 @@
               <span>Ubah Token Ujian</span>
             </button>
           </div>
+        </div>
+
+        <!-- Integrasi Cloud Firestore (Online GitHub Pages Database) -->
+        <div class="pt-3 border-t border-slate-100 space-y-2">
+          <div class="flex items-center justify-between px-2">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Cloud Database</span>
+            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">Firebase</span>
+          </div>
+          <button type="button" onclick="FirebaseService.openConfigModal()" class="w-full py-2.5 px-3 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all">
+            <i class="fa-solid fa-fire text-amber-200"></i>
+            <span>Pengaturan Firebase</span>
+          </button>
         </div>
 
         <!-- Manajemen & Backup Database (Khusus GitHub Pages & Offline) -->
@@ -680,6 +702,14 @@
     document.addEventListener('DOMContentLoaded', clearTeacherInputs);
     window.addEventListener('pageshow', clearTeacherInputs);
   </script>
+
+  <!-- Firebase SDK Compat (Google Official CDN untuk GitHub Pages / Static Hosting) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <!-- Firebase Configuration & Realtime Service -->
+  <script src="assets/js/firebase-config.js" onerror="this.onerror=null; this.src='firebase-config.js';"></script>
+  <script src="assets/js/firebase-service.js" onerror="this.onerror=null; this.src='firebase-service.js';"></script>
 
   <!-- Standalone Bundle (db-seed, storage, simulations, app) dengan fallback cerdas -->
   <script src="bundle.js" onerror="this.onerror=null; this.src='assets/js/bundle.js';"></script>
